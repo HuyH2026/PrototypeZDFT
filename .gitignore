@@ -5,6 +5,13 @@ pnpm-lock.yaml
 # Build outputs
 dist/
 
+# TypeScript incremental build artifacts (from `tsc -b`)
+*.tsbuildinfo
+vite.config.d.ts
+vite.config.js
+vitest.config.d.ts
+vitest.config.js
+
 # Claude Code local settings
 .claude/
 

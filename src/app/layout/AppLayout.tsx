@@ -27,7 +27,7 @@ export function AppLayout() {
               onCollapse={() => setIsExpanded(false)}
             />
           ) : (
-            <Sidebar isExpanded={isExpanded} onToggleExpand={() => setIsExpanded((v) => !v)} />
+            <Sidebar onToggleExpand={() => setIsExpanded((v) => !v)} />
           )}
           <main className="flex-1 overflow-hidden p-2">
             <Outlet />

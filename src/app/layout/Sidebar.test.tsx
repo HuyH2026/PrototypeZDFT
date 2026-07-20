@@ -4,10 +4,10 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 import { Sidebar } from './Sidebar'
 
-function renderSidebar(isExpanded = false, onToggleExpand = vi.fn()) {
+function renderSidebar(onToggleExpand = vi.fn()) {
   return render(
     <MemoryRouter>
-      <Sidebar isExpanded={isExpanded} onToggleExpand={onToggleExpand} />
+      <Sidebar onToggleExpand={onToggleExpand} />
     </MemoryRouter>,
   )
 }
@@ -30,7 +30,7 @@ describe('Sidebar', () => {
   it('calls onToggleExpand when the expand toggle is clicked', async () => {
     const user = userEvent.setup()
     const onToggle = vi.fn()
-    renderSidebar(false, onToggle)
+    renderSidebar(onToggle)
     await user.click(screen.getByRole('button', { name: /expand sidebar/i }))
     expect(onToggle).toHaveBeenCalledOnce()
   })

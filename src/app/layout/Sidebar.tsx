@@ -5,7 +5,6 @@ import { PRIMARY_NAV, SECONDARY_NAV, findNavItemByPath } from '@/app/nav-config'
 import { useHoverIntent } from './useHoverIntent'
 
 interface SidebarProps {
-  isExpanded: boolean
   onToggleExpand: () => void
 }
 
@@ -25,7 +24,7 @@ function flyoverTop(label: string): number {
   return RAIL_TOP_PAD + PRIMARY_NAV.length * ITEM_H + SEP_SPACE + s * ITEM_H
 }
 
-export function Sidebar({ isExpanded: _isExpanded, onToggleExpand }: SidebarProps) {
+export function Sidebar({ onToggleExpand }: SidebarProps) {
   const { pathname } = useLocation()
   const active = findNavItemByPath(pathname)
   const { activeKey, open, scheduleClose } = useHoverIntent(140)
