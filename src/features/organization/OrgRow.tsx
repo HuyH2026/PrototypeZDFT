@@ -27,10 +27,10 @@ export function OrgRow({ org }: { org: Org }) {
       </div>
 
       {/* Resolution rate */}
-      <p className="text-muted text-sm leading-5 whitespace-nowrap">n/a</p>
+      <p className="text-ink-muted text-sm leading-5 whitespace-nowrap">n/a</p>
 
       {/* Overflow menu */}
-      <div className="text-muted text-xl leading-5 text-center">⋮</div>
+      <div className="text-ink-muted text-xl leading-5 text-center">⋮</div>
     </div>
   )
 }

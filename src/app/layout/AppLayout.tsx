@@ -8,7 +8,6 @@ import { TopBar } from './TopBar'
 
 export function AppLayout() {
   const [isExpanded, setIsExpanded] = useState(false)
-  const [selectedSub, setSelectedSub] = useState<Record<string, string>>({ Insights: 'AI Performances' })
   const location = useLocation()
 
   const active = findNavItemByPath(location.pathname)
@@ -22,8 +21,6 @@ export function AppLayout() {
           {isExpanded ? (
             <ExpandedSidebar
               activeLabel={activeLabel}
-              selectedSub={selectedSub}
-              onSelectSub={(item, sub) => setSelectedSub((prev) => ({ ...prev, [item]: sub }))}
               onCollapse={() => setIsExpanded(false)}
             />
           ) : (

@@ -2,7 +2,7 @@ import { OrgSwitcher } from './OrgSwitcher'
 
 export function TopBar() {
   return (
-    <div className="flex items-center justify-between h-[55px] bg-[#f1efed] border-b border-surface-border px-4">
+    <div className="flex items-center justify-between h-[55px] bg-app-backdrop border-b border-surface-border px-4">
       {/* Left: OrgSwitcher */}
       <div className="flex items-center">
         <OrgSwitcher />

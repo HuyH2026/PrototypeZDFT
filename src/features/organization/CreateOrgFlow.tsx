@@ -45,7 +45,7 @@ export function CreateOrgFlow() {
           {hasSelection && (
             <p className="absolute right-60 top-1/2 -translate-y-1/2 font-semibold text-ink text-sm leading-5">
               <span>{count} </span>
-              <span className="font-normal text-muted">
+              <span className="font-normal text-ink-muted">
                 {count === 1 ? 'channel selected' : 'channels selected'}
               </span>
             </p>
@@ -55,7 +55,7 @@ export function CreateOrgFlow() {
           <div className="absolute right-6 top-1/2 -translate-y-1/2 flex gap-2.5 items-center">
             <button
               onClick={handleClose}
-              className="h-10 px-4 py-2.5 rounded-full border border-muted flex items-center justify-center cursor-pointer outline-none"
+              className="h-10 px-4 py-2.5 rounded-full border border-surface-border flex items-center justify-center cursor-pointer outline-none"
             >
               <span className="font-semibold text-ink text-sm leading-5">Close</span>
             </button>
@@ -85,7 +85,7 @@ export function CreateOrgFlow() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Give your AI Org a name"
-              className="w-full h-[42px] px-3 bg-white rounded-lg border border-surface-border outline-none focus:border-ink text-ink text-sm placeholder:text-muted"
+              className="w-full h-[42px] px-3 bg-white rounded-lg border border-surface-border outline-none focus:border-ink text-ink text-sm placeholder:text-ink-muted"
             />
           </div>
 

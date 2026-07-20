@@ -1,11 +1,9 @@
 import { useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import { PRIMARY_NAV, SECONDARY_NAV } from '@/app/nav-config'
 
 type ExpandedSidebarProps = {
   activeLabel: string
-  selectedSub: Record<string, string>
-  onSelectSub: (item: string, sub: string) => void
   onCollapse: () => void
 }
 
@@ -13,9 +11,10 @@ function kebab(s: string): string {
   return s.toLowerCase().replace(/\s+/g, '-')
 }
 
-export function ExpandedSidebar({ activeLabel, selectedSub, onSelectSub, onCollapse }: ExpandedSidebarProps) {
+export function ExpandedSidebar({ activeLabel, onCollapse }: ExpandedSidebarProps) {
   const [hoveredRow, setHoveredRow] = useState<string | null>(null)
   const [hoveredSub, setHoveredSub] = useState<string | null>(null)
+  const { pathname } = useLocation()
 
   const renderSection = (items: typeof PRIMARY_NAV, startTop: number) => {
     const activeIdx = items.findIndex((item) => item.label === activeLabel)
@@ -90,13 +89,13 @@ export function ExpandedSidebar({ activeLabel, selectedSub, onSelectSub, onColla
               style={{ top: top + 32 }}
             >
               {activeSub.map((subItem) => {
-                const selected = (selectedSub[item.label] || activeSub[0]) === subItem
+                const subPath = `${item.path}/${kebab(subItem)}`
+                const selected = pathname === subPath || (pathname === item.path && subItem === activeSub[0])
                 const subHovered = hoveredSub === `${item.label}:${subItem}` && !selected
                 return (
                   <Link
                     key={subItem}
-                    to={`${item.path}/${kebab(subItem)}`}
-                    onClick={() => onSelectSub(item.label, subItem)}
+                    to={subPath}
                     onMouseEnter={() => setHoveredSub(`${item.label}:${subItem}`)}
                     onMouseLeave={() =>
                       setHoveredSub((prev) => (prev === `${item.label}:${subItem}` ? null : prev))
