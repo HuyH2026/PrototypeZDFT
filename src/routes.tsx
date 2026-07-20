@@ -5,6 +5,7 @@ import { InsightsScreen } from '@/features/insights/InsightsScreen'
 import { AiPerformancesView } from '@/features/insights/AiPerformancesView'
 import { CxJourneyView } from '@/features/insights/CxJourneyView'
 import { OrganizationScreen } from '@/features/organization/OrganizationScreen'
+import { CreateOrgFlow } from '@/features/organization/CreateOrgFlow'
 import { PlaceholderScreen } from '@/features/_placeholder/PlaceholderScreen'
 import { NAV_ITEMS } from '@/app/nav-config'
 
@@ -30,6 +31,7 @@ export const routes: RouteObject[] = [
         ],
       },
       { path: 'organization', element: <OrganizationScreen /> },
+      { path: 'organization/new', element: <CreateOrgFlow /> },
       ...placeholderRoutes.map((r) => ({ ...r, path: r.path!.replace(/^\//, '') })),
     ],
   },
