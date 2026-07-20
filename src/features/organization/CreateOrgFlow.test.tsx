@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import { routes } from '@/routes'
@@ -26,8 +26,11 @@ describe('CreateOrgFlow', () => {
 
     await user.click(screen.getByRole('button', { name: /save/i }))
 
-    // Wait for navigation back to organization screen and verify Acme appears
+    // Wait for navigation back to the organization dashboard, then verify the
+    // new org is listed in the dashboard itself (not merely present somewhere
+    // on the page such as the top-bar org switcher).
     await screen.findByRole('heading', { name: /organization/i })
-    expect(screen.getAllByText('Acme').length).toBeGreaterThan(0)
+    const dashboard = screen.getByTestId('screen-organization')
+    expect(within(dashboard).getByText('Acme')).toBeInTheDocument()
   })
 })
