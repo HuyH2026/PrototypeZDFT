@@ -2,6 +2,8 @@ import type { RouteObject } from 'react-router'
 import { AppLayout } from '@/app/layout/AppLayout'
 import { HomeScreen } from '@/features/home/HomeScreen'
 import { InsightsScreen } from '@/features/insights/InsightsScreen'
+import { AiPerformancesView } from '@/features/insights/AiPerformancesView'
+import { CxJourneyView } from '@/features/insights/CxJourneyView'
 import { OrganizationScreen } from '@/features/organization/OrganizationScreen'
 import { PlaceholderScreen } from '@/features/_placeholder/PlaceholderScreen'
 import { NAV_ITEMS } from '@/app/nav-config'
@@ -18,7 +20,15 @@ export const routes: RouteObject[] = [
     element: <AppLayout />,
     children: [
       { index: true, element: <HomeScreen /> },
-      { path: 'insights', element: <InsightsScreen /> },
+      {
+        path: 'insights',
+        element: <InsightsScreen />,
+        children: [
+          { index: true, element: <AiPerformancesView /> },
+          { path: 'cx-journey', element: <CxJourneyView /> },
+          { path: 'ai-performances', element: <AiPerformancesView /> },
+        ],
+      },
       { path: 'organization', element: <OrganizationScreen /> },
       ...placeholderRoutes.map((r) => ({ ...r, path: r.path!.replace(/^\//, '') })),
     ],
