@@ -7,3 +7,4 @@ Task 1: complete (commits ed61f4c..3482424, review clean — 2 reviewer "Critica
 Task 2: complete (commits 34628aa..7288edd, review clean — approved, verbatim port verified)
 Task 3: complete (commits d64925c..40f5c06, review clean — approved, prefix boundary logic verified)
 Task 4: complete (commits ed93df7..05bfd21, review clean — approved, routing URL-driven from NAV_ITEMS)
+Task 5: complete (commits 0e5ca23..3535d19, approved + 2 fixes applied: flyover flex-offset alignment, dead ternary removed). MINOR for final review: sidebar uses raw hex for hover/separator/flyover-border colors (#39434B, rgba(92,105,112,0.08), #e8eaec, #eae9e8, #0c0c0d) — no matching token exists yet; consider tokenizing hover states in a later polish pass.
