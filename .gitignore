@@ -26,3 +26,6 @@ vitest.config.js
 # Environment / secrets
 .env
 .env.local
+
+# design.md CLI scratch output (not source of truth)
+.design/

@@ -11,7 +11,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "design:lint": "design.md lint DESIGN.md",
+    "design:export": "design.md export --format css-tailwind DESIGN.md > .design/theme.generated.css"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "1.2.3",
@@ -50,6 +52,8 @@
     "motion": "12.23.24",
     "next-themes": "0.4.6",
     "react-day-picker": "8.10.1",
+    "react-dnd": "16.0.1",
+    "react-dnd-html5-backend": "16.0.1",
     "react-hook-form": "7.55.0",
     "react-resizable-panels": "2.1.7",
     "react-router": "7.13.0",
@@ -61,6 +65,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@google/design.md": "0.3.0",
     "@tailwindcss/vite": "4.1.12",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
