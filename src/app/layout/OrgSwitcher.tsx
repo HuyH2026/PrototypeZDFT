@@ -46,14 +46,14 @@ export function OrgSwitcher() {
       {isOpen && (
         <div
           role="menu"
-          className="absolute left-0 top-full mt-1 w-[200px] bg-white rounded-[4px] py-[4px] px-px z-[58] drop-shadow-[0px_16px_12px_rgba(10,13,14,0.16)]"
+          className="absolute left-0 top-full mt-1 w-[200px] bg-white rounded-[4px] py-1 px-px z-[58] drop-shadow-[0px_16px_12px_rgba(10,13,14,0.16)]"
           onMouseEnter={() => open('org-menu')}
           onMouseLeave={scheduleClose}
         >
           <div aria-hidden className="absolute border border-[#d8dcde] border-solid inset-0 pointer-events-none rounded-[4px]" />
 
           {/* Header label */}
-          <div className="flex gap-[8px] items-start pl-[12px] pr-[36px] py-[8px] w-full">
+          <div className="flex gap-2 items-start pl-3 pr-9 py-2 w-full">
             <div className="h-[20px] w-[16px] shrink-0" />
             <div className="font-semibold text-[#293239] text-[14px] tracking-[-0.154px] leading-[20px]">
               Organization
@@ -67,9 +67,9 @@ export function OrgSwitcher() {
               role="menuitem"
               aria-label={org.name}
               onClick={() => handleSelectOrg(org.name)}
-              className="flex gap-[8px] items-start pl-[12px] pr-[36px] py-[8px] w-full text-left rounded-[4px] transition-colors hover:bg-[#f5f6f7] cursor-pointer outline-none"
+              className="flex gap-2 items-start pl-3 pr-9 py-2 w-full text-left rounded-[4px] transition-colors hover:bg-[#f5f6f7] cursor-pointer outline-none"
             >
-              <div className="h-[20px] w-[16px] flex items-center justify-center py-[2px] shrink-0">
+              <div className="h-[20px] w-[16px] flex items-center justify-center py-0.5 shrink-0">
                 {currentOrg === org.name && (
                   <div className="relative size-[16px]">
                     <svg className="size-full" fill="none" viewBox="0 0 15 11">
@@ -90,7 +90,7 @@ export function OrgSwitcher() {
           ))}
 
           {/* Divider */}
-          <div className="py-[4px] w-full">
+          <div className="py-1 w-full">
             <div className="bg-[#e8eaec] h-px w-full" />
           </div>
 
@@ -99,9 +99,9 @@ export function OrgSwitcher() {
             role="menuitem"
             aria-label="Add organization"
             onClick={handleAddOrg}
-            className="flex gap-[8px] items-start pl-[12px] pr-[36px] py-[8px] w-full text-left rounded-[4px] transition-colors hover:bg-[#f5f6f7] cursor-pointer outline-none"
+            className="flex gap-2 items-start pl-3 pr-9 py-2 w-full text-left rounded-[4px] transition-colors hover:bg-[#f5f6f7] cursor-pointer outline-none"
           >
-            <div className="h-[20px] flex items-center justify-center py-[2px] shrink-0">
+            <div className="h-[20px] flex items-center justify-center py-0.5 shrink-0">
               <div className="relative size-[16px]">
                 <svg className="size-full" fill="none" viewBox="0 0 13 13">
                   <path

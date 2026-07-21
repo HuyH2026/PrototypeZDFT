@@ -135,7 +135,7 @@ export function Sidebar({ onToggleExpand }: SidebarProps) {
             <Link
               to={activeItem.path}
               className={`flex items-center pl-[11px] ${
-                activeItem.submenu.length > 0 ? 'mb-[12px]' : 'mb-0'
+                activeItem.submenu.length > 0 ? 'mb-3' : 'mb-0'
               }`}
             >
               <div className="w-[146px] text-[14px] font-semibold leading-[20px] tracking-[-0.154px] text-[#0c0c0d]">
@@ -145,12 +145,12 @@ export function Sidebar({ onToggleExpand }: SidebarProps) {
 
             {/* Submenu items */}
             {activeItem.submenu.length > 0 && (
-              <div className="flex flex-col gap-[4px] pb-[12px] pl-[7px]">
+              <div className="flex flex-col gap-1 pb-3 pl-[7px]">
                 {activeItem.submenu.map((subItem) => (
                   <Link
                     key={subItem}
                     to={`${activeItem.path}/${kebabCase(subItem)}`}
-                    className="flex items-center rounded-[4px] py-[7px] pl-[24px] pr-[10px] text-left transition-colors hover:bg-[rgba(100,104,100,0.08)]"
+                    className="flex items-center rounded-[4px] py-[7px] pl-6 pr-2.5 text-left transition-colors hover:bg-[rgba(100,104,100,0.08)]"
                   >
                     <span className="whitespace-nowrap text-[14px] leading-[20px] tracking-[-0.154px] text-ink">
                       {subItem}

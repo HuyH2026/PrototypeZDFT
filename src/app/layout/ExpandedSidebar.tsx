@@ -69,7 +69,7 @@ export function ExpandedSidebar({ activeLabel, onCollapse }: ExpandedSidebarProp
             to={item.path}
             onMouseEnter={() => setHoveredRow(item.label)}
             onMouseLeave={() => setHoveredRow((prev) => (prev === item.label ? null : prev))}
-            className="absolute left-[16px] w-[210px] h-[34px] flex items-center gap-[8px] z-10 no-underline"
+            className="absolute left-[16px] w-[210px] h-[34px] flex items-center gap-2 z-10 no-underline"
             style={{ top }}
             title={item.label}
             aria-label={item.label}
@@ -86,7 +86,7 @@ export function ExpandedSidebar({ activeLabel, onCollapse }: ExpandedSidebarProp
           {/* Inline submenu for the active item */}
           {activeWithSub && (
             <div
-              className="absolute left-[16px] flex flex-col gap-[4px] z-10"
+              className="absolute left-[16px] flex flex-col gap-1 z-10"
               style={{ top: top + 32 }}
             >
               {activeSub.map((subItem) => {
@@ -101,7 +101,7 @@ export function ExpandedSidebar({ activeLabel, onCollapse }: ExpandedSidebarProp
                     onMouseLeave={() =>
                       setHoveredSub((prev) => (prev === `${item.label}:${subItem}` ? null : prev))
                     }
-                    className={`flex items-center pl-[24px] pr-[10px] py-[7px] rounded-[4px] w-[203px] no-underline transition-colors ${
+                    className={`flex items-center pl-6 pr-2.5 py-[7px] rounded-[4px] w-[203px] no-underline transition-colors ${
                       selected
                         ? 'bg-[#2f3130]'
                         : subHovered
