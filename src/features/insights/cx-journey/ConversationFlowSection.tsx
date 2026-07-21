@@ -11,6 +11,7 @@ import { FilterRow } from './FilterRow'
 
 const NODE_W = 10
 const GAP = 26 // vertical gap between stacked bands in a column
+const MIN_H = 16 // floor for node/ribbon thickness so small flows stay visible
 const PAD = { top: 44, bottom: 18, left: 14, right: 26 }
 
 // Measure the container so the SVG fills it fluidly and only renders once it has
@@ -56,14 +57,17 @@ function buildLayout(width: number, height: number) {
 
   const xOf = (c: number) => innerLeft + (c * (innerRight - innerLeft - NODE_W)) / 3
 
+  // Floor node heights so small flows stay visible; the extra height a floored
+  // node gains is folded into the column total so centering stays correct.
+  const hOf = (amount: number) => Math.max(amount * scale, MIN_H)
+
   const placed: PlacedNode[] = nodes.map(() => ({ x: 0, y: 0, h: 0 }))
   for (const col of columns) {
     if (!col.length) continue
-    const sum = col.reduce((a, o) => a + o.n.amount, 0)
-    const colH = sum * scale + (col.length - 1) * GAP
+    const colH = col.reduce((a, o) => a + hOf(o.n.amount), 0) + (col.length - 1) * GAP
     let y = innerTop + (innerH - colH) / 2 // vertically center each column
     for (const { n, i } of col) {
-      const h = n.amount * scale
+      const h = hOf(n.amount)
       placed[i] = { x: xOf(n.col), y, h }
       y += h + GAP
     }
@@ -75,7 +79,7 @@ function buildLayout(width: number, height: number) {
   const ribbons = links.map((link) => {
     const s = placed[link.source]
     const t = placed[link.target]
-    const th = link.value * scale
+    const th = Math.max(link.value * scale, MIN_H)
     const x0 = s.x + NODE_W
     const x1 = t.x
     const ya0 = outCur[link.source]
