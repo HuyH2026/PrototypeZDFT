@@ -46,28 +46,41 @@ function buildLayout(width: number, height: number) {
 
   const columns = [0, 1, 2, 3].map((c) => nodes.map((n, i) => ({ n, i })).filter((o) => o.n.col === c))
 
-  // One scale across all columns so ribbon thickness is conserved. The tightest
-  // column (largest sum for its available height) sets it.
-  let scale = Infinity
-  for (const col of columns) {
-    if (!col.length) continue
-    const sum = col.reduce((a, o) => a + o.n.amount, 0)
-    scale = Math.min(scale, (innerH - (col.length - 1) * GAP) / sum)
+  // Each ribbon's thickness is floored so tiny flows stay visible. A node's
+  // height must then equal the larger of its incoming / outgoing floored ribbon
+  // totals, so every ribbon attaches flush to the bar (no over/underhang). We
+  // scale the raw amounts down until the tightest column fits, then apply the
+  // floor — solving for the scale so the floored result still fits.
+  const thOf = (value: number, scale: number) => Math.max(value * scale, MIN_H)
+  const nodeH = (i: number, scale: number) => {
+    const out = links.filter((l) => l.source === i).reduce((a, l) => a + thOf(l.value, scale), 0)
+    const inc = links.filter((l) => l.target === i).reduce((a, l) => a + thOf(l.value, scale), 0)
+    return Math.max(out, inc, MIN_H) // endpoints with no links still get a floor
   }
+  const colHeight = (col: { i: number }[], scale: number) =>
+    col.reduce((a, o) => a + nodeH(o.i, scale), 0) + (col.length - 1) * GAP
+
+  // Largest scale (biggest bars) such that no column overflows innerH. Binary
+  // search on scale: colHeight is monotonic in scale, so we can bisect.
+  let lo = 0
+  let hi = 0.01
+  for (let iter = 0; iter < 40; iter++) {
+    const mid = (lo + hi) / 2
+    const fits = columns.every((col) => !col.length || colHeight(col, mid) <= innerH)
+    if (fits) lo = mid
+    else hi = mid
+  }
+  const scale = lo
 
   const xOf = (c: number) => innerLeft + (c * (innerRight - innerLeft - NODE_W)) / 3
-
-  // Floor node heights so small flows stay visible; the extra height a floored
-  // node gains is folded into the column total so centering stays correct.
-  const hOf = (amount: number) => Math.max(amount * scale, MIN_H)
 
   const placed: PlacedNode[] = nodes.map(() => ({ x: 0, y: 0, h: 0 }))
   for (const col of columns) {
     if (!col.length) continue
-    const colH = col.reduce((a, o) => a + hOf(o.n.amount), 0) + (col.length - 1) * GAP
+    const colH = colHeight(col, scale)
     let y = innerTop + (innerH - colH) / 2 // vertically center each column
     for (const { n, i } of col) {
-      const h = hOf(n.amount)
+      const h = nodeH(i, scale)
       placed[i] = { x: xOf(n.col), y, h }
       y += h + GAP
     }
@@ -79,7 +92,7 @@ function buildLayout(width: number, height: number) {
   const ribbons = links.map((link) => {
     const s = placed[link.source]
     const t = placed[link.target]
-    const th = Math.max(link.value * scale, MIN_H)
+    const th = thOf(link.value, scale)
     const x0 = s.x + NODE_W
     const x1 = t.x
     const ya0 = outCur[link.source]
