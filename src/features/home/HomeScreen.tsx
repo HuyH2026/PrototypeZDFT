@@ -189,9 +189,6 @@ function AgentHealthCard({ data }: { data: LevelData }) {
               <span className="text-[12px] font-semibold" style={{ color: state.color }}>{state.label}</span>
             </span>
           </div>
-          <p className="mt-3 text-[12px] font-normal leading-4" style={{ color: MUTED }}>
-            Across 2 organizations and 6 channels.
-          </p>
           <div className="mt-3 -mx-0.5 h-[44px]">
             <Sparkline data={chart} color={state.color} gradientId="healthFill" />
           </div>
@@ -246,6 +243,20 @@ function NotificationsCard({ data }: { data: LevelData }) {
         })}
       </div>
     </Card>
+  )
+}
+
+// Slack logomark — lucide has no Slack icon, so this is a local inline SVG
+// (matching the codebase's inline-SVG convention). Rendered in Slack aubergine.
+// @ts-expect-error 6133 - unused function; consumed by Task 3
+function SlackGlyph({ size = 13 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 122.8 122.8" aria-hidden="true">
+      <path fill="#611f69" d="M25.8 77.6c0 7.1-5.8 12.9-12.9 12.9S0 84.7 0 77.6s5.8-12.9 12.9-12.9h12.9zM32.3 77.6c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9v32.3c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9z"/>
+      <path fill="#611f69" d="M45.2 25.8c-7.1 0-12.9-5.8-12.9-12.9S38.1 0 45.2 0s12.9 5.8 12.9 12.9v12.9zM45.2 32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H12.9C5.8 58.1 0 52.3 0 45.2s5.8-12.9 12.9-12.9z"/>
+      <path fill="#611f69" d="M97 45.2c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9-5.8 12.9-12.9 12.9H97zM90.5 45.2c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V12.9C64.7 5.8 70.5 0 77.6 0s12.9 5.8 12.9 12.9z"/>
+      <path fill="#611f69" d="M77.6 97c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9-12.9-5.8-12.9-12.9V97zM77.6 90.5c-7.1 0-12.9-5.8-12.9-12.9s5.8-12.9 12.9-12.9h32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9z"/>
+    </svg>
   )
 }
 
