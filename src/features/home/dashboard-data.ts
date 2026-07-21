@@ -119,6 +119,9 @@ export const DATA: Record<Level, LevelData> = {
     healthState: 'good',
     aiSummary: 'Agents are performing well. Resolution and CSAT are trending up, and escalations are down 1.2% — no action needed right now.',
     trend: [70, 74, 72, 80, 78, 86, 90, 88, 92, 94],
+    // NOTE: `share` here is the single source of aggregation weight. Each
+    // metric's byChannel[].share mirrors these values for the popover's
+    // "% of volume" label — keep the two in sync if you change a share.
     channelHealth: {
       messaging: { score: 97, share: 58, trend: [80, 82, 81, 86, 88, 90, 93, 94, 96, 97] },
       email: { score: 93, share: 24, trend: [72, 75, 74, 80, 79, 85, 88, 90, 91, 93] },

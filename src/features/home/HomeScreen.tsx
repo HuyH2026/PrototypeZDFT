@@ -202,12 +202,16 @@ function AgentHealthCard({ data }: { data: LevelData }) {
       <div className="mb-4 flex flex-wrap items-center gap-1.5">
         {CHANNEL_ORDER.map((key) => {
           const on = selected.has(key)
+          // The last remaining channel is locked (min one) — clicking it is a
+          // no-op; surface that to assistive tech rather than silently ignoring.
+          const locked = on && selected.size === 1
           const Icon = CHANNEL_FAMILY_ICON[key]
           return (
             <button
               key={key}
               role="checkbox"
               aria-checked={on}
+              aria-disabled={locked}
               aria-label={CHANNEL_LABEL[key]}
               onClick={() => toggle(key)}
               className="flex h-7 items-center gap-1.5 rounded-full border border-solid px-2.5 outline-none transition-colors"
