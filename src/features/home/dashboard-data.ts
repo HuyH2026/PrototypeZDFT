@@ -32,9 +32,17 @@ export type HealthMetric = {
   delta: string
   up: boolean
   good: boolean
+  // true when a rising value is good (resolution, CSAT); false when a falling
+  // value is good (escalations, avg handle time). Drives good/up after aggregation.
+  goodWhenUp: boolean
   // Per-channel breakdown, revealed when the metric tile is expanded.
   byChannel: MetricChannelDatum[]
 }
+
+// Per-channel-family health, so the agent-health card can re-scope to a subset
+// of channels. `share` is the % of total volume and the single source of the
+// volume weight used for all aggregation (header + metric tiles).
+export type ChannelHealth = { score: number; trend: number[]; share: number }
 
 export type LevelData = {
   score: number
@@ -42,6 +50,7 @@ export type LevelData = {
   // AI-generated one-line read on the current agent health (mock).
   aiSummary: string
   trend: number[]
+  channelHealth: Record<ChannelKey, ChannelHealth>
   metrics: HealthMetric[]
   notifications: { id: string; kind: 'studio' | 'billing' | 'error'; title: string; body: string; time: string }[]
   approvals: {
@@ -110,9 +119,15 @@ export const DATA: Record<Level, LevelData> = {
     healthState: 'good',
     aiSummary: 'Agents are performing well. Resolution and CSAT are trending up, and escalations are down 1.2% — no action needed right now.',
     trend: [70, 74, 72, 80, 78, 86, 90, 88, 92, 94],
+    channelHealth: {
+      messaging: { score: 97, share: 58, trend: [80, 82, 81, 86, 88, 90, 93, 94, 96, 97] },
+      email: { score: 93, share: 24, trend: [72, 75, 74, 80, 79, 85, 88, 90, 91, 93] },
+      voice: { score: 82, share: 14, trend: [60, 64, 62, 68, 66, 72, 76, 78, 80, 82] },
+      headless: { score: 95, share: 4, trend: [85, 88, 86, 90, 89, 92, 94, 93, 95, 95] },
+    },
     metrics: [
       {
-        key: 'res', label: 'Resolution rate', value: '82%', delta: '+3.1%', up: true, good: true,
+        key: 'res', label: 'Resolution rate', value: '82%', delta: '+3.1%', up: true, good: true, goodWhenUp: true,
         byChannel: [
           { key: 'messaging', label: 'Messaging', share: 58, value: '86%', delta: '+3.4%', up: true, good: true, barPct: 86 },
           { key: 'email', label: 'Email', share: 24, value: '79%', delta: '+1.8%', up: true, good: true, barPct: 79 },
@@ -121,7 +136,7 @@ export const DATA: Record<Level, LevelData> = {
         ],
       },
       {
-        key: 'csat', label: 'CSAT', value: '4.6', delta: '+0.2', up: true, good: true,
+        key: 'csat', label: 'CSAT', value: '4.6', delta: '+0.2', up: true, good: true, goodWhenUp: true,
         byChannel: [
           { key: 'messaging', label: 'Messaging', share: 58, value: '4.7', delta: '+0.2', up: true, good: true, barPct: 94 },
           { key: 'email', label: 'Email', share: 24, value: '4.5', delta: '+0.1', up: true, good: true, barPct: 90 },
@@ -130,7 +145,7 @@ export const DATA: Record<Level, LevelData> = {
         ],
       },
       {
-        key: 'esc', label: 'Escalations', value: '6.4%', delta: '-1.2%', up: false, good: true,
+        key: 'esc', label: 'Escalations', value: '6.4%', delta: '-1.2%', up: false, good: true, goodWhenUp: false,
         byChannel: [
           { key: 'messaging', label: 'Messaging', share: 58, value: '4.8%', delta: '-1.6%', up: false, good: true, barPct: 48 },
           { key: 'email', label: 'Email', share: 24, value: '7.1%', delta: '-0.9%', up: false, good: true, barPct: 71 },
@@ -139,7 +154,7 @@ export const DATA: Record<Level, LevelData> = {
         ],
       },
       {
-        key: 'aht', label: 'Avg handle time', value: '1m 48s', delta: '-9s', up: false, good: true,
+        key: 'aht', label: 'Avg handle time', value: '1m 48s', delta: '-9s', up: false, good: true, goodWhenUp: false,
         byChannel: [
           { key: 'messaging', label: 'Messaging', share: 58, value: '1m 32s', delta: '-11s', up: false, good: true, barPct: 61 },
           { key: 'email', label: 'Email', share: 24, value: '2m 24s', delta: '-6s', up: false, good: true, barPct: 96 },
