@@ -37,14 +37,65 @@ describe('HomeScreen', () => {
     expect(screen.getByText('Notifications')).toBeInTheDocument()
   })
 
-  it('switches data when toggling to the Organization level', async () => {
+  it('shows the new knowledge content widget with coverage and items', () => {
+    render(<HomeScreen />)
+    expect(screen.getByText('New knowledge content')).toBeInTheDocument()
+    expect(screen.getByText(/12,470 tickets covered/i)).toBeInTheDocument()
+    expect(screen.getByText(/how to convert a traditional ira to a roth ira/i)).toBeInTheDocument()
+  })
+
+  it('shows newly generated test playlists in the test coverage widget', () => {
+    render(<HomeScreen />)
+    expect(screen.getByText(/newly generated playlists/i)).toBeInTheDocument()
+    expect(screen.getByText('Regression test')).toBeInTheDocument()
+    expect(screen.getByText('Tone of Voice test')).toBeInTheDocument()
+  })
+
+  it('shows the knowledge gaps hero stats', () => {
+    render(<HomeScreen />)
+    expect(screen.getByText('58')).toBeInTheDocument()
+    expect(screen.getByText(/articles generated for identified gaps/i)).toBeInTheDocument()
+    expect(screen.getByText('11,004')).toBeInTheDocument()
+    expect(screen.getByText(/potential ticket coverage/i)).toBeInTheDocument()
+  })
+
+  it('renders the platform-level data (no org-level toggle)', () => {
+    render(<HomeScreen />)
+    // Home is always platform-level; the health state reads "Good".
+    expect(screen.getByText('Good')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /^organization$/i })).not.toBeInTheDocument()
+  })
+
+  it('shows the AI short summary in the agent health card', () => {
+    render(<HomeScreen />)
+    expect(screen.getByText('AI summary')).toBeInTheDocument()
+    expect(screen.getByText(/no action needed right now/i)).toBeInTheDocument()
+  })
+
+  it('expands the resolution rate into a per-channel breakdown', async () => {
     const user = userEvent.setup()
     render(<HomeScreen />)
-    // Platform health label is "Healthy"; Organization is "Good".
-    expect(screen.getByText('Healthy')).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: /^organization$/i }))
-    expect(screen.getByText('Good')).toBeInTheDocument()
-    expect(screen.queryByText('Healthy')).not.toBeInTheDocument()
+    // Breakdown is collapsed by default.
+    expect(screen.queryByText(/resolution rate by channel/i)).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /resolution rate/i }))
+    expect(screen.getByText(/resolution rate by channel/i)).toBeInTheDocument()
+    for (const family of ['Messaging', 'Email', 'Voice', 'Headless']) {
+      expect(screen.getByText(family)).toBeInTheDocument()
+    }
+  })
+
+  it('shows a finished A/B test approval with the winning variant', () => {
+    render(<HomeScreen />)
+    expect(screen.getByText(/a\/b test finished/i)).toBeInTheDocument()
+    expect(screen.getByText('Winner')).toBeInTheDocument()
+    // Approve CTA publishes the declared winner.
+    expect(screen.getByRole('button', { name: /publish variant a/i })).toBeInTheDocument()
+  })
+
+  it('attributes a self-improving plan approval to a named co-worker', () => {
+    render(<HomeScreen />)
+    expect(screen.getByText(/sunny created a self-improving plan/i)).toBeInTheDocument()
+    expect(screen.getByText(/sunny kong · support lead/i)).toBeInTheDocument()
   })
 
   it('enters edit mode via Customize', async () => {
@@ -70,6 +121,6 @@ describe('HomeScreen', () => {
     render(<HomeScreen />)
     // The duplicate is collapsed to a single instance (one heading, not two).
     expect(screen.getAllByText('Overall agent health')).toHaveLength(1)
-    expect(screen.getByText('QA coverage')).toBeInTheDocument()
+    expect(screen.getByText('Test coverage')).toBeInTheDocument()
   })
 })
