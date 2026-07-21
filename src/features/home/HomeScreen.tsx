@@ -197,37 +197,45 @@ function AgentHealthCard({ data }: { data: LevelData }) {
 
   return (
     <Card>
-      <CardHeader icon={<Activity size={18} color={INK} strokeWidth={2} />} title="Overall agent health" action={<LinkButton label="Open Insights" />} />
-      {/* Channel filter — the whole card re-scopes to the selected channels. */}
-      <div className="mb-4 flex flex-wrap items-center gap-1.5">
-        {CHANNEL_ORDER.map((key) => {
-          const on = selected.has(key)
-          // The last remaining channel is locked (min one) — clicking it is a
-          // no-op; surface that to assistive tech rather than silently ignoring.
-          const locked = on && selected.size === 1
-          const Icon = CHANNEL_FAMILY_ICON[key]
-          return (
-            <button
-              key={key}
-              role="checkbox"
-              aria-checked={on}
-              aria-disabled={locked}
-              aria-label={CHANNEL_LABEL[key]}
-              onClick={() => toggle(key)}
-              className="flex h-7 items-center gap-1.5 rounded-full border border-solid px-2.5 outline-none transition-colors"
-              style={{
-                borderColor: on ? INK : BORDER,
-                backgroundColor: on ? `${INK}0d` : '#fff',
-              }}
-            >
-              <Icon size={13} color={on ? INK : MUTED} />
-              <span className="text-[12px] font-semibold" style={{ color: on ? INK : MUTED }}>
-                {CHANNEL_LABEL[key]}
-              </span>
-            </button>
-          )
-        })}
-      </div>
+      <CardHeader
+        icon={<Activity size={18} color={INK} strokeWidth={2} />}
+        title="Overall agent health"
+        action={
+          <div className="flex items-center gap-3">
+            {/* Channel filter — the whole card re-scopes to the selected channels. */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              {CHANNEL_ORDER.map((key) => {
+                const on = selected.has(key)
+                // The last remaining channel is locked (min one) — clicking it is a
+                // no-op; surface that to assistive tech rather than silently ignoring.
+                const locked = on && selected.size === 1
+                const Icon = CHANNEL_FAMILY_ICON[key]
+                return (
+                  <button
+                    key={key}
+                    role="checkbox"
+                    aria-checked={on}
+                    aria-disabled={locked}
+                    aria-label={CHANNEL_LABEL[key]}
+                    onClick={() => toggle(key)}
+                    className="flex h-7 items-center gap-1.5 rounded-full border border-solid px-2.5 outline-none transition-colors"
+                    style={{
+                      borderColor: on ? INK : BORDER,
+                      backgroundColor: on ? `${INK}0d` : '#fff',
+                    }}
+                  >
+                    <Icon size={13} color={on ? INK : MUTED} />
+                    <span className="text-[12px] font-semibold" style={{ color: on ? INK : MUTED }}>
+                      {CHANNEL_LABEL[key]}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+            <LinkButton label="Open Insights" />
+          </div>
+        }
+      />
       <div className="flex items-stretch gap-6">
         <div className="flex w-[168px] shrink-0 flex-col justify-center">
           <div className="flex items-end gap-1.5">
