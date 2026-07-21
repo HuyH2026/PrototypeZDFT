@@ -19,7 +19,13 @@ export const FLOW_HEADER: FlowStat[] = [
   { label: 'Resolved', value: '453,000', pct: '90%' },
 ]
 
-export type FlowNode = { name: string; value: string; pct?: string; color: string }
+// Dark teal used for the endpoint node bars (total conversations / total cost).
+export const DEEP_TEAL = '#0e6b78'
+
+// `col` is the horizontal column (0-3); `amount` is the numeric weight used to
+// size the node/ribbon heights (the display string lives in `value`). Node
+// order within a column is the array order below (top → bottom).
+export type FlowNode = { name: string; value: string; pct?: string; color: string; col: number; amount: number }
 export type FlowLink = { source: number; target: number; value: number; color: string }
 
 // Node indices:
@@ -27,24 +33,25 @@ export type FlowLink = { source: number; target: number; value: number; color: s
 // 4 AI resolved | 5 Human resolved | 6 Not resolved | 7 Total cost
 export const FLOW_SANKEY: { nodes: FlowNode[]; links: FlowLink[] } = {
   nodes: [
-    { name: 'Total conversations', value: '550,000', pct: '100%', color: TEAL },
-    { name: 'AI handled', value: '234,800', pct: '55%', color: BLUE },
-    { name: 'Human handled', value: '221,720', pct: '35%', color: BLUE },
-    { name: 'Not handled', value: '55,000', pct: '10%', color: GREY },
-    { name: 'AI resolved', value: '205,000', pct: '40%', color: TEAL },
-    { name: 'Human resolved', value: '218,000', pct: '50%', color: AMBER },
-    { name: 'Not resolved', value: '13,475', pct: '10%', color: RED },
-    { name: 'Total cost', value: '$2.3M', color: TEAL },
+    { name: 'Total conversations', value: '550,000', pct: '100%', color: DEEP_TEAL, col: 0, amount: 511520 },
+    { name: 'AI handled', value: '234,800', pct: '55%', color: TEAL, col: 1, amount: 234800 },
+    { name: 'Human handled', value: '221,720', pct: '35%', color: AMBER, col: 1, amount: 221720 },
+    { name: 'Not handled', value: '55,000', pct: '10%', color: GREY, col: 1, amount: 55000 },
+    { name: 'AI resolved', value: '205,000', pct: '40%', color: TEAL, col: 2, amount: 205000 },
+    { name: 'Human resolved', value: '218,000', pct: '50%', color: AMBER, col: 2, amount: 218000 },
+    { name: 'Not resolved', value: '13,475', pct: '10%', color: RED, col: 2, amount: 13475 },
+    { name: 'Total cost', value: '$2.3M', color: DEEP_TEAL, col: 3, amount: 423000 },
   ],
+  // Ribbons are colored by their destination node so each band reads as one flow.
   links: [
-    { source: 0, target: 1, value: 234800, color: BLUE },
-    { source: 0, target: 2, value: 221720, color: BLUE },
+    { source: 0, target: 1, value: 234800, color: TEAL },
+    { source: 0, target: 2, value: 221720, color: AMBER },
     { source: 0, target: 3, value: 55000, color: GREY },
     { source: 1, target: 4, value: 205000, color: TEAL },
     { source: 2, target: 5, value: 218000, color: AMBER },
     { source: 1, target: 6, value: 13475, color: RED },
     { source: 4, target: 7, value: 205000, color: TEAL },
-    { source: 5, target: 7, value: 218000, color: TEAL },
+    { source: 5, target: 7, value: 218000, color: AMBER },
   ],
 }
 
