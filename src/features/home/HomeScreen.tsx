@@ -189,9 +189,6 @@ function AgentHealthCard({ data }: { data: LevelData }) {
               <span className="text-[12px] font-semibold" style={{ color: state.color }}>{state.label}</span>
             </span>
           </div>
-          <p className="mt-3 text-[12px] font-normal leading-4" style={{ color: MUTED }}>
-            Across 2 organizations and 6 channels.
-          </p>
           <div className="mt-3 -mx-0.5 h-[44px]">
             <Sparkline data={chart} color={state.color} gradientId="healthFill" />
           </div>
@@ -249,6 +246,19 @@ function NotificationsCard({ data }: { data: LevelData }) {
   )
 }
 
+// Slack logomark — lucide has no Slack icon, so this is a local inline SVG
+// (matching the codebase's inline-SVG convention). Rendered in Slack aubergine.
+function SlackGlyph({ size = 13 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 122.8 122.8" aria-hidden="true">
+      <path fill="#611f69" d="M25.8 77.6c0 7.1-5.8 12.9-12.9 12.9S0 84.7 0 77.6s5.8-12.9 12.9-12.9h12.9zM32.3 77.6c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9v32.3c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9z"/>
+      <path fill="#611f69" d="M45.2 25.8c-7.1 0-12.9-5.8-12.9-12.9S38.1 0 45.2 0s12.9 5.8 12.9 12.9v12.9zM45.2 32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H12.9C5.8 58.1 0 52.3 0 45.2s5.8-12.9 12.9-12.9z"/>
+      <path fill="#611f69" d="M97 45.2c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9-5.8 12.9-12.9 12.9H97zM90.5 45.2c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V12.9C64.7 5.8 70.5 0 77.6 0s12.9 5.8 12.9 12.9z"/>
+      <path fill="#611f69" d="M77.6 97c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9-12.9-5.8-12.9-12.9V97zM77.6 90.5c-7.1 0-12.9-5.8-12.9-12.9s5.8-12.9 12.9-12.9h32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9z"/>
+    </svg>
+  )
+}
+
 function ApprovalsCard({ data }: { data: LevelData }) {
   return (
     <Card>
@@ -296,16 +306,40 @@ function ApprovalsCard({ data }: { data: LevelData }) {
                 </div>
               </div>
             )}
+            {a.slack && (
+              <div className="mt-2.5 rounded-lg border border-solid bg-white p-2.5" style={{ borderColor: BORDER }}>
+                <div className="mb-2 flex items-center gap-1.5">
+                  <SlackGlyph size={13} />
+                  <span className="text-[11px] font-normal" style={{ color: MUTED }}>via Slack {a.slack.channel}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className="flex size-[18px] shrink-0 items-center justify-center rounded-md text-[9px] font-semibold text-white"
+                    style={{ backgroundColor: '#611f69' }}
+                  >
+                    {a.slack.author.split(' ').map((w) => w[0]).slice(0, 2).join('')}
+                  </span>
+                  <span className="text-[12px] font-semibold" style={{ color: INK }}>{a.slack.author}</span>
+                  {a.slack.role && (
+                    <span className="text-[11px] font-normal" style={{ color: MUTED }}>{a.slack.role}</span>
+                  )}
+                  <span className="text-[11px] font-normal" style={{ color: MUTED }}>· {a.slack.time}</span>
+                </div>
+                <p className="mt-1 pl-[24px] text-[12px] font-normal leading-[17px]" style={{ color: INK_SOFT }}>
+                  {a.slack.message}
+                </p>
+              </div>
+            )}
             <div className="mt-2.5 flex items-center gap-2">
               <span className="flex h-5 items-center gap-1 rounded-full px-2" style={{ backgroundColor: `${GREEN}18` }}>
                 <TrendingUp size={12} color={GREEN} />
                 <span className="text-[11px] font-semibold" style={{ color: GREEN }}>{a.impact}</span>
               </span>
-              {a.person ? (
+              {!a.slack && (a.person ? (
                 <span className="text-[11px] font-normal" style={{ color: MUTED }}>{a.person.name} · {a.person.role}</span>
               ) : (
                 <span className="text-[11px] font-normal" style={{ color: MUTED }}>by {a.author}</span>
-              )}
+              ))}
             </div>
             <div className="mt-3 flex items-center gap-2">
               <button className="flex h-[34px] flex-1 items-center justify-center gap-1.5 rounded-full outline-none" style={{ backgroundColor: INK }}>
