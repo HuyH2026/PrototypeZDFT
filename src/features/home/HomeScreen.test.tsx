@@ -1,9 +1,31 @@
 import { describe, it, expect, afterEach, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HomeScreen } from './HomeScreen'
 
 const STORAGE_KEY = 'home-dashboard-layout-v2'
+
+// All widget titles, used for order-capturing helper.
+const WIDGET_TITLES = [
+  'Overall agent health',
+  'Test coverage',
+  'Knowledge gaps',
+  'Needs your approval',
+  'Notifications',
+  'Cost & usage',
+  'Recent activity',
+  'Top intents',
+  'Improved policies',
+  'New knowledge content',
+]
+
+// Captures the current ordered list of widget-card headings from the DOM.
+function widgetOrder(): string[] {
+  // Widget titles render in <p> tags with specific styling; collect them in DOM order.
+  return Array.from(document.querySelectorAll('p'))
+    .map((el) => el.textContent ?? '')
+    .filter((t) => WIDGET_TITLES.includes(t))
+}
 
 // Install a minimal in-memory localStorage seeded with `stored`, so we can
 // exercise loadLayout (jsdom does not provide localStorage by default).
@@ -37,14 +59,65 @@ describe('HomeScreen', () => {
     expect(screen.getByText('Notifications')).toBeInTheDocument()
   })
 
-  it('switches data when toggling to the Organization level', async () => {
+  it('shows the new knowledge content widget with coverage and items', () => {
+    render(<HomeScreen />)
+    expect(screen.getByText('New knowledge content')).toBeInTheDocument()
+    expect(screen.getByText(/12,470 tickets covered/i)).toBeInTheDocument()
+    expect(screen.getByText(/how to convert a traditional ira to a roth ira/i)).toBeInTheDocument()
+  })
+
+  it('shows newly generated test playlists in the test coverage widget', () => {
+    render(<HomeScreen />)
+    expect(screen.getByText(/newly generated playlists/i)).toBeInTheDocument()
+    expect(screen.getByText('Regression test')).toBeInTheDocument()
+    expect(screen.getByText('Tone of Voice test')).toBeInTheDocument()
+  })
+
+  it('shows the knowledge gaps hero stats', () => {
+    render(<HomeScreen />)
+    expect(screen.getByText('58')).toBeInTheDocument()
+    expect(screen.getByText(/articles generated for identified gaps/i)).toBeInTheDocument()
+    expect(screen.getByText('11,004')).toBeInTheDocument()
+    expect(screen.getByText(/potential ticket coverage/i)).toBeInTheDocument()
+  })
+
+  it('renders the platform-level data (no org-level toggle)', () => {
+    render(<HomeScreen />)
+    // Home is always platform-level; the health state reads "Good".
+    expect(screen.getByText('Good')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /^organization$/i })).not.toBeInTheDocument()
+  })
+
+  it('shows the AI short summary in the agent health card', () => {
+    render(<HomeScreen />)
+    expect(screen.getByText('AI summary')).toBeInTheDocument()
+    expect(screen.getByText(/no action needed right now/i)).toBeInTheDocument()
+  })
+
+  it('expands the resolution rate into a per-channel breakdown', async () => {
     const user = userEvent.setup()
     render(<HomeScreen />)
-    // Platform health label is "Healthy"; Organization is "Good".
-    expect(screen.getByText('Healthy')).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: /^organization$/i }))
-    expect(screen.getByText('Good')).toBeInTheDocument()
-    expect(screen.queryByText('Healthy')).not.toBeInTheDocument()
+    // Breakdown is collapsed by default.
+    expect(screen.queryByText(/resolution rate by channel/i)).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /resolution rate/i }))
+    expect(screen.getByText(/resolution rate by channel/i)).toBeInTheDocument()
+    for (const family of ['Messaging', 'Email', 'Voice', 'Headless']) {
+      expect(screen.getByText(family)).toBeInTheDocument()
+    }
+  })
+
+  it('shows a finished A/B test approval with the winning variant', () => {
+    render(<HomeScreen />)
+    expect(screen.getByText(/a\/b test finished/i)).toBeInTheDocument()
+    expect(screen.getByText('Winner')).toBeInTheDocument()
+    // Approve CTA publishes the declared winner.
+    expect(screen.getByRole('button', { name: /publish variant a/i })).toBeInTheDocument()
+  })
+
+  it('attributes a self-improving plan approval to a named co-worker', () => {
+    render(<HomeScreen />)
+    expect(screen.getByText(/sunny created a self-improving plan/i)).toBeInTheDocument()
+    expect(screen.getByText(/sunny kong · support lead/i)).toBeInTheDocument()
   })
 
   it('enters edit mode via Customize', async () => {
@@ -70,6 +143,64 @@ describe('HomeScreen', () => {
     render(<HomeScreen />)
     // The duplicate is collapsed to a single instance (one heading, not two).
     expect(screen.getAllByText('Overall agent health')).toHaveLength(1)
-    expect(screen.getByText('QA coverage')).toBeInTheDocument()
+    expect(screen.getByText('Test coverage')).toBeInTheDocument()
+  })
+
+  it('opens the generate panel from the header', async () => {
+    const user = userEvent.setup()
+    render(<HomeScreen />)
+    expect(screen.queryByTestId('generate-home-panel')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /generate/i }))
+    expect(screen.getByTestId('generate-home-panel')).toBeInTheDocument()
+  })
+
+  it('generates a preview and applies it to the dashboard', async () => {
+    const user = userEvent.setup()
+    render(<HomeScreen />)
+    const before = widgetOrder()
+    await user.click(screen.getByRole('button', { name: /generate/i }))
+    const panel = screen.getByTestId('generate-home-panel')
+    // Answer Q1 + Q2 to enable generation.
+    await user.click(within(panel).getByRole('button', { name: /quality lead/i }))
+    await user.click(within(panel).getByRole('button', { name: /quality & testing/i }))
+    await user.click(within(panel).getByRole('button', { name: /generate my home/i }))
+    // Preview badge appears and Apply is offered.
+    expect(screen.getByText(/preview/i)).toBeInTheDocument()
+    await user.click(within(panel).getByRole('button', { name: /^apply$/i }))
+    // Panel closes; dashboard still renders widgets.
+    expect(screen.queryByTestId('generate-home-panel')).not.toBeInTheDocument()
+    const after = widgetOrder()
+    expect(after.length).toBeGreaterThan(0) // Sanity check: widgets rendered
+    expect(after).not.toEqual(before) // Order changed — proves Apply committed the new layout
+  })
+
+  it('discards a preview without changing the saved dashboard', async () => {
+    const user = userEvent.setup()
+    render(<HomeScreen />)
+    const before = widgetOrder()
+    await user.click(screen.getByRole('button', { name: /generate/i }))
+    const panel = screen.getByTestId('generate-home-panel')
+    await user.click(within(panel).getByRole('button', { name: /executive/i }))
+    await user.click(within(panel).getByRole('button', { name: /cost & usage/i }))
+    await user.click(within(panel).getByRole('button', { name: /generate my home/i }))
+    await user.click(within(panel).getByRole('button', { name: /discard/i }))
+    expect(screen.queryByTestId('generate-home-panel')).not.toBeInTheDocument()
+    const after = widgetOrder()
+    expect(after.length).toBeGreaterThan(0) // Sanity check: widgets rendered
+    expect(after).toEqual(before) // Order unchanged — proves Discard is lossless
+  })
+
+  it('hides Customize while a generate preview is active', async () => {
+    const user = userEvent.setup()
+    render(<HomeScreen />)
+    // Customize is available before previewing.
+    expect(screen.getByRole('button', { name: /customize/i })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /generate/i }))
+    const panel = screen.getByTestId('generate-home-panel')
+    await user.click(within(panel).getByRole('button', { name: /quality lead/i }))
+    await user.click(within(panel).getByRole('button', { name: /quality & testing/i }))
+    await user.click(within(panel).getByRole('button', { name: /generate my home/i }))
+    // Preview active → Customize must be gone (prevents editing the real layout under a preview).
+    expect(screen.queryByRole('button', { name: /customize/i })).not.toBeInTheDocument()
   })
 })

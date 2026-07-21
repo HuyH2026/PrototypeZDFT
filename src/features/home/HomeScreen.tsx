@@ -1,16 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
-  Activity, AlertTriangle, BadgeCheck, Bell, BookOpen, Check, ChevronRight,
-  CircleAlert, Clock, CreditCard, FlaskConical, GripVertical, LayoutGrid,
-  ListChecks, Pencil, Plus, Sparkles, TrendingDown, TrendingUp, X,
+  Activity, AlertTriangle, BadgeCheck, Bell, BookOpen, Check, ChevronDown, ChevronRight,
+  CircleAlert, Clock, Code, CreditCard, FileText, FlaskConical, GripVertical, LayoutGrid,
+  ListChecks, Mail, MessageSquare, Pencil, Phone, Plus, Sparkles, TrendingDown, TrendingUp, X, Zap,
+  type LucideIcon,
 } from 'lucide-react'
 import { Area, AreaChart } from 'recharts'
 import { DndProvider, useDrag, useDrop } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import {
-  type Level, type LevelData, type WidgetId, type ColumnKey, type Layout,
+  type LevelData, type HealthState, type ChannelResolution,
+  type WidgetId, type ColumnKey, type Layout,
   DATA, DEFAULT_LAYOUT,
 } from './dashboard-data'
+import { GenerateHomePanel } from './GenerateHomePanel'
 
 // Palette — one-off dashboard hues that have no design token yet (kept inline,
 // matching the prototype). Ink/muted map to the shared token values.
@@ -90,8 +93,58 @@ function LinkButton({ label }: { label: string }) {
 }
 
 // --- Cards ------------------------------------------------------------------
-function AgentHealthCard({ data, level }: { data: LevelData; level: Level }) {
+const HEALTH_STATE_META: Record<HealthState, { label: string; color: string; Icon: LucideIcon }> = {
+  good: { label: 'Good', color: GREEN, Icon: BadgeCheck },
+  attention: { label: 'Attention needed', color: AMBER, Icon: AlertTriangle },
+  critical: { label: 'Critical', color: RED, Icon: CircleAlert },
+}
+
+// Icon per channel family, keyed to ChannelResolution.key.
+const CHANNEL_FAMILY_ICON: Record<ChannelResolution['key'], LucideIcon> = {
+  messaging: MessageSquare,
+  email: Mail,
+  voice: Phone,
+  headless: Code,
+}
+
+// Expandable per-channel resolution breakdown (Messaging / Email / Voice /
+// Headless), revealed from the Resolution rate tile.
+function ResolutionBreakdown({ channels }: { channels: ChannelResolution[] }) {
+  return (
+    <div className="mt-3 flex flex-col gap-3 rounded-xl border border-solid p-3.5" style={{ borderColor: BORDER, backgroundColor: '#faf9f8' }}>
+      <p className="text-[12px] font-semibold" style={{ color: INK }}>Resolution rate by channel</p>
+      {channels.map((c) => {
+        const Icon = CHANNEL_FAMILY_ICON[c.key]
+        return (
+          <div key={c.key}>
+            <div className="mb-1.5 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Icon size={14} color={MUTED} />
+                <span className="text-[13px] font-normal" style={{ color: INK }}>{c.label}</span>
+                <span className="text-[11px] font-normal" style={{ color: MUTED }}>{c.share}% of volume</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[13px] font-semibold" style={{ color: INK }}>{c.rate}%</span>
+                <span className="flex items-center gap-0.5" style={{ color: c.good ? GREEN : RED }}>
+                  {c.up ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                  <span className="text-[11px] font-semibold">{c.delta}</span>
+                </span>
+              </div>
+            </div>
+            <div className="h-1.5 overflow-hidden rounded-full" style={{ backgroundColor: '#efeeec' }}>
+              <div className="h-full rounded-full" style={{ width: `${c.rate}%`, backgroundColor: c.good ? GREEN : AMBER }} />
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function AgentHealthCard({ data }: { data: LevelData }) {
   const chart = useMemo(() => data.trend.map((v, i) => ({ i, v })), [data.trend])
+  const state = HEALTH_STATE_META[data.healthState]
+  const [showChannels, setShowChannels] = useState(false)
   return (
     <Card>
       <CardHeader icon={<Activity size={18} color={INK} strokeWidth={2} />} title="Overall agent health" action={<LinkButton label="Open Insights" />} />
@@ -102,31 +155,70 @@ function AgentHealthCard({ data, level }: { data: LevelData; level: Level }) {
             <span className="mb-1.5 text-[16px] font-normal" style={{ color: MUTED }}>/ 100</span>
           </div>
           <div className="mt-2 flex items-center gap-1.5">
-            <span className="flex h-[22px] items-center gap-1 rounded-full px-2" style={{ backgroundColor: `${GREEN}18` }}>
-              <BadgeCheck size={13} color={GREEN} />
-              <span className="text-[12px] font-semibold" style={{ color: GREEN }}>{data.scoreLabel}</span>
+            <span className="flex h-[22px] items-center gap-1 rounded-full px-2" style={{ backgroundColor: `${state.color}18` }}>
+              <state.Icon size={13} color={state.color} />
+              <span className="text-[12px] font-semibold" style={{ color: state.color }}>{state.label}</span>
             </span>
           </div>
           <p className="mt-3 text-[12px] font-normal leading-4" style={{ color: MUTED }}>
-            {level === 'platform' ? 'Across 2 organizations and 6 channels.' : 'Across 4 active channels.'}
+            Across 2 organizations and 6 channels.
           </p>
           <div className="mt-3 -mx-0.5 h-[44px]">
-            <Sparkline data={chart} color={GREEN} gradientId="healthFill" />
+            <Sparkline data={chart} color={state.color} gradientId="healthFill" />
           </div>
         </div>
         <div className="grid flex-1 grid-cols-2 gap-3">
-          {data.metrics.map((m) => (
-            <div key={m.key} className="rounded-xl border border-solid p-3.5" style={{ borderColor: BORDER, backgroundColor: '#faf9f8' }}>
-              <p className="text-[12px] font-normal" style={{ color: MUTED }}>{m.label}</p>
-              <div className="mt-1.5 flex items-baseline justify-between">
-                <span className="text-[22px] font-medium" style={{ color: INK }}>{m.value}</span>
-                <span className="flex items-center gap-0.5" style={{ color: m.good ? GREEN : RED }}>
-                  {m.up ? <TrendingUp size={13} /> : <TrendingDown size={13} />}
-                  <span className="text-[12px] font-semibold">{m.delta}</span>
-                </span>
+          {data.metrics.map((m) => {
+            const isResolution = m.key === 'res'
+            const tileBody = (
+              <>
+                <div className="flex items-center gap-1">
+                  <p className="text-[12px] font-normal" style={{ color: MUTED }}>{m.label}</p>
+                  {isResolution && (
+                    <ChevronDown
+                      size={13}
+                      color={MUTED}
+                      className="transition-transform"
+                      style={{ transform: showChannels ? 'rotate(180deg)' : 'none' }}
+                    />
+                  )}
+                </div>
+                <div className="mt-1.5 flex items-baseline justify-between">
+                  <span className="text-[22px] font-medium" style={{ color: INK }}>{m.value}</span>
+                  <span className="flex items-center gap-0.5" style={{ color: m.good ? GREEN : RED }}>
+                    {m.up ? <TrendingUp size={13} /> : <TrendingDown size={13} />}
+                    <span className="text-[12px] font-semibold">{m.delta}</span>
+                  </span>
+                </div>
+              </>
+            )
+            return isResolution ? (
+              <button
+                key={m.key}
+                onClick={() => setShowChannels((s) => !s)}
+                aria-expanded={showChannels}
+                className="rounded-xl border border-solid p-3.5 text-left outline-none transition-colors hover:bg-[#f3f2f0]"
+                style={{ borderColor: BORDER, backgroundColor: '#faf9f8' }}
+              >
+                {tileBody}
+              </button>
+            ) : (
+              <div key={m.key} className="rounded-xl border border-solid p-3.5" style={{ borderColor: BORDER, backgroundColor: '#faf9f8' }}>
+                {tileBody}
               </div>
-            </div>
-          ))}
+            )
+          })}
+        </div>
+      </div>
+      {showChannels && <ResolutionBreakdown channels={data.resolutionByChannel} />}
+      {/* AI short summary */}
+      <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-solid p-3.5" style={{ borderColor: `${PURPLE}33`, backgroundColor: `${PURPLE}0a` }}>
+        <div className="flex size-6 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: `${PURPLE}16` }}>
+          <Sparkles size={13} color={PURPLE} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.4px]" style={{ color: PURPLE }}>AI summary</p>
+          <p className="mt-0.5 text-[12px] font-normal leading-[17px]" style={{ color: INK_SOFT }}>{data.aiSummary}</p>
         </div>
       </div>
     </Card>
@@ -183,17 +275,53 @@ function ApprovalsCard({ data }: { data: LevelData }) {
           <div key={a.id} className="rounded-xl border border-solid p-3.5" style={{ borderColor: `${PURPLE}33`, backgroundColor: `${PURPLE}0a` }}>
             <p className="text-[13px] font-semibold" style={{ color: INK }}>{a.title}</p>
             <p className="mt-1 text-[12px] font-normal leading-[17px]" style={{ color: INK_SOFT }}>{a.body}</p>
+            {a.abTest && (
+              <div className="mt-2.5 rounded-lg border border-solid bg-white p-2.5" style={{ borderColor: BORDER }}>
+                <div className="mb-2 flex items-center gap-1.5">
+                  <FlaskConical size={13} color={PURPLE} />
+                  <span className="text-[11px] font-semibold" style={{ color: INK }}>{a.abTest.confidence}</span>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  {a.abTest.variants.map((v) => (
+                    <div
+                      key={v.key}
+                      className="flex items-center justify-between rounded-md px-2 py-1.5"
+                      style={{ backgroundColor: v.winner ? `${GREEN}12` : '#faf9f8' }}
+                    >
+                      <div className="flex min-w-0 items-center gap-1.5">
+                        {v.winner && (
+                          <span className="flex h-[18px] shrink-0 items-center gap-0.5 rounded-full px-1.5" style={{ backgroundColor: `${GREEN}22` }}>
+                            <BadgeCheck size={10} color={GREEN} />
+                            <span className="text-[10px] font-semibold" style={{ color: GREEN }}>Winner</span>
+                          </span>
+                        )}
+                        <span className="truncate text-[12px] font-normal" style={{ color: INK }}>{v.label}</span>
+                      </div>
+                      <span className="shrink-0 text-[12px] font-semibold" style={{ color: v.winner ? GREEN : MUTED }}>
+                        {v.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="mt-2.5 flex items-center gap-2">
               <span className="flex h-5 items-center gap-1 rounded-full px-2" style={{ backgroundColor: `${GREEN}18` }}>
                 <TrendingUp size={12} color={GREEN} />
                 <span className="text-[11px] font-semibold" style={{ color: GREEN }}>{a.impact}</span>
               </span>
-              <span className="text-[11px] font-normal" style={{ color: MUTED }}>by {a.author}</span>
+              {a.person ? (
+                <span className="text-[11px] font-normal" style={{ color: MUTED }}>{a.person.name} · {a.person.role}</span>
+              ) : (
+                <span className="text-[11px] font-normal" style={{ color: MUTED }}>by {a.author}</span>
+              )}
             </div>
             <div className="mt-3 flex items-center gap-2">
               <button className="flex h-[34px] flex-1 items-center justify-center gap-1.5 rounded-full outline-none" style={{ backgroundColor: INK }}>
                 <Check size={14} color="#fff" />
-                <span className="text-[13px] font-semibold text-white">Approve</span>
+                <span className="text-[13px] font-semibold text-white">
+                  {a.abTest ? `Publish ${a.abTest.winner}` : 'Approve'}
+                </span>
               </button>
               <button className="flex h-[34px] items-center justify-center rounded-full border border-solid bg-white px-3.5 outline-none" style={{ borderColor: BORDER }}>
                 <span className="text-[13px] font-semibold" style={{ color: INK }}>Review</span>
@@ -210,11 +338,31 @@ function ApprovalsCard({ data }: { data: LevelData }) {
 }
 
 function KnowledgeGapsCard({ data }: { data: LevelData }) {
+  const { summary, items } = data.gaps
   return (
     <Card>
       <CardHeader icon={<BookOpen size={18} color={INK} strokeWidth={2} />} title="Knowledge gaps" action={<LinkButton label="Open Knowledge" />} />
+      {/* Gradient hero: articles generated + potential ticket coverage */}
+      <div
+        className="mb-4 rounded-xl p-4"
+        style={{ background: 'linear-gradient(105deg, #fbe9e0 0%, #eef0f6 48%, #e2edf0 100%)' }}
+      >
+        <p className="text-[12px] font-medium leading-4" style={{ color: INK_SOFT }}>
+          We generated these articles by identifying gaps in your knowledge base:
+        </p>
+        <div className="mt-3 flex gap-8">
+          <div>
+            <p className="text-[30px] font-medium leading-[32px]" style={{ color: INK }}>{summary.articlesGenerated}</p>
+            <p className="mt-0.5 text-[12px] font-normal" style={{ color: INK_SOFT }}>Articles generated for identified gaps</p>
+          </div>
+          <div>
+            <p className="text-[30px] font-medium leading-[32px]" style={{ color: INK }}>{summary.potentialCoverage}</p>
+            <p className="mt-0.5 text-[12px] font-normal" style={{ color: INK_SOFT }}>Potential ticket coverage</p>
+          </div>
+        </div>
+      </div>
       <div className="flex flex-col">
-        {data.gaps.map((g, idx) => (
+        {items.map((g, idx) => (
           <div key={g.id} className="flex items-center justify-between py-2.5" style={{ borderTop: idx === 0 ? 'none' : `1px solid ${BORDER}` }}>
             <div className="flex min-w-0 items-center gap-2.5">
               <AlertTriangle size={15} color={AMBER} className="shrink-0" />
@@ -233,14 +381,15 @@ function KnowledgeGapsCard({ data }: { data: LevelData }) {
 }
 
 function QaCoverageCard({ data }: { data: LevelData }) {
-  const totalPass = data.qa.reduce((s, q) => s + q.pass, 0)
-  const totalFail = data.qa.reduce((s, q) => s + q.fail, 0)
+  const { suites, generated } = data.qa
+  const totalPass = suites.reduce((s, q) => s + q.pass, 0)
+  const totalFail = suites.reduce((s, q) => s + q.fail, 0)
   const rate = Math.round((totalPass / (totalPass + totalFail)) * 100)
   return (
     <Card>
       <CardHeader
         icon={<FlaskConical size={18} color={INK} strokeWidth={2} />}
-        title="QA coverage"
+        title="Test coverage"
         action={
           <div className="flex items-center gap-1.5">
             <span className="text-[16px] font-medium" style={{ color: GREEN }}>{rate}%</span>
@@ -249,7 +398,7 @@ function QaCoverageCard({ data }: { data: LevelData }) {
         }
       />
       <div className="flex flex-col gap-3.5">
-        {data.qa.map((q) => {
+        {suites.map((q) => {
           const total = q.pass + q.fail
           const passPct = (q.pass / total) * 100
           return (
@@ -274,6 +423,32 @@ function QaCoverageCard({ data }: { data: LevelData }) {
           )
         })}
       </div>
+      {generated.length > 0 && (
+        <div className="mt-4 border-t pt-3.5" style={{ borderColor: BORDER }}>
+          <div className="mb-2.5 flex items-center gap-1.5">
+            <Sparkles size={13} color={PURPLE} />
+            <p className="text-[11px] font-semibold uppercase tracking-[0.4px]" style={{ color: PURPLE }}>Newly generated playlists</p>
+          </div>
+          <div className="flex flex-col gap-2">
+            {generated.map((g) => (
+              <div key={g.id} className="flex items-center justify-between rounded-xl border border-solid p-2.5" style={{ borderColor: `${PURPLE}33`, backgroundColor: `${PURPLE}0a` }}>
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <div className="flex size-7 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: `${PURPLE}16` }}>
+                    <ListChecks size={14} color={PURPLE} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-[13px] font-semibold" style={{ color: INK }}>{g.name}</p>
+                    <p className="text-[11px] font-normal" style={{ color: MUTED }}>{g.tests} tests · ready to run</p>
+                  </div>
+                </div>
+                <button className="flex h-7 shrink-0 items-center rounded-full px-3 outline-none" style={{ backgroundColor: INK }}>
+                  <span className="text-[12px] font-semibold text-white">Run</span>
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </Card>
   )
 }
@@ -385,10 +560,58 @@ function ImprovedPoliciesCard({ data }: { data: LevelData }) {
   )
 }
 
+function KnowledgeContentCard({ data }: { data: LevelData }) {
+  const { summary, items } = data.knowledge
+  return (
+    <Card>
+      <CardHeader icon={<BookOpen size={18} color={INK} strokeWidth={2} />} title="New knowledge content" action={<LinkButton label="Review all" />} />
+      <div className="mb-4 flex items-end gap-2.5">
+        <span className="text-[30px] font-medium leading-[30px]" style={{ color: INK }}>{summary.created}</span>
+        <div className="mb-px flex flex-col">
+          <span className="flex h-5 items-center gap-1 self-start rounded-full px-2" style={{ backgroundColor: `${BLUE}18` }}>
+            <FileText size={12} color={BLUE} />
+            <span className="text-[11px] font-semibold" style={{ color: BLUE }}>{summary.coverage} covered</span>
+          </span>
+          <span className="mt-0.5 text-[11px] font-normal" style={{ color: MUTED }}>snippets created · {summary.period}</span>
+        </div>
+      </div>
+      <div className="flex flex-col">
+        {items.map((c, idx) => {
+          const published = c.status === 'published'
+          const statusColor = published ? GREEN : AMBER
+          return (
+            <div key={c.id} className="flex gap-3 py-3" style={{ borderTop: idx === 0 ? 'none' : `1px solid ${BORDER}` }}>
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-[10px]" style={{ backgroundColor: `${BLUE}14` }}>
+                <FileText size={16} color={BLUE} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="line-clamp-2 text-[13px] font-semibold leading-[17px]" style={{ color: INK }}>{c.title}</p>
+                  <span className="flex h-[18px] shrink-0 items-center gap-0.5 rounded-full px-1.5" style={{ backgroundColor: `${statusColor}18` }}>
+                    {published ? <Check size={10} color={statusColor} /> : <Pencil size={9} color={statusColor} />}
+                    <span className="text-[10px] font-semibold" style={{ color: statusColor }}>{published ? 'Published' : 'Draft'}</span>
+                  </span>
+                </div>
+                <div className="mt-1.5 flex items-center gap-2">
+                  <span className="flex h-[18px] max-w-[180px] items-center gap-1 rounded-md px-1.5" style={{ backgroundColor: '#f2f1ef' }}>
+                    <Zap size={10} color={GREEN} fill={GREEN} />
+                    <span className="truncate text-[11px] font-normal" style={{ color: INK }}>{c.topic}</span>
+                  </span>
+                  <span className="text-[11px] font-normal" style={{ color: MUTED }}>{c.articles} related articles</span>
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </Card>
+  )
+}
+
 // --- Widget registry --------------------------------------------------------
-const WIDGETS: Record<WidgetId, { title: string; render: (data: LevelData, level: Level) => React.ReactNode }> = {
-  health: { title: 'Overall agent health', render: (d, l) => <AgentHealthCard data={d} level={l} /> },
-  qa: { title: 'QA coverage', render: (d) => <QaCoverageCard data={d} /> },
+const WIDGETS: Record<WidgetId, { title: string; render: (data: LevelData) => React.ReactNode }> = {
+  health: { title: 'Overall agent health', render: (d) => <AgentHealthCard data={d} /> },
+  qa: { title: 'Test coverage', render: (d) => <QaCoverageCard data={d} /> },
   gaps: { title: 'Knowledge gaps', render: (d) => <KnowledgeGapsCard data={d} /> },
   approvals: { title: 'Needs your approval', render: (d) => <ApprovalsCard data={d} /> },
   notifications: { title: 'Notifications', render: (d) => <NotificationsCard data={d} /> },
@@ -396,6 +619,7 @@ const WIDGETS: Record<WidgetId, { title: string; render: (data: LevelData, level
   activity: { title: 'Recent activity', render: (d) => <ActivityCard data={d} /> },
   intents: { title: 'Top intents', render: (d) => <IntentsCard data={d} /> },
   policies: { title: 'Improved policies', render: (d) => <ImprovedPoliciesCard data={d} /> },
+  knowledge: { title: 'New knowledge content', render: (d) => <KnowledgeContentCard data={d} /> },
 }
 
 const STORAGE_KEY = 'home-dashboard-layout-v2'
@@ -521,31 +745,24 @@ function AddWidgetMenu({ available, onAdd }: { available: WidgetId[]; onAdd: (id
   )
 }
 
-function LevelToggle({ level, onChange }: { level: Level; onChange: (l: Level) => void }) {
-  const opts: { key: Level; label: string }[] = [
-    { key: 'platform', label: 'Platform' },
-    { key: 'organization', label: 'Organization' },
-  ]
-  return (
-    <div className="flex items-center rounded-full border border-solid bg-white p-[3px]" style={{ borderColor: BORDER }}>
-      {opts.map((o) => {
-        const active = level === o.key
-        return (
-          <button key={o.key} onClick={() => onChange(o.key)} className="h-[30px] rounded-full px-4 outline-none transition-colors" style={{ backgroundColor: active ? INK : 'transparent' }}>
-            <span className="text-[13px] font-semibold" style={{ color: active ? '#fff' : MUTED }}>{o.label}</span>
-          </button>
-        )
-      })}
-    </div>
-  )
-}
-
 // --- Root -------------------------------------------------------------------
 export function HomeScreen() {
-  const [level, setLevel] = useState<Level>('platform')
+  // Home is always the platform-level view; the org-level toggle was removed.
   const [editing, setEditing] = useState(false)
   const [layout, setLayout] = useState<Layout>(() => loadLayout())
-  const data = DATA[level]
+  const [showGenerate, setShowGenerate] = useState(false)
+  const [previewLayout, setPreviewLayout] = useState<Layout | null>(null)
+
+  const applyPreview = () => {
+    if (previewLayout) setLayout(previewLayout)
+    setPreviewLayout(null)
+    setShowGenerate(false)
+  }
+  const discardPreview = () => {
+    setPreviewLayout(null)
+    setShowGenerate(false)
+  }
+  const data = DATA.platform
 
   useEffect(() => {
     try {
@@ -589,20 +806,22 @@ export function HomeScreen() {
 
   const resetLayout = () => setLayout(DEFAULT_LAYOUT)
 
+  const activeLayout = previewLayout ?? layout
   const renderColumn = (column: ColumnKey) => (
     <div className="flex flex-col gap-4">
-      {layout[column].map((id, index) => (
+      {activeLayout[column].map((id, index) => (
         <DraggableWidget key={id} id={id} column={column} index={index} editing={editing} onMove={moveWidget} onRemove={removeWidget}>
-          {WIDGETS[id].render(data, level)}
+          {WIDGETS[id].render(data)}
         </DraggableWidget>
       ))}
-      {editing && <ColumnDropZone column={column} count={layout[column].length} onMove={moveWidget} />}
+      {editing && <ColumnDropZone column={column} count={activeLayout[column].length} onMove={moveWidget} />}
     </div>
   )
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div data-testid="screen-home" className="h-full overflow-y-auto rounded-[26px] bg-white">
+      <div className="flex h-full gap-2">
+      <div data-testid="screen-home" className="h-full flex-1 overflow-y-auto rounded-[26px] bg-white">
         <div className="min-w-[900px] px-10 pt-8 pb-10">
           {/* Greeting header */}
           <div className="mb-6 flex items-start justify-between">
@@ -628,11 +847,22 @@ export function HomeScreen() {
                 </>
               ) : (
                 <>
-                  <LevelToggle level={level} onChange={setLevel} />
-                  <button onClick={() => setEditing(true)} className="flex h-9 items-center gap-1.5 rounded-full border border-solid bg-white px-3.5 outline-none" style={{ borderColor: BORDER }} title="Customize dashboard">
-                    <Pencil size={14} color={INK} />
-                    <span className="text-[13px] font-semibold" style={{ color: INK }}>Customize</span>
+                  {previewLayout && (
+                    <span className="flex h-9 items-center gap-1.5 rounded-full px-3" style={{ backgroundColor: `${PURPLE}12` }}>
+                      <Sparkles size={13} color={PURPLE} />
+                      <span className="text-[12px] font-semibold" style={{ color: PURPLE }}>Preview</span>
+                    </span>
+                  )}
+                  <button onClick={() => setShowGenerate(true)} className="flex h-9 items-center gap-1.5 rounded-full border border-solid bg-white px-3.5 outline-none" style={{ borderColor: BORDER }} title="Generate a new Home">
+                    <Sparkles size={14} color={PURPLE} />
+                    <span className="text-[13px] font-semibold" style={{ color: INK }}>Generate</span>
                   </button>
+                  {!previewLayout && (
+                    <button onClick={() => setEditing(true)} className="flex h-9 items-center gap-1.5 rounded-full border border-solid bg-white px-3.5 outline-none" style={{ borderColor: BORDER }} title="Customize dashboard">
+                      <Pencil size={14} color={INK} />
+                      <span className="text-[13px] font-semibold" style={{ color: INK }}>Customize</span>
+                    </button>
+                  )}
                 </>
               )}
             </div>
@@ -644,6 +874,16 @@ export function HomeScreen() {
             {renderColumn('right')}
           </div>
         </div>
+      </div>
+      {showGenerate && (
+        <GenerateHomePanel
+          hasPreview={previewLayout !== null}
+          onGenerate={setPreviewLayout}
+          onApply={applyPreview}
+          onDiscard={discardPreview}
+          onClose={discardPreview}
+        />
+      )}
       </div>
     </DndProvider>
   )
