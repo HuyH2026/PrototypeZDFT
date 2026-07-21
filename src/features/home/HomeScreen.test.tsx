@@ -5,6 +5,28 @@ import { HomeScreen } from './HomeScreen'
 
 const STORAGE_KEY = 'home-dashboard-layout-v2'
 
+// All widget titles, used for order-capturing helper.
+const WIDGET_TITLES = [
+  'Overall agent health',
+  'Test coverage',
+  'Knowledge gaps',
+  'Needs your approval',
+  'Notifications',
+  'Cost & usage',
+  'Recent activity',
+  'Top intents',
+  'Improved policies',
+  'New knowledge content',
+]
+
+// Captures the current ordered list of widget-card headings from the DOM.
+function widgetOrder(): string[] {
+  // Widget titles render in <p> tags with specific styling; collect them in DOM order.
+  return Array.from(document.querySelectorAll('p'))
+    .map((el) => el.textContent ?? '')
+    .filter((t) => WIDGET_TITLES.includes(t))
+}
+
 // Install a minimal in-memory localStorage seeded with `stored`, so we can
 // exercise loadLayout (jsdom does not provide localStorage by default).
 function stubStorage(stored: string) {
@@ -135,6 +157,7 @@ describe('HomeScreen', () => {
   it('generates a preview and applies it to the dashboard', async () => {
     const user = userEvent.setup()
     render(<HomeScreen />)
+    const before = widgetOrder()
     await user.click(screen.getByRole('button', { name: /generate/i }))
     const panel = screen.getByTestId('generate-home-panel')
     // Answer Q1 + Q2 to enable generation.
@@ -146,12 +169,15 @@ describe('HomeScreen', () => {
     await user.click(within(panel).getByRole('button', { name: /^apply$/i }))
     // Panel closes; dashboard still renders widgets.
     expect(screen.queryByTestId('generate-home-panel')).not.toBeInTheDocument()
-    expect(screen.getByText('Overall agent health')).toBeInTheDocument()
+    const after = widgetOrder()
+    expect(after.length).toBeGreaterThan(0) // Sanity check: widgets rendered
+    expect(after).not.toEqual(before) // Order changed — proves Apply committed the new layout
   })
 
   it('discards a preview without changing the saved dashboard', async () => {
     const user = userEvent.setup()
     render(<HomeScreen />)
+    const before = widgetOrder()
     await user.click(screen.getByRole('button', { name: /generate/i }))
     const panel = screen.getByTestId('generate-home-panel')
     await user.click(within(panel).getByRole('button', { name: /executive/i }))
@@ -159,7 +185,8 @@ describe('HomeScreen', () => {
     await user.click(within(panel).getByRole('button', { name: /generate my home/i }))
     await user.click(within(panel).getByRole('button', { name: /discard/i }))
     expect(screen.queryByTestId('generate-home-panel')).not.toBeInTheDocument()
-    // Default widgets still present.
-    expect(screen.getByText('Overall agent health')).toBeInTheDocument()
+    const after = widgetOrder()
+    expect(after.length).toBeGreaterThan(0) // Sanity check: widgets rendered
+    expect(after).toEqual(before) // Order unchanged — proves Discard is lossless
   })
 })
