@@ -44,6 +44,12 @@ export type HealthMetric = {
 // volume weight used for all aggregation (header + metric tiles).
 export type ChannelHealth = { score: number; trend: number[]; share: number }
 
+// Fixed customer tiers every top-intent breaks down into. `share` is the tier's
+// % within a single intent (the three sum to 100); `tickets` is that tier's slice
+// of the intent's own `tickets` total, authored as round(share/100 * intent.tickets).
+export type BrandKey = 'vip' | 'premium' | 'vendor'
+export type IntentBrandDatum = { key: BrandKey; label: string; share: number; tickets: number }
+
 export type LevelData = {
   score: number
   healthState: HealthState
@@ -90,7 +96,7 @@ export type LevelData = {
   }
   cost: { spend: number; limit: number; unit: string; note: string }
   activity: { id: string; text: string; time: string }[]
-  intents: { id: string; name: string; share: number }[]
+  intents: { id: string; name: string; share: number; tickets: number; byBrand: IntentBrandDatum[] }[]
   policies: {
     summary: { improved: number; lift: string; period: string }
     items: { id: string; title: string; change: string; impact: string; status: 'applied' | 'proposed'; scope: string; time: string }[]
@@ -231,10 +237,38 @@ export const DATA: Record<Level, LevelData> = {
       { id: 'ac4', text: 'A/B test “Refund tone” concluded', time: '6h ago' },
     ],
     intents: [
-      { id: 'in1', name: 'Order status', share: 34 },
-      { id: 'in2', name: 'Refund request', share: 22 },
-      { id: 'in3', name: 'Account access', share: 18 },
-      { id: 'in4', name: 'Product info', share: 14 },
+      {
+        id: 'in1', name: 'Order status', share: 34, tickets: 4200,
+        byBrand: [
+          { key: 'vip', label: 'VIP', share: 15, tickets: 630 },
+          { key: 'premium', label: 'Premium', share: 25, tickets: 1050 },
+          { key: 'vendor', label: 'Vendor', share: 60, tickets: 2520 },
+        ],
+      },
+      {
+        id: 'in2', name: 'Refund request', share: 22, tickets: 2720,
+        byBrand: [
+          { key: 'vip', label: 'VIP', share: 55, tickets: 1496 },
+          { key: 'premium', label: 'Premium', share: 30, tickets: 816 },
+          { key: 'vendor', label: 'Vendor', share: 15, tickets: 408 },
+        ],
+      },
+      {
+        id: 'in3', name: 'Account access', share: 18, tickets: 2220,
+        byBrand: [
+          { key: 'vip', label: 'VIP', share: 30, tickets: 666 },
+          { key: 'premium', label: 'Premium', share: 45, tickets: 999 },
+          { key: 'vendor', label: 'Vendor', share: 25, tickets: 555 },
+        ],
+      },
+      {
+        id: 'in4', name: 'Product info', share: 14, tickets: 1600,
+        byBrand: [
+          { key: 'vip', label: 'VIP', share: 20, tickets: 320 },
+          { key: 'premium', label: 'Premium', share: 30, tickets: 480 },
+          { key: 'vendor', label: 'Vendor', share: 50, tickets: 800 },
+        ],
+      },
     ],
     policies: {
       summary: { improved: 18, lift: '+5.2% resolution', period: 'Last 30 days' },
