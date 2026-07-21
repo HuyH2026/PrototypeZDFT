@@ -11,7 +11,7 @@ colors:
   ink: "#2f3130"              # grey.900
   ink-muted: "#8b8e89"        # grey.600
   nav-active: "#293239"       # app-specific dark chrome neutral
-  app-backdrop: "#f1efed"     # app-specific warm neutral (~grey.100)
+  app-backdrop: "#f1efed"     # app-specific warm neutral (no exact palette match; near grey.100/200)
   surface-border: "#d8dcde"   # DELTA: app value; canonical Garden = grey.300 #dcdcda
   destructive: "#d4183d"      # app value (~red.700 #c63f46)
   success: "#4b7d04"          # green.700
@@ -87,9 +87,10 @@ spacing:
   lg: "32px"
   xl: "40px"
   xxl: "48px"
-radius:
+rounded:
   # Flora borderRadii (zendesk/ui). NOTE: app runtime currently uses shadcn
   # radii (--radius: 0.625rem); these are the design-system target.
+  # Key is `rounded` (not `radius`) so the design.md CLI consumes it.
   xs: "2px"
   sm: "4px"
   md: "8px"
@@ -208,6 +209,9 @@ Garden hue scales speculatively.
 - `pnpm design:lint` — validate this file against the design.md format.
 - `pnpm design:export` — emit a Tailwind v4 theme to `.design/theme.generated.css`
   (gitignored scratch) for **diffing against `src/styles/theme.css`**. This is a
-  drift check only; it never overwrites the runtime theme.
+  drift check only; it never overwrites the runtime theme. Note the export is a
+  **superset** of `theme.css` — it includes design-system tokens the app has not
+  (yet) adopted (e.g. `--color-success`, the full `--spacing-*` scale), so expect
+  those as additions in the diff, not drift.
 
 `@google/design.md` is alpha (`0.3.0`); the format may change.
