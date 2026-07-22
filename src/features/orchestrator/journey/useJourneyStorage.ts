@@ -18,9 +18,8 @@ function load(automationId: string): Journey {
 }
 
 export function useJourneyStorage(automationId: string) {
-  const initial = load(automationId)
-  const [nodes, setNodes] = useState<JourneyNode[]>(initial.nodes)
-  const [edges, setEdges] = useState<JourneyEdge[]>(initial.edges)
+  const [nodes, setNodes] = useState<JourneyNode[]>(() => load(automationId).nodes)
+  const [edges, setEdges] = useState<JourneyEdge[]>(() => load(automationId).edges)
 
   useEffect(() => {
     try {

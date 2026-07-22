@@ -18,14 +18,23 @@ import { NodePalette, PALETTE_DND_TYPE } from './NodePalette'
 const nodeTypes = { start: StartNode, rule: RuleNode, action: ActionNode, end: EndNode }
 const edgeTypes = { addButton: AddButtonEdge }
 
-let seq = 0
 const ALL_ITEMS = PALETTE.flatMap((c) => c.items)
+
+// Computes the next available node id from the current node list to avoid collisions
+// with persisted graphs (e.g. after reload).
+function nextNodeId(nodes: JourneyNode[]): string {
+  const max = nodes.reduce((m, n) => {
+    const match = /^n(\d+)$/.exec(n.id)
+    return match ? Math.max(m, Number(match[1]) + 1) : m
+  }, 0)
+  return `n${max}`
+}
 
 // Maps a dropped palette item to a new journey node. Channel agents become
 // action nodes; 'end' becomes an end node; everything else becomes a rule node.
-export function paletteItemToNode(itemId: string, position: { x: number; y: number }): JourneyNode {
+export function paletteItemToNode(itemId: string, position: { x: number; y: number }, existingNodes: JourneyNode[]): JourneyNode {
   const item = ALL_ITEMS.find((i) => i.id === itemId)
-  const id = `n${seq++}`
+  const id = nextNodeId(existingNodes)
   const label = item?.label ?? 'Node'
   if (itemId === 'end') {
     return { id, type: 'end', position, data: { kind: 'end', title: 'End', ticketTags: ['ft-automated'] } }
@@ -57,7 +66,7 @@ function Canvas({ automationId }: { automationId: string }) {
     const itemId = event.dataTransfer.getData(PALETTE_DND_TYPE)
     if (!itemId) return
     const position = screenToFlowPosition({ x: event.clientX, y: event.clientY })
-    setNodes((n) => [...n, paletteItemToNode(itemId, position)])
+    setNodes((n) => [...n, paletteItemToNode(itemId, position, n)])
   }, [screenToFlowPosition, setNodes])
 
   const onDragOver = useCallback((event: React.DragEvent) => {
