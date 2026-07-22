@@ -1,7 +1,24 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { AgentBuilderScreen } from './AgentBuilderScreen'
+
+// Mock useNavigate since these tests render the component bare (no router).
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual('react-router')
+  return {
+    ...actual,
+    useNavigate: () => vi.fn(),
+  }
+})
+
+// Clear localStorage before and after each test for deterministic store state.
+beforeEach(() => {
+  window.localStorage?.clear()
+})
+afterEach(() => {
+  window.localStorage?.clear()
+})
 
 function surface(): HTMLElement {
   return screen.getByTestId('view-agent-builder')
@@ -65,3 +82,4 @@ describe('AgentBuilderScreen', () => {
     expect(view.queryByRole('switch', { name: 'Activate Knowledge Retrieval' })).not.toBeInTheDocument()
   })
 })
+
