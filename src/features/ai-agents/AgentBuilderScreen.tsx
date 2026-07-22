@@ -9,6 +9,8 @@ import { Calendar, ChevronDown, Code2, Globe, MessageSquare, Phone, Plus, Search
 import { CHANNELS, type Agent, type ChannelKey } from './agent-builder-data'
 import { MetricStrip } from './MetricStrip'
 import { AgentsTable } from './AgentsTable'
+import { useAgentStore } from './agent-store'
+import { CreateAgentPanel } from './CreateAgentPanel'
 
 const INK = '#2f3130'
 
@@ -29,10 +31,12 @@ const CHANNEL_ICON: Record<ChannelKey, typeof MessageSquare> = {
 
 export function AgentBuilderScreen() {
   const navigate = useNavigate()
+  const store = useAgentStore()
   const [channelKey, setChannelKey] = useState<ChannelKey>('widget')
   const [tab, setTab] = useState<AgentTab>('all')
   // Per-row on/off overrides; cleared on channel switch.
   const [overrides, setOverrides] = useState<Record<string, boolean>>({})
+  const [creating, setCreating] = useState(false)
 
   const channel = CHANNELS.find((c) => c.key === channelKey)!
   const isOn = (a: Agent) => overrides[a.id] ?? a.on
@@ -149,7 +153,7 @@ export function AgentBuilderScreen() {
           <button type="button" className="rounded-full border border-surface-border px-4 py-1.5 text-[13px] font-medium text-ink">
             Preview
           </button>
-          <button type="button" className="rounded-full bg-ink px-4 py-1.5 text-[13px] font-semibold text-white">
+          <button type="button" onClick={() => setCreating(true)} className="rounded-full bg-ink px-4 py-1.5 text-[13px] font-semibold text-white">
             New Agent
           </button>
         </div>
@@ -162,6 +166,18 @@ export function AgentBuilderScreen() {
         onToggle={toggle}
         onRowClick={(id) => navigate(`/ai-agents/${id}`)}
       />
+
+      {creating && (
+        <CreateAgentPanel
+          channel={channelKey}
+          onClose={() => setCreating(false)}
+          onCreate={(fields) => {
+            const id = store.createAgent(fields)
+            setCreating(false)
+            navigate(`/ai-agents/${id}`)
+          }}
+        />
+      )}
     </div>
   )
 }

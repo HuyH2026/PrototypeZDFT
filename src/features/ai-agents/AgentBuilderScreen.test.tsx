@@ -4,9 +4,13 @@ import { describe, expect, it, vi } from 'vitest'
 import { AgentBuilderScreen } from './AgentBuilderScreen'
 
 // Mock useNavigate since these tests render the component bare (no router).
-vi.mock('react-router', () => ({
-  useNavigate: () => vi.fn(),
-}))
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual('react-router')
+  return {
+    ...actual,
+    useNavigate: () => vi.fn(),
+  }
+})
 
 function surface(): HTMLElement {
   return screen.getByTestId('view-agent-builder')
@@ -70,3 +74,4 @@ describe('AgentBuilderScreen', () => {
     expect(view.queryByRole('switch', { name: 'Activate Knowledge Retrieval' })).not.toBeInTheDocument()
   })
 })
+
