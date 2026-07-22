@@ -15,6 +15,13 @@ import {
 } from './dashboard-data'
 import { computeHealthView, CHANNEL_ORDER, CHANNEL_LABEL } from './health-aggregate'
 import { GenerateHomePanel } from './GenerateHomePanel'
+import { deriveRoleData } from './role-data'
+import { ViewSwitcher } from './ViewSwitcher'
+import {
+  type ViewsState, type NewView,
+  loadViewsState, persistViewsState, getActiveView,
+  addView, renameView, deleteView, setActiveView, updateActiveLayout,
+} from './views-store'
 
 // Palette — one-off dashboard hues that have no design token yet (kept inline,
 // matching the prototype). Ink/muted map to the shared token values.
@@ -767,31 +774,6 @@ const WIDGETS: Record<WidgetId, { title: string; render: (data: LevelData) => Re
   knowledge: { title: 'New knowledge content', render: (d) => <KnowledgeContentCard data={d} /> },
 }
 
-const STORAGE_KEY = 'home-dashboard-layout-v2'
-
-const WIDGET_IDS = new Set<string>(Object.keys(WIDGETS))
-
-function loadLayout(): Layout {
-  try {
-    const raw = window.localStorage?.getItem(STORAGE_KEY)
-    if (!raw) return DEFAULT_LAYOUT
-    const parsed = JSON.parse(raw) as Layout
-    // Own-key membership (not the `in` operator, which matches inherited
-    // prototype keys like "toString" and would let a crafted layout resolve
-    // to a non-widget and crash the render).
-    const valid = (arr: unknown): arr is WidgetId[] =>
-      Array.isArray(arr) && arr.every((x) => typeof x === 'string' && WIDGET_IDS.has(x))
-    if (valid(parsed.left) && valid(parsed.right)) {
-      // Guard against duplicate ids (duplicate React keys + wrong drag target).
-      const seen = new Set<WidgetId>()
-      const dedupe = (arr: WidgetId[]) => arr.filter((id) => !seen.has(id) && seen.add(id))
-      return { left: dedupe(parsed.left), right: dedupe(parsed.right) }
-    }
-  } catch {
-    /* ignore missing/malformed storage */
-  }
-  return DEFAULT_LAYOUT
-}
 
 // --- Drag & drop wrapper ----------------------------------------------------
 const DND_TYPE = 'dashboard-widget'
@@ -894,35 +876,38 @@ function AddWidgetMenu({ available, onAdd }: { available: WidgetId[]; onAdd: (id
 export function HomeScreen() {
   // Home is always the platform-level view; the org-level toggle was removed.
   const [editing, setEditing] = useState(false)
-  const [layout, setLayout] = useState<Layout>(() => loadLayout())
+  const [viewsState, setViewsState] = useState<ViewsState>(() => loadViewsState())
   const [showGenerate, setShowGenerate] = useState(false)
-  const [previewLayout, setPreviewLayout] = useState<Layout | null>(null)
+  // The pending generated view awaiting Apply/Discard (null when not previewing).
+  const [previewView, setPreviewView] = useState<NewView | null>(null)
+
+  const activeView = getActiveView(viewsState)
+  // Preview overrides the active view (layout + role) until applied/discarded.
+  const activeRole = previewView ? previewView.role : activeView.role
+  const activeLayout = previewView ? previewView.layout : activeView.layout
+  const data = useMemo(() => deriveRoleData(DATA.platform, activeRole), [activeRole])
 
   const applyPreview = () => {
-    if (previewLayout) setLayout(previewLayout)
-    setPreviewLayout(null)
+    if (previewView) setViewsState((prev) => addView(prev, previewView))
+    setPreviewView(null)
     setShowGenerate(false)
   }
   const discardPreview = () => {
-    setPreviewLayout(null)
+    setPreviewView(null)
     setShowGenerate(false)
   }
-  const data = DATA.platform
 
   useEffect(() => {
-    try {
-      window.localStorage?.setItem(STORAGE_KEY, JSON.stringify(layout))
-    } catch {
-      /* ignore */
-    }
-  }, [layout])
+    persistViewsState(viewsState)
+  }, [viewsState])
 
-  const used = [...layout.left, ...layout.right]
+  const used = [...activeLayout.left, ...activeLayout.right]
   const available = (Object.keys(WIDGETS) as WidgetId[]).filter((id) => !used.includes(id))
 
   const moveWidget = (from: DragItem, toColumn: ColumnKey, toIndex: number) => {
-    setLayout((prev) => {
-      const next: Layout = { left: [...prev.left], right: [...prev.right] }
+    setViewsState((prev) => {
+      const cur = getActiveView(prev).layout
+      const next: Layout = { left: [...cur.left], right: [...cur.right] }
       const srcArr = next[from.column]
       const realIdx = srcArr.indexOf(from.id)
       if (realIdx === -1) return prev
@@ -930,28 +915,31 @@ export function HomeScreen() {
       const destArr = next[toColumn]
       const clamped = Math.max(0, Math.min(toIndex, destArr.length))
       destArr.splice(clamped, 0, from.id)
-      return next
+      return updateActiveLayout(prev, next)
     })
   }
 
   const removeWidget = (column: ColumnKey, index: number) => {
-    setLayout((prev) => {
-      const next: Layout = { left: [...prev.left], right: [...prev.right] }
+    setViewsState((prev) => {
+      const cur = getActiveView(prev).layout
+      const next: Layout = { left: [...cur.left], right: [...cur.right] }
       next[column].splice(index, 1)
-      return next
+      return updateActiveLayout(prev, next)
     })
   }
 
   const addWidget = (id: WidgetId) => {
-    setLayout((prev) => {
-      const target: ColumnKey = prev.left.length <= prev.right.length ? 'left' : 'right'
-      return { ...prev, [target]: [...prev[target], id] }
+    setViewsState((prev) => {
+      const cur = getActiveView(prev).layout
+      const target: ColumnKey = cur.left.length <= cur.right.length ? 'left' : 'right'
+      const next: Layout = { left: [...cur.left], right: [...cur.right] }
+      next[target].push(id)
+      return updateActiveLayout(prev, next)
     })
   }
 
-  const resetLayout = () => setLayout(DEFAULT_LAYOUT)
+  const resetLayout = () => setViewsState((prev) => updateActiveLayout(prev, DEFAULT_LAYOUT))
 
-  const activeLayout = previewLayout ?? layout
   const renderColumn = (column: ColumnKey) => (
     <div className="flex flex-col gap-4">
       {activeLayout[column].map((id, index) => (
@@ -971,9 +959,21 @@ export function HomeScreen() {
           {/* Greeting header */}
           <div className="mb-6 flex items-start justify-between">
             <div>
-              <p className="text-[26px] font-normal leading-8 tracking-[0.35px]" style={{ color: INK_SOFT }}>
-                {editing ? 'Customize your dashboard' : 'Good morning, Alex'}
-              </p>
+              <div className="flex items-center gap-3">
+                <p className="text-[26px] font-normal leading-8 tracking-[0.35px]" style={{ color: INK_SOFT }}>
+                  {editing ? 'Customize your dashboard' : 'Good morning, Alex'}
+                </p>
+                {!editing && !previewView && (
+                  <ViewSwitcher
+                    views={viewsState.views}
+                    activeId={viewsState.activeId}
+                    onSelect={(id) => setViewsState((p) => setActiveView(p, id))}
+                    onRename={(id, name) => setViewsState((p) => renameView(p, id, name))}
+                    onDelete={(id) => setViewsState((p) => deleteView(p, id))}
+                    onNew={() => setShowGenerate(true)}
+                  />
+                )}
+              </div>
               <p className="mt-1 text-[14px] font-normal tracking-[-0.154px]" style={{ color: MUTED }}>
                 {editing ? 'Drag widgets to reorder, remove them, or add new ones.' : "Here's what your agents need from you today."}
               </p>
@@ -992,7 +992,7 @@ export function HomeScreen() {
                 </>
               ) : (
                 <>
-                  {previewLayout && (
+                  {previewView && (
                     <span className="flex h-9 items-center gap-1.5 rounded-full px-3" style={{ backgroundColor: `${PURPLE}12` }}>
                       <Sparkles size={13} color={PURPLE} />
                       <span className="text-[12px] font-semibold" style={{ color: PURPLE }}>Preview</span>
@@ -1002,7 +1002,7 @@ export function HomeScreen() {
                     <Sparkles size={14} color={PURPLE} />
                     <span className="text-[13px] font-semibold" style={{ color: INK }}>Generate</span>
                   </button>
-                  {!previewLayout && (
+                  {!previewView && (
                     <button onClick={() => setEditing(true)} className="flex h-9 items-center gap-1.5 rounded-full border border-solid bg-white px-3.5 outline-none" style={{ borderColor: BORDER }} title="Customize dashboard">
                       <Pencil size={14} color={INK} />
                       <span className="text-[13px] font-semibold" style={{ color: INK }}>Customize</span>
@@ -1022,8 +1022,8 @@ export function HomeScreen() {
       </div>
       {showGenerate && (
         <GenerateHomePanel
-          hasPreview={previewLayout !== null}
-          onGenerate={setPreviewLayout}
+          hasPreview={previewView !== null}
+          onGenerate={setPreviewView}
           onApply={applyPreview}
           onDiscard={discardPreview}
           onClose={discardPreview}

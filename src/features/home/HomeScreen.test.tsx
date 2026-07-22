@@ -345,3 +345,47 @@ describe('Top intents brand breakdown', () => {
     expect(card.getAllByRole('button', { expanded: true })).toHaveLength(1)
   })
 })
+
+describe('HomeScreen — dashboard views', () => {
+  it('shows the view switcher with the Default view', () => {
+    render(<HomeScreen />)
+    const switcher = screen.getByTestId('view-switcher')
+    expect(switcher).toHaveTextContent('Default')
+  })
+
+  it('generating and applying creates a new active view named for the role', async () => {
+    const user = userEvent.setup()
+    render(<HomeScreen />)
+    await user.click(screen.getByRole('button', { name: /generate/i }))
+    const panel = screen.getByTestId('generate-home-panel')
+    await user.click(within(panel).getByRole('button', { name: /ops lead/i }))
+    await user.click(within(panel).getByRole('button', { name: /resolution & health/i }))
+    await user.click(within(panel).getByRole('button', { name: /generate my home/i }))
+    await user.click(within(panel).getByRole('button', { name: /^apply$/i }))
+    // The new view is active and appears in the switcher.
+    expect(screen.getByTestId('view-switcher')).toHaveTextContent('Ops lead')
+  })
+
+  it('switches back to the Default view from the switcher', async () => {
+    const user = userEvent.setup()
+    render(<HomeScreen />)
+    // Create + apply an Ops view first.
+    await user.click(screen.getByRole('button', { name: /generate/i }))
+    const panel = screen.getByTestId('generate-home-panel')
+    await user.click(within(panel).getByRole('button', { name: /ops lead/i }))
+    await user.click(within(panel).getByRole('button', { name: /resolution & health/i }))
+    await user.click(within(panel).getByRole('button', { name: /generate my home/i }))
+    await user.click(within(panel).getByRole('button', { name: /^apply$/i }))
+    // Open switcher and pick Default.
+    await user.click(within(screen.getByTestId('view-switcher')).getByRole('button', { name: /ops lead/i }))
+    await user.click(screen.getByRole('button', { name: /^Default$/ }))
+    expect(screen.getByTestId('view-switcher')).toHaveTextContent('Default')
+  })
+
+  it('the built-in Default view has no delete control', async () => {
+    const user = userEvent.setup()
+    render(<HomeScreen />)
+    await user.click(within(screen.getByTestId('view-switcher')).getByRole('button', { name: /default/i }))
+    expect(screen.queryByRole('button', { name: /delete default/i })).not.toBeInTheDocument()
+  })
+})
