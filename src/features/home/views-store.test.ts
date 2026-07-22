@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import {
   seedViewsState, getActiveView, addView, renameView, deleteView,
-  setActiveView, updateActiveLayout, type ViewsState,
+  setActiveView, updateActiveLayout, type ViewsState, type NewView,
 } from './views-store'
 import { DEFAULT_LAYOUT } from './dashboard-data'
 
-const gen = { name: 'Ops lead', role: 'ops' as const, layout: { left: ['health'], right: ['approvals'] } }
+const gen: NewView = { name: 'Ops lead', role: 'ops', layout: { left: ['health'], right: ['approvals'] } }
 
 describe('views-store', () => {
   it('seeds a single built-in Default view, active', () => {
