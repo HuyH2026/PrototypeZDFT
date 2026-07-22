@@ -1,21 +1,22 @@
-# Orchestrator Screen — Progress Ledger
+# AI Studio Topic Suggestions — Progress Ledger
 
-Branch: main (user consented to implement on main)
-Plan: docs/superpowers/plans/2026-07-21-orchestrator-screen.md
-Base (before Task 1): 12b96684
+Branch: worktree-ai-studio-suggestions
+Plan: docs/superpowers/plans/2026-07-22-ai-studio-topic-suggestions.md
+Base (before Task 1): dd0a827ece5572459caaf7ed715189556f56cdfb
+Baseline: 211/211 tests pass (excluding .claude worktree crawl)
 
 Tasks:
-- Task 1: complete (commit 8061200b, review clean — spec ✅, quality Approved; 6/6 tests, tsc OK)
-  Minors (deferred, match brief): OrchMetric.key typed string not literal union; tests use `!` after .find() (idiomatic for static-data tests).
-- Task 2: complete (commit 0d939396, review clean — spec ✅, quality Approved; 3/3 tests, tsc OK)
-  Minors (deferred): tests don't cover sentiment-smiley / absent-field cases; inline hex per CLAUDE.md convention.
-- Task 3: complete (commit 085833dd, review clean — spec ✅, quality Approved; 4/4 tests, tsc OK; no findings)
-- Task 4: complete (commit ec697c6a, review clean — spec ✅, quality Approved; 3/3 tests incl. onToggle callback, full suite 133/133, tsc OK; no findings)
-- Task 5: complete (commit a31ff239, review clean — spec ✅, quality Approved; 2/2 tests incl. toggle flip true→false→true, tsc OK; toolbar confirmed inert; no findings)
-- Task 6: complete (commit 025bb40a, review clean — spec ✅, quality Approved; full suite 138/138, tsc OK; BUILT set updated to prevent duplicate route; no findings)
+- Task 1: complete (commit 9129e6d5, review clean — spec ✅, quality ✅; 2/2 tests, tsc OK; no findings)
+- Task 2: complete (commit 8ad8a946, review clean — spec ✅, quality ✅; 3/3 org tests, tsc OK; net -84 lines; no findings)
+- Task 3: complete (commit b29a19a6, review clean — spec ✅, quality ✅; 3/3 tests, tsc OK; card 1 verbatim; no findings)
+- Task 4: complete (commit 5d4790a9, review clean — spec ✅, quality ✅; 2/2 tests, tsc OK; no findings)
+- Task 5: complete (commit 6b6a2f26, review clean — spec ✅, quality ✅; 3/3 tests incl. both-direction wrap, tsc OK; no findings)
+- Task 6: complete (commit 97f5f929, review clean — spec ✅, quality ✅; AppLayout 5/5 tests, full suite 223/223, tsc OK)
+  Note: implementer initially overwrote AppLayout.test.tsx (dropping 3 routing tests); controller restored them (renderAt + routes) and amended before review. No coverage lost.
 
-Feature commits (in order): 8061200b, 0d939396, 085833dd, ec697c6a, a31ff239, 025bb40a.
-ALL 6 TASKS COMPLETE. Full suite 138/138, tsc clean.
+Feature commits (in order): 9129e6d5, 8ad8a946, b29a19a6, 5d4790a9, 6b6a2f26, 97f5f929.
+ALL 6 TASKS COMPLETE. Full suite 223/223 (excl. .claude crawl), tsc clean.
 
-Final whole-feature review (Opus, base 12b96684..025bb40a, 6 commits): READY TO MERGE — yes. No Critical/Important. 21/21 orchestrator tests pass, tsc clean. Deferred minors triaged acceptable: OrchMetric.key string vs literal union (values pinned by test); toggle lacks focus-visible ring (repo-wide gap in all switches, not introduced here — future sweep); MetricStrip tests don't assert sentiment/absent-field branches (exercised at render). Ship it.
-Status: FEATURE COMPLETE + final review clean.
+Final whole-feature review (Opus, base dd0a827e..97f5f929, 6 commits): READY TO MERGE — yes. No Critical/Important. Minors (non-blocking):
+1. Double-panel on /organization route: OrganizationScreen renders its own AiStudioPanel (default open) inside <main>; opening the global TopBar panel there shows two AI Studio panels + duplicate a11y labels. Consistent with spec's global-scope decision; org panel predates this work. Follow-up: suppress global panel on /organization, or route the TopBar toggle to the org panel there.
+2. SuggestionCard pager buttons lack hover/focus-visible affordance (minor a11y polish).
