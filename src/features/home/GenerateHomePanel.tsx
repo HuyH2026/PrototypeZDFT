@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Check, Sparkles, X } from 'lucide-react'
-import type { Layout } from './dashboard-data'
+import type { NewView } from './views-store'
 import {
   generateLayout, ROLES, FOCUS_AREAS, type Role, type FocusArea,
 } from './generate-layout'
@@ -16,7 +16,7 @@ export function GenerateHomePanel({
   hasPreview, onGenerate, onApply, onDiscard, onClose,
 }: {
   hasPreview: boolean
-  onGenerate: (layout: Layout) => void
+  onGenerate: (view: NewView) => void
   onApply: () => void
   onDiscard: () => void
   onClose: () => void
@@ -32,7 +32,8 @@ export function GenerateHomePanel({
 
   const handleGenerate = () => {
     if (!role || focuses.length === 0) return
-    onGenerate(generateLayout({ role, focuses, prompt }))
+    const label = ROLES.find((r) => r.key === role)?.label ?? 'Generated'
+    onGenerate({ name: label, role, layout: generateLayout({ role, focuses, prompt }) })
   }
 
   return (
