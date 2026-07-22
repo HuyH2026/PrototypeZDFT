@@ -2,6 +2,7 @@
 // frozen CHANNELS const and extends each agent with editor fields (policy doc +
 // canvas blocks) and create-form metadata. Pure reducers here are unit-tested
 // without jsdom; the React hook (below) wires them to state + localStorage.
+import { useCallback, useMemo, useState } from 'react'
 import { CHANNELS, type Agent, type ChannelKey } from './agent-builder-data'
 
 export type StepType =
@@ -133,3 +134,73 @@ export function seedAgents(): StoredAgent[] {
   }
   return agents
 }
+
+const STORAGE_KEY = 'agent-builder-store-v1'
+const STEP_TITLE: Record<StepType, string> = STEP_TYPES.reduce(
+  (acc, s) => ({ ...acc, [s.type]: s.label }), {} as Record<StepType, string>,
+)
+
+export type CreateAgentFields = {
+  name: string
+  channel: ChannelKey
+  universalBrand: boolean
+  tags: string[]
+  triggeredWhen: string
+  trainingPhrases: string[]
+}
+
+function loadAgents(): StoredAgent[] {
+  try {
+    const raw = window.localStorage?.getItem(STORAGE_KEY)
+    if (raw) {
+      const parsed = JSON.parse(raw) as StoredAgent[]
+      if (Array.isArray(parsed) && parsed.every((a) => a && typeof a.id === 'string')) {
+        syncSeq(parsed)
+        return parsed
+      }
+    }
+  } catch {
+    /* ignore missing/malformed storage */
+  }
+  const seeded = seedAgents()
+  syncSeq(seeded)
+  return seeded
+}
+
+export function useAgentStore() {
+  const [agents, setAgents] = useState<StoredAgent[]>(() => loadAgents())
+
+  const persist = useCallback((next: StoredAgent[]) => {
+    setAgents(next)
+    try {
+      window.localStorage?.setItem(STORAGE_KEY, JSON.stringify(next))
+    } catch {
+      /* ignore quota/availability errors */
+    }
+  }, [])
+
+  return useMemo(() => ({
+    agents,
+    getAgent: (id: string) => agents.find((a) => a.id === id),
+    createAgent: (fields: CreateAgentFields) => {
+      const id = nextId('agent')
+      const agent: StoredAgent = {
+        id, name: fields.name, on: true, isSubagent: false, type: 'With intent',
+        conversations: 0, deflections: 0, deflectionRate: '0%', csat: 0,
+        channel: fields.channel, tags: fields.tags,
+        universalBrand: fields.universalBrand, triggeredWhen: fields.triggeredWhen,
+        trainingPhrases: fields.trainingPhrases,
+        policy: { title: 'Autoflow policy', segments: [{ kind: 'prose', id: nextId('p'), text: '' }] },
+        blocks: [],
+      }
+      persist([...agents, agent])
+      return id
+    },
+    updateAgent: (id: string, patch: Partial<StoredAgent>) =>
+      persist(agents.map((a) => (a.id === id ? { ...a, ...patch } : a))),
+    toggleAgent: (id: string) =>
+      persist(agents.map((a) => (a.id === id ? { ...a, on: !a.on } : a))),
+  }), [agents, persist])
+}
+
+export { STEP_TITLE }
