@@ -118,7 +118,7 @@ function SpotlightRowShell({
 }) {
   return (
     <div className="flex items-center gap-3 py-3" style={{ borderTop: first ? 'none' : `1px solid ${BORDER}` }}>
-      <span className="w-4 shrink-0 text-[15px] font-semibold" style={{ color: MUTED }}>{rank}</span>
+      <span className="w-6 shrink-0 text-[15px] font-semibold" style={{ color: MUTED }}>{rank}</span>
       <div className="min-w-0 flex-1">
         <p className="truncate text-[13px] font-semibold leading-[18px]" style={{ color: INK }}>{title}</p>
         <p className="mt-0.5 truncate text-[11px] font-medium" style={{ color: MUTED }}>{meta}</p>
