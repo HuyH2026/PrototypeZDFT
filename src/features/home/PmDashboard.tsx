@@ -14,6 +14,7 @@ import {
   type PmIntegration, type PmTool,
 } from './pm-integration'
 import type { PmWidgetId } from './generate-layout'
+import { PM_WIDGET_ID_LIST } from './generate-layout'
 
 // Palette — mirror HomeScreen's inline dashboard hues (same hex values).
 const INK = '#2f3130'
@@ -274,7 +275,7 @@ function OpportunityCard({
             </button>
           )}
           <button className="flex h-8 items-center rounded-full border border-solid bg-white px-3.5 outline-none" style={{ borderColor: BORDER }}>
-            <span className="text-[12px] font-semibold" style={{ color: INK }}>View in Jira</span>
+            <span className="text-[12px] font-semibold" style={{ color: INK }}>View in {toolLabel ?? 'Jira'}</span>
           </button>
           <button className="flex h-8 items-center gap-1.5 rounded-full border border-solid bg-white px-3.5 outline-none" style={{ borderColor: BORDER }}>
             <Sparkles size={13} color={PURPLE} />
@@ -349,14 +350,16 @@ function PmFeed() {
                 <span className="text-[12px] font-semibold" style={{ color: GREEN }}>Connected: {PM_TOOL_LABEL[integration.tool]}</span>
               </span>
             ) : (
-              <button
-                onClick={() => setPickerOpen((o) => !o)}
-                className="relative flex h-8 items-center gap-1.5 rounded-full px-3.5 outline-none"
-                style={{ backgroundColor: INK }}
-              >
-                <Plug size={13} color="#fff" />
-                <span className="text-[12px] font-semibold text-white">Connect PM tool</span>
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setPickerOpen((o) => !o)}
+                  className="flex h-8 items-center gap-1.5 rounded-full px-3.5 outline-none"
+                  style={{ backgroundColor: INK }}
+                >
+                  <Plug size={13} color="#fff" />
+                  <span className="text-[12px] font-semibold text-white">Connect PM tool</span>
+                </button>
+              </div>
             )}
             <div className="flex items-center gap-0.5 rounded-full border border-solid p-0.5" style={{ borderColor: BORDER }}>
               <button
@@ -380,19 +383,21 @@ function PmFeed() {
         }
       />
 
-      {/* Connect picker (outside-click scrim) */}
-      {pickerOpen && (
+      {/* Connect picker (inside relative wrapper) */}
+      {pickerOpen && integration && !integration.connected && (
         <>
           <div className="fixed inset-0 z-[60]" onClick={() => setPickerOpen(false)} />
-          <div className="absolute right-5 z-[61] mt-1 w-52 rounded-xl border border-solid bg-white py-1.5 shadow-[0px_16px_24px_0px_rgba(10,13,14,0.16)]" style={{ borderColor: BORDER }}>
-            {PM_TOOLS.map((t) => (
-              <button key={t.key} onClick={() => connect(t.key)} className="flex w-full items-center gap-2 px-3 py-2 text-left outline-none hover:bg-[#f5f5f4]">
-                <Plug size={14} color={MUTED} />
-                <span className="text-[13px] font-normal" style={{ color: INK }}>{t.label}</span>
-              </button>
-            ))}
-          </div>
         </>
+      )}
+      {pickerOpen && integration && !integration.connected && (
+        <div className="absolute right-0 top-[42px] z-[61] w-52 rounded-xl border border-solid bg-white py-1.5 shadow-[0px_16px_24px_0px_rgba(10,13,14,0.16)]" style={{ borderColor: BORDER }}>
+          {PM_TOOLS.map((t) => (
+            <button key={t.key} onClick={() => connect(t.key)} className="flex w-full items-center gap-2 px-3 py-2 text-left outline-none hover:bg-[#f5f5f4]">
+              <Plug size={14} color={MUTED} />
+              <span className="text-[13px] font-normal" style={{ color: INK }}>{t.label}</span>
+            </button>
+          ))}
+        </div>
       )}
 
       {/* Filter bar */}
@@ -582,7 +587,7 @@ export function PmDashboard(props: {
   onRemove: (id: PmWidgetId) => void
 }) {
   const { pmLayout, editing, onMove, onRemove } = props
-  const items = useMemo(() => pmLayout.filter((id) => id in PM_WIDGETS), [pmLayout])
+  const items = useMemo(() => pmLayout.filter((id) => PM_WIDGET_ID_LIST.includes(id)), [pmLayout])
 
   return (
     <div data-testid="screen-pm" className="grid grid-cols-2 gap-4">
