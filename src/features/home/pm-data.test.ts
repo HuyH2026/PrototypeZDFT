@@ -15,18 +15,32 @@ describe('pm-data', () => {
     expect(PM_DATA.lifecycle.every((s) => s.amountValue > 0 && s.recCount > 0)).toBe(true)
   })
 
-  it('every spotlight item declares at least one filter tab and a valid stage', () => {
+  it('each spotlight tab is a non-empty curated list', () => {
+    expect(PM_DATA.spotlight.trending.length).toBeGreaterThan(0)
+    expect(PM_DATA.spotlight.atRisk.length).toBeGreaterThan(0)
+    expect(PM_DATA.spotlight.asking.length).toBeGreaterThan(0)
+  })
+
+  it('trending rows carry a valid lifecycle stage and a trend %', () => {
     const stages = new Set<LifecycleStageKey>(['detected', 'planned', 'in-dev', 'shipped'])
-    expect(PM_DATA.spotlight.length).toBeGreaterThan(0)
-    for (const item of PM_DATA.spotlight) {
-      expect(item.filters.length).toBeGreaterThan(0)
+    for (const item of PM_DATA.spotlight.trending) {
       expect(stages.has(item.stage)).toBe(true)
+      expect(item.trendPct).toMatch(/%$/)
     }
   })
 
-  it('each spotlight tab has at least one item', () => {
-    for (const tab of ['trending', 'at-risk', 'asking'] as const) {
-      expect(PM_DATA.spotlight.some((i) => i.filters.includes(tab))).toBe(true)
+  it('at-risk rows carry a bug/gap tag and a revenue amount', () => {
+    for (const item of PM_DATA.spotlight.atRisk) {
+      expect(['bug', 'gap']).toContain(item.tag)
+      expect(item.amount).toMatch(/^\$/)
+    }
+  })
+
+  it('asking rows carry a valid lifecycle stage and a revenue amount', () => {
+    const stages = new Set<LifecycleStageKey>(['detected', 'planned', 'in-dev', 'shipped'])
+    for (const item of PM_DATA.spotlight.asking) {
+      expect(stages.has(item.stage)).toBe(true)
+      expect(item.amount).toMatch(/^\$/)
     }
   })
 

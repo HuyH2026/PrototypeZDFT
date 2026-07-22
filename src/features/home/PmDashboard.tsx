@@ -5,8 +5,9 @@ import {
 } from 'lucide-react'
 import { useDrag, useDrop } from 'react-dnd'
 import {
-  PM_DATA, PM_NOW, SPOTLIGHT_TABS, LIFECYCLE_LABEL,
-  type PmKpi, type SpotlightItem, type LifecycleStage, type Opportunity,
+  PM_DATA, PM_NOW, SPOTLIGHT_TABS, SPOTLIGHT_TAB_COLOR, LIFECYCLE_LABEL,
+  type PmKpi, type TrendingItem, type AtRiskItem, type AskingItem, type SpotlightTag,
+  type LifecycleStage, type Opportunity,
   type SpotlightFilter, type LifecycleStageKey, type OppType,
 } from './pm-data'
 import {
@@ -108,47 +109,121 @@ function PmKpis() {
 }
 
 // --- Spotlight --------------------------------------------------------------
-function SpotlightRow({ item }: { item: SpotlightItem }) {
-  const trendColor = item.trendGood ? GREEN : RED
+// The row shell is shared; each tab supplies its own right-hand column. The
+// meta line and title sit under a rank chip, matching the Figma across tabs.
+function SpotlightRowShell({
+  rank, title, meta, right, first,
+}: {
+  rank: number; title: string; meta: string; right: ReactNode; first: boolean
+}) {
   return (
-    <div className="flex items-start gap-3 py-3" style={{ borderTop: item.rank === 1 ? 'none' : `1px solid ${BORDER}` }}>
-      <span className="flex size-6 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold" style={{ backgroundColor: '#f2f1ef', color: INK }}>
-        {item.rank}
-      </span>
+    <div className="flex items-center gap-3 py-3" style={{ borderTop: first ? 'none' : `1px solid ${BORDER}` }}>
+      <span className="w-4 shrink-0 text-[15px] font-semibold" style={{ color: MUTED }}>{rank}</span>
       <div className="min-w-0 flex-1">
-        <p className="text-[13px] font-semibold leading-[17px]" style={{ color: INK }}>{item.title}</p>
-        <div className="mt-1 flex items-center gap-2">
-          <StageBadge stage={item.stage} />
-          <span className="truncate text-[11px] font-normal" style={{ color: MUTED }}>{item.meta}</span>
-        </div>
+        <p className="truncate text-[13px] font-semibold leading-[18px]" style={{ color: INK }}>{title}</p>
+        <p className="mt-0.5 truncate text-[11px] font-medium" style={{ color: MUTED }}>{meta}</p>
       </div>
-      <span className="flex shrink-0 items-center gap-0.5" style={{ color: trendColor }}>
-        {item.up ? <TrendingUp size={13} /> : <TrendingDown size={13} />}
-        <span className="text-[12px] font-semibold">{item.trendPct}</span>
-      </span>
+      <div className="flex shrink-0 items-center gap-3">{right}</div>
     </div>
+  )
+}
+
+// BUG/GAP tag for the At-risk tab (GAP is new in this design).
+const SPOTLIGHT_TAG_META: Record<SpotlightTag, { label: string; color: string; bg: string }> = {
+  bug: { label: 'BUG', color: RED, bg: `${RED}18` },
+  gap: { label: 'GAP', color: '#ac5918', bg: '#ffe6cb' },
+}
+
+function SpotlightTagPill({ tag }: { tag: SpotlightTag }) {
+  const meta = SPOTLIGHT_TAG_META[tag]
+  return (
+    <span className="flex h-[22px] items-center justify-center rounded-[5px] px-2.5" style={{ backgroundColor: meta.bg }}>
+      <span className="text-[11px] font-semibold tracking-[0.2px]" style={{ color: meta.color }}>{meta.label}</span>
+    </span>
+  )
+}
+
+function TrendingRows({ items }: { items: TrendingItem[] }) {
+  return (
+    <>
+      {items.map((item, i) => {
+        const trendColor = item.trendGood ? GREEN : RED
+        return (
+          <SpotlightRowShell
+            key={item.id} rank={item.rank} title={item.title} meta={item.meta} first={i === 0}
+            right={
+              <>
+                <StageBadge stage={item.stage} />
+                <span className="flex w-[52px] items-center justify-end gap-0.5" style={{ color: trendColor }}>
+                  {item.up ? <TrendingUp size={13} /> : <TrendingDown size={13} />}
+                  <span className="text-[13px] font-semibold">{item.trendPct}</span>
+                </span>
+              </>
+            }
+          />
+        )
+      })}
+    </>
+  )
+}
+
+function AtRiskRows({ items }: { items: AtRiskItem[] }) {
+  return (
+    <>
+      {items.map((item, i) => (
+        <SpotlightRowShell
+          key={item.id} rank={item.rank} title={item.title} meta={item.meta} first={i === 0}
+          right={
+            <>
+              <SpotlightTagPill tag={item.tag} />
+              <span className="w-[52px] text-right text-[14px] font-semibold" style={{ color: INK }}>{item.amount}</span>
+            </>
+          }
+        />
+      ))}
+    </>
+  )
+}
+
+function AskingRows({ items }: { items: AskingItem[] }) {
+  return (
+    <>
+      {items.map((item, i) => (
+        <SpotlightRowShell
+          key={item.id} rank={item.rank} title={item.title} meta={item.meta} first={i === 0}
+          right={
+            <>
+              <StageBadge stage={item.stage} />
+              <span className="w-[52px] text-right text-[14px] font-semibold" style={{ color: BLUE }}>{item.amount}</span>
+            </>
+          }
+        />
+      ))}
+    </>
   )
 }
 
 function PmSpotlight() {
   const [tab, setTab] = useState<SpotlightFilter>('trending')
-  const rows = PM_DATA.spotlight.filter((s) => s.filters.includes(tab))
   return (
     <PmCard data-testid="pm-spotlight" className="h-full">
       <SectionLabel
         title="Spotlight"
         action={
-          <div className="flex items-center gap-1 rounded-full border border-solid p-0.5" style={{ borderColor: BORDER }}>
+          <div className="flex items-center gap-2">
             {SPOTLIGHT_TABS.map((t) => {
               const on = tab === t.key
+              const accent = SPOTLIGHT_TAB_COLOR[t.key]
               return (
                 <button
                   key={t.key}
                   onClick={() => setTab(t.key)}
-                  className="h-6 rounded-full px-2.5 outline-none transition-colors"
-                  style={{ backgroundColor: on ? INK : 'transparent' }}
+                  aria-pressed={on}
+                  className="flex h-7 items-center gap-1.5 rounded-full px-2.5 outline-none transition-colors"
+                  style={{ backgroundColor: on ? accent : '#f2f4f7' }}
                 >
-                  <span className="text-[12px] font-semibold" style={{ color: on ? '#fff' : MUTED }}>{t.label}</span>
+                  <span className="size-1.5 rounded-full" style={{ backgroundColor: on ? '#fff' : accent }} />
+                  <span className="text-[12px] font-semibold" style={{ color: on ? '#fff' : INK }}>{t.label}</span>
                 </button>
               )
             })}
@@ -156,7 +231,9 @@ function PmSpotlight() {
         }
       />
       <div className="flex flex-col">
-        {rows.map((item) => <SpotlightRow key={item.id} item={item} />)}
+        {tab === 'trending' && <TrendingRows items={PM_DATA.spotlight.trending} />}
+        {tab === 'at-risk' && <AtRiskRows items={PM_DATA.spotlight.atRisk} />}
+        {tab === 'asking' && <AskingRows items={PM_DATA.spotlight.asking} />}
       </div>
     </PmCard>
   )

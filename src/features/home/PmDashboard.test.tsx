@@ -47,16 +47,22 @@ describe('PmDashboard', () => {
     }
   })
 
-  it('filters spotlight items when the At risk tab is selected', async () => {
+  it('swaps the spotlight to its own curated list per tab', async () => {
     const user = userEvent.setup()
     renderPm()
     const spotlight = screen.getByTestId('pm-spotlight')
-    // SCIM (asking-only) shows under Trending initially.
-    expect(within(spotlight).getByText(/SCIM auto-provisioning/i)).toBeInTheDocument()
-    await user.click(within(spotlight).getByRole('button', { name: /^At risk$/i }))
-    // At risk tab excludes the asking-only SCIM item.
-    expect(within(spotlight).queryByText(/SCIM auto-provisioning/i)).not.toBeInTheDocument()
+    // Trending (default): momentum list with a trend % and the Android crash item.
     expect(within(spotlight).getByText(/Android 15 app crashes/i)).toBeInTheDocument()
+    expect(within(spotlight).getByText('140%')).toBeInTheDocument()
+    // At risk: distinct list with BUG/GAP tags + revenue amounts (Android item is gone).
+    await user.click(within(spotlight).getByRole('button', { name: /^At risk$/i }))
+    expect(within(spotlight).queryByText(/Android 15 app crashes/i)).not.toBeInTheDocument()
+    expect(within(spotlight).getByText('GAP')).toBeInTheDocument()
+    expect(within(spotlight).getByText('$840K')).toBeInTheDocument()
+    // Asking: growth list keyed on deals (Salesforce sync) with asking amounts.
+    await user.click(within(spotlight).getByRole('button', { name: /^Asking$/i }))
+    expect(within(spotlight).getByText(/Salesforce two-way contact sync/i)).toBeInTheDocument()
+    expect(within(spotlight).getByText('$610K')).toBeInTheDocument()
   })
 
   it('filters the feed by search text', async () => {
