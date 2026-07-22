@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { CHANNEL_TABS, SEED_BRANDS, BRAND_LIST_LABELS, RAIL_SECTIONS } from './config-data'
+import { CHANNEL_TABS, SEED_BRANDS, BRAND_LIST_LABELS, RAIL_SECTIONS, summarizeTags } from './config-data'
 
 describe('config-data', () => {
   it('has four channel tabs starting with widget', () => {
@@ -21,8 +21,15 @@ describe('config-data', () => {
     expect(BRAND_LIST_LABELS.partner).toBe('Partner')
   })
 
-  it('rail sections lead with brands and each carries an icon', () => {
+  it('rail sections lead with brands and each carries a Garden icon name', () => {
     expect(RAIL_SECTIONS[0].id).toBe('brands')
-    expect(RAIL_SECTIONS.every((s) => typeof s.icon === 'function' || typeof s.icon === 'object')).toBe(true)
+    expect(RAIL_SECTIONS.every((s) => typeof s.icon === 'string' && s.icon.length > 0)).toBe(true)
+  })
+
+  it('summarizes tags with a +N overflow past two', () => {
+    expect(summarizeTags([])).toBe('')
+    expect(summarizeTags(['A'])).toBe('A')
+    expect(summarizeTags(['A', 'B'])).toBe('A, B')
+    expect(summarizeTags(['A', 'B', 'C', 'D'])).toBe('A, B, +2')
   })
 })

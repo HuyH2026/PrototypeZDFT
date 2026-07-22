@@ -1,7 +1,6 @@
 // Mock data + types for the AI Agents → Configuration (Widget) screen.
 // Frontend-only; no backend. Values mirror the Figma design (frame Config_01).
-import type { LucideIcon } from 'lucide-react'
-import { Users, Link2, Heart, BadgeCheck, Smile, Megaphone, Code2, Globe, MessageSquare } from 'lucide-react'
+import type { GardenIconName } from '@/components/garden-icon'
 
 export type ChannelTab = { id: 'widget' | 'voice' | 'webcall' | 'headless'; label: string }
 
@@ -36,18 +35,18 @@ export const BRAND_LIST_LABELS: Record<string, string> = { vip: 'VIP', member: '
 // Right-edge customization rail. Only 'brands' has designed panel content; the
 // rest highlight on click but do not swap the panel in this phase. Sections from
 // 'code' onward form a trailing group rendered below a divider.
-export type RailSection = { id: string; icon: LucideIcon; label: string }
+export type RailSection = { id: string; icon: GardenIconName; label: string }
 
 export const RAIL_SECTIONS: RailSection[] = [
-  { id: 'brands', icon: Users, label: 'Brands' },
-  { id: 'links', icon: Link2, label: 'Links' },
-  { id: 'sentiment', icon: Heart, label: 'Sentiment' },
-  { id: 'license', icon: BadgeCheck, label: 'License' },
-  { id: 'mood', icon: Smile, label: 'Mood' },
-  { id: 'announce', icon: Megaphone, label: 'Announcements' },
-  { id: 'code', icon: Code2, label: 'Code' },
-  { id: 'locale', icon: Globe, label: 'Locale' },
-  { id: 'messages', icon: MessageSquare, label: 'Messages' },
+  { id: 'brands', icon: 'user-group-stroke', label: 'Brands' },
+  { id: 'links', icon: 'link-stroke', label: 'Links' },
+  { id: 'sentiment', icon: 'heart-stroke', label: 'Sentiment' },
+  { id: 'license', icon: 'check-badge-stroke', label: 'License' },
+  { id: 'mood', icon: 'smiley-stroke', label: 'Mood' },
+  { id: 'announce', icon: 'megaphone-stroke', label: 'Announcements' },
+  { id: 'code', icon: 'markup-stroke', label: 'Code' },
+  { id: 'locale', icon: 'globe-stroke', label: 'Locale' },
+  { id: 'messages', icon: 'speech-bubble-stroke', label: 'Messages' },
 ]
 
 // First section id in the trailing group (a divider is rendered before it).
@@ -55,3 +54,11 @@ export const RAIL_TRAILING_START = 'code'
 
 // Suggested tags for the (decorative) "Assign tags" dropdown.
 export const SUGGESTED_TAGS = ['Existing Tag 1', 'Existing Tag 2', 'Existing Tag 3', 'Existing Tag 4']
+
+// Compact summary of a brand's tags for the filter row above the preview
+// (e.g. ['A','B','C','D'] → "A, B, +2"). Empty when the brand has no tags.
+export function summarizeTags(tags: string[]): string {
+  if (tags.length === 0) return ''
+  if (tags.length <= 2) return tags.join(', ')
+  return `${tags.slice(0, 2).join(', ')}, +${tags.length - 2}`
+}
