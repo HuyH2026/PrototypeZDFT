@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState, type ReactNode } from 'react'
 import {
-  ArrowDownRight, ArrowUpRight, Bug, Check, ChevronDown, GripVertical, LayoutGrid,
+  ArrowDownRight, ArrowUpRight, Check, ChevronDown, GripVertical, LayoutGrid,
   List, Plug, Search, Sparkles, TrendingDown, TrendingUp, Users, X,
 } from 'lucide-react'
 import { useDrag, useDrop } from 'react-dnd'
@@ -14,19 +14,12 @@ import {
   PM_TOOLS, PM_TOOL_LABEL, loadPmIntegration, persistPmIntegration,
   type PmIntegration, type PmTool,
 } from './pm-integration'
+import {
+  INK, INK_SOFT, MUTED, BORDER, BLUE, GREEN, RED, PURPLE,
+  ImpactDonut, STAGE_COLOR, StageBadge, TypeTag,
+} from './pm-ui'
 import type { PmWidgetId } from './generate-layout'
 import { PM_WIDGET_ID_LIST } from './generate-layout'
-
-// Palette — mirror HomeScreen's inline dashboard hues (same hex values).
-const INK = '#2f3130'
-const INK_SOFT = '#2f3941'
-const MUTED = '#8b8e89'
-const BORDER = '#e2e0dd'
-const BLUE = '#1f73b7'
-const GREEN = '#0f8a5f'
-const AMBER = '#c8792b'
-const RED = '#c8402f'
-const PURPLE = '#724be8'
 
 const DAY = 86400000
 
@@ -45,38 +38,6 @@ function SectionLabel({ title, action }: { title: string; action?: ReactNode }) 
       <p className="text-[15px] font-semibold tracking-[-0.154px]" style={{ color: INK }}>{title}</p>
       {action}
     </div>
-  )
-}
-
-// --- Impact donut (deterministic, no chart lib) -----------------------------
-function ImpactDonut({ value }: { value: number }) {
-  const r = 30, c = 2 * Math.PI * r
-  const dash = (value / 100) * c
-  const color = value >= 80 ? GREEN : value >= 60 ? BLUE : AMBER
-  return (
-    <svg width="72" height="72" viewBox="0 0 72 72" aria-label={`Impact ${value}`}>
-      <circle cx="36" cy="36" r={r} fill="none" stroke="#efeeec" strokeWidth="8" />
-      <circle cx="36" cy="36" r={r} fill="none" stroke={color} strokeWidth="8"
-        strokeDasharray={`${dash} ${c - dash}`} strokeLinecap="round" transform="rotate(-90 36 36)" />
-      <text x="36" y="41" textAnchor="middle" fontSize="18" fontWeight="600" fill={INK}>{value}</text>
-    </svg>
-  )
-}
-
-// --- Stage badge ------------------------------------------------------------
-const STAGE_COLOR: Record<LifecycleStageKey, string> = {
-  detected: MUTED,
-  planned: PURPLE,
-  'in-dev': GREEN,
-  shipped: INK,
-}
-
-function StageBadge({ stage }: { stage: LifecycleStageKey }) {
-  const color = STAGE_COLOR[stage]
-  return (
-    <span className="flex h-[20px] items-center rounded-full px-2" style={{ backgroundColor: `${color}18` }}>
-      <span className="text-[11px] font-semibold" style={{ color }}>{LIFECYCLE_LABEL[stage]}</span>
-    </span>
   )
 }
 
@@ -266,17 +227,6 @@ function PmLifecycle() {
 }
 
 // --- Opportunity card -------------------------------------------------------
-function TypeTag({ type }: { type: OppType }) {
-  const isBug = type === 'bug'
-  const color = isBug ? RED : BLUE
-  return (
-    <span className="flex h-[20px] items-center gap-1 rounded-full px-2" style={{ backgroundColor: `${color}18` }}>
-      {isBug ? <Bug size={11} color={color} /> : <Sparkles size={11} color={color} />}
-      <span className="text-[10px] font-semibold uppercase tracking-[0.4px]" style={{ color }}>{isBug ? 'Bug' : 'Request'}</span>
-    </span>
-  )
-}
-
 function OpportunityCard({
   opp, integration, added, onAdd, onConnect, viewMode,
 }: {
