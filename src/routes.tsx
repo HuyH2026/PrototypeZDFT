@@ -9,6 +9,7 @@ import { CxJourneyView } from '@/features/insights/cx-journey/CxJourneyView'
 import { AiAgentsScreen } from '@/features/ai-agents/AiAgentsScreen'
 import { AgentBuilderScreen } from '@/features/ai-agents/AgentBuilderScreen'
 import { ConfigurationView } from '@/features/ai-agents/configuration/ConfigurationView'
+import { AgentEditorScreen } from '@/features/ai-agents/editor/AgentEditorScreen'
 import { OrganizationScreen } from '@/features/organization/OrganizationScreen'
 import { CreateOrgFlow } from '@/features/organization/CreateOrgFlow'
 import { OrchestratorScreen } from '@/features/orchestrator/OrchestratorScreen'
@@ -49,6 +50,7 @@ export const routes: RouteObject[] = [
               { path: 'configuration', element: <ConfigurationView /> },
               { path: 'agent-builder', element: <AgentBuilderScreen /> },
               { path: 'qa', element: <PlaceholderScreen title="QA" /> },
+              { path: ':agentId', element: <AgentEditorScreen /> },
             ],
           },
           { path: 'organization', element: <OrganizationScreen /> },
