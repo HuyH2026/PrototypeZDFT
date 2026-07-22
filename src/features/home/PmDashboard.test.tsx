@@ -3,6 +3,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
+import { MemoryRouter } from 'react-router'
 import { PmDashboard } from './PmDashboard'
 import { DEFAULT_PM_LAYOUT } from './generate-layout'
 
@@ -10,9 +11,11 @@ function renderPm(editing = false) {
   const onMove = vi.fn()
   const onRemove = vi.fn()
   render(
-    <DndProvider backend={HTML5Backend}>
-      <PmDashboard pmLayout={[...DEFAULT_PM_LAYOUT]} editing={editing} onMove={onMove} onRemove={onRemove} />
-    </DndProvider>,
+    <MemoryRouter>
+      <DndProvider backend={HTML5Backend}>
+        <PmDashboard pmLayout={[...DEFAULT_PM_LAYOUT]} editing={editing} onMove={onMove} onRemove={onRemove} />
+      </DndProvider>
+    </MemoryRouter>,
   )
   return { onMove, onRemove }
 }
@@ -97,5 +100,21 @@ describe('PmDashboard', () => {
     expect(removeButtons.length).toBeGreaterThan(0)
     await user.click(removeButtons[0])
     expect(onRemove).toHaveBeenCalled()
+  })
+
+  it('feed cards link to the opportunity detail route', () => {
+    renderPm()
+    const feed = screen.getByTestId('pm-feed')
+    const samlLink = within(feed).getByRole('link', { name: /SAML SSO drops users/i })
+    expect(samlLink).toHaveAttribute('href', '/opportunity/o1')
+  })
+
+  it('mapped spotlight rows link to detail; unmapped rows do not', () => {
+    renderPm()
+    const spotlight = screen.getByTestId('pm-spotlight')
+    // Trending default: SCIM row (t3 → o2) is a link; Android crash (t1) is not.
+    const scimLink = within(spotlight).getByRole('link', { name: /SCIM auto-provisioning/i })
+    expect(scimLink).toHaveAttribute('href', '/opportunity/o2')
+    expect(within(spotlight).queryByRole('link', { name: /Android 15 app crashes/i })).toBeNull()
   })
 })
