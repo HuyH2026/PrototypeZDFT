@@ -5,8 +5,8 @@ import { ViewSwitcher } from './ViewSwitcher'
 import type { DashboardView } from './views-store'
 
 const views: DashboardView[] = [
-  { id: 'v1', name: 'Default', role: null, layout: { left: [], right: [] }, builtIn: true },
-  { id: 'v2', name: 'Ops lead', role: 'ops', layout: { left: [], right: [] } },
+  { id: 'v1', name: 'Default', kind: 'grid', role: null, layout: { left: [], right: [] }, builtIn: true },
+  { id: 'v2', name: 'Ops lead', kind: 'grid', role: 'ops', layout: { left: [], right: [] } },
 ]
 
 function setup(overrides: Partial<React.ComponentProps<typeof ViewSwitcher>> = {}) {
