@@ -2,13 +2,15 @@
 // Frontend-only; no backend. Values mirror the Figma design (frame Config_01).
 import type { GardenIconName } from '@/components/garden-icon'
 
-export type ChannelTab = { id: 'widget' | 'voice' | 'webcall' | 'headless'; label: string }
+// `color` is the per-channel brand tint of the tab's icon (from Figma); it stays
+// applied whether or not the tab is active. No design token — brand-specific.
+export type ChannelTab = { id: 'widget' | 'voice' | 'webcall' | 'headless'; label: string; color: string }
 
 export const CHANNEL_TABS: ChannelTab[] = [
-  { id: 'widget', label: 'Widget' },
-  { id: 'voice', label: 'Voice' },
-  { id: 'webcall', label: 'Web Call' },
-  { id: 'headless', label: 'Headless' },
+  { id: 'widget', label: 'Widget', color: '#e05c34' },
+  { id: 'voice', label: 'Voice', color: '#be297b' },
+  { id: 'webcall', label: 'Web Call', color: '#7c1d79' },
+  { id: 'headless', label: 'Headless', color: '#2f99b3' },
 ]
 
 // A brand a customer can configure a widget for. `swatch` is the list dot color;
@@ -41,12 +43,14 @@ export const RAIL_SECTIONS: RailSection[] = [
   { id: 'brands', icon: 'user-group-stroke', label: 'Brands' },
   { id: 'links', icon: 'link-stroke', label: 'Links' },
   { id: 'sentiment', icon: 'heart-stroke', label: 'Sentiment' },
-  { id: 'license', icon: 'check-badge-stroke', label: 'License' },
+  { id: 'license', icon: 'credit-card-stroke', label: 'License' },
   { id: 'mood', icon: 'smiley-stroke', label: 'Mood' },
   { id: 'announce', icon: 'megaphone-stroke', label: 'Announcements' },
   { id: 'code', icon: 'markup-stroke', label: 'Code' },
-  { id: 'locale', icon: 'globe-stroke', label: 'Locale' },
-  { id: 'messages', icon: 'speech-bubble-stroke', label: 'Messages' },
+  { id: 'appearance', icon: 'lightbulb-stroke', label: 'Appearance' },
+  { id: 'install', icon: 'download-stroke', label: 'Install' },
+  { id: 'messages', icon: 'speech-bubble-lightning-stroke', label: 'Messages' },
+  { id: 'more', icon: 'overflow-stroke', label: 'More' },
 ]
 
 // First section id in the trailing group (a divider is rendered before it).

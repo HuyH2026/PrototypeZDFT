@@ -10,8 +10,8 @@ type BrandListProps = {
 
 export function BrandList({ brands, selectedId, onSelect }: BrandListProps) {
   return (
-    <div className="flex w-[180px] shrink-0 flex-col">
-      <div className="px-3 pb-6 pt-1">
+    <div className="flex w-[180px] shrink-0 flex-col bg-white/80 pt-6 shadow-[1px_0_0_0_rgba(228,231,240,0.3)]">
+      <div className="px-3 pb-6">
         <button
           type="button"
           className="w-full rounded-full border border-grey-500 px-3 py-2 text-[12px] font-semibold text-ink"

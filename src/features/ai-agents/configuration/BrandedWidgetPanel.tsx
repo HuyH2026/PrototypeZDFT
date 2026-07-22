@@ -24,9 +24,9 @@ export function BrandedWidgetPanel({
   onToggleDefault,
 }: BrandedWidgetPanelProps) {
   return (
-    <div className="flex w-[484px] shrink-0">
-      {/* Config card */}
-      <div className="flex-1 rounded-[24px] border border-white/80 bg-white/80 p-6 shadow-[0_0_30px_0_rgba(0,0,0,0.08)] backdrop-blur-xl">
+    <div className="flex h-full w-[484px] shrink-0 overflow-hidden rounded-[24px] border border-white/80 bg-white/70 shadow-[0_0_30px_0_rgba(0,0,0,0.08)] backdrop-blur-[50px]">
+      {/* Config form */}
+      <div className="flex-1 overflow-y-auto pb-8 pl-10 pr-9 pt-6">
         <h2 className="text-[18px] tracking-[-0.45px] text-black">Branded widget</h2>
         <p className="mt-4 text-[14px] leading-5 text-grey-800">
           This section lets you create unique widget designs for different <span className="font-semibold">brands</span>, giving each a{' '}
@@ -104,12 +104,12 @@ export function BrandedWidgetPanel({
       </div>
 
       {/* Icon rail */}
-      <div className="flex w-[64px] shrink-0 flex-col items-center gap-2 border-l border-surface-border px-2 py-5">
+      <div className="flex w-[64px] shrink-0 flex-col items-center gap-2 border-l border-[#eaeaea] px-2 py-5">
         {RAIL_SECTIONS.map((section) => {
           const active = section.id === activeSection
           return (
             <div key={section.id} className="contents">
-              {section.id === RAIL_TRAILING_START ? <span className="my-1 w-6 border-t border-surface-border" /> : null}
+              {section.id === RAIL_TRAILING_START ? <span className="my-1 w-[30px] border-t border-[#e4e7f0]" /> : null}
               <button
                 type="button"
                 aria-label={section.label}
