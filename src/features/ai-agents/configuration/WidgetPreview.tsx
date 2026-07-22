@@ -1,6 +1,6 @@
 // Center column: a static mock of the live chat widget. Only the header brand
 // name is dynamic; the conversation is illustrative (no backend).
-import { Rocket } from 'lucide-react'
+import { Rocket, User } from 'lucide-react'
 
 export function WidgetPreview({ brandName }: { brandName: string }) {
   return (
@@ -16,9 +16,14 @@ export function WidgetPreview({ brandName }: { brandName: string }) {
           <p className="text-[13px] italic text-accent-blue">
             Personalize your chat by using the menu on the right
           </p>
-          <p className="max-w-[85%] self-start rounded-2xl bg-app-backdrop px-3 py-2 text-[13px] text-ink">
-            Bonjour, Hola, Hello and welcome! How can I help make your day awesome? What can I do to assist you today?
-          </p>
+          <div className="flex max-w-[85%] items-end gap-2 self-start">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-app-backdrop text-ink-muted">
+              <User className="h-4 w-4" />
+            </span>
+            <p className="rounded-2xl bg-app-backdrop px-3 py-2 text-[13px] text-ink">
+              Bonjour, Hola, Hello and welcome! How can I help make your day awesome? What can I do to assist you today?
+            </p>
+          </div>
           <p className="max-w-[85%] self-end rounded-2xl bg-[#1b1b1b] px-3 py-2 text-[13px] text-white">
             I have some issues with my account
           </p>

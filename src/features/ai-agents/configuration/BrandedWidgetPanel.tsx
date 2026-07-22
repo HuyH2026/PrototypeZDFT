@@ -3,7 +3,7 @@
 // customization sections. Presentational — all edits bubble up via handlers.
 // Only the 'brands' rail section has designed content; other sections highlight
 // on click but keep this same panel (deferred).
-import { Tag, X, ChevronDown } from 'lucide-react'
+import { Tag, ChevronDown } from 'lucide-react'
 import { type Brand, RAIL_SECTIONS, RAIL_TRAILING_START } from './config-data'
 
 type BrandedWidgetPanelProps = {
@@ -55,18 +55,20 @@ export function BrandedWidgetPanel({
             Tag this brand to associate it with specific segments. Editing and managing tags can be done within{' '}
             <span className="text-[#406cc4]">Global Tags.</span>
           </p>
-          <div className="mt-2 flex items-center justify-between rounded-lg border border-[#b7b7b3] bg-white px-4 py-2.5 text-[14px] text-[#9194a0]">
-            <span>Assign tags</span>
-            <ChevronDown className="h-4 w-4" />
-          </div>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {brand.tags.map((tag) => (
-              <span key={tag} className="inline-flex items-center gap-1.5 rounded-full border border-[#d2d9e5] bg-[#f2f4f7] px-2.5 py-1 text-[12px] text-black">
-                <Tag className="h-3.5 w-3.5" />
-                {tag}
-                <X className="h-3.5 w-3.5 text-ink-muted" />
-              </span>
-            ))}
+          <div className="mt-2 flex items-start gap-2 rounded-lg border border-[#b7b7b3] bg-white p-2.5">
+            {brand.tags.length > 0 ? (
+              <div className="flex flex-1 flex-wrap gap-2">
+                {brand.tags.map((tag) => (
+                  <span key={tag} className="inline-flex items-center gap-1.5 rounded-md border border-[#d2d9e5] bg-[#f2f4f7] px-2.5 py-1 text-[12px] text-black">
+                    <Tag className="h-3.5 w-3.5 text-accent-blue" />
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <span className="flex-1 py-1 text-[14px] text-[#9194a0]">Assign tags</span>
+            )}
+            <ChevronDown className="mt-1 h-4 w-4 shrink-0 text-ink-muted" />
           </div>
         </div>
 
