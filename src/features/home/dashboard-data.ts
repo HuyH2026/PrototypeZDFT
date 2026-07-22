@@ -116,7 +116,7 @@ export type ColumnKey = keyof Layout
 
 export const DEFAULT_LAYOUT: Layout = {
   left: ['health', 'policies', 'qa', 'gaps'],
-  right: ['approvals', 'knowledge', 'notifications'],
+  right: ['approvals', 'intents', 'knowledge', 'notifications'],
 }
 
 export const DATA: Record<Level, LevelData> = {
