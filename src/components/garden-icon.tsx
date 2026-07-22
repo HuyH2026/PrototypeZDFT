@@ -29,6 +29,7 @@ import creditCardStroke from '@zendeskgarden/svg-icons/src/16/credit-card-stroke
 import lightbulbStroke from '@zendeskgarden/svg-icons/src/16/lightbulb-stroke.svg?raw'
 import downloadStroke from '@zendeskgarden/svg-icons/src/16/download-stroke.svg?raw'
 import overflowStroke from '@zendeskgarden/svg-icons/src/16/overflow-stroke.svg?raw'
+import infoStroke from '@zendeskgarden/svg-icons/src/16/info-stroke.svg?raw'
 
 export const GARDEN_ICONS = {
   'rocket-stroke': rocketStroke,
@@ -50,6 +51,7 @@ export const GARDEN_ICONS = {
   'lightbulb-stroke': lightbulbStroke,
   'download-stroke': downloadStroke,
   'overflow-stroke': overflowStroke,
+  'info-stroke': infoStroke,
 } as const
 
 export type GardenIconName = keyof typeof GARDEN_ICONS
