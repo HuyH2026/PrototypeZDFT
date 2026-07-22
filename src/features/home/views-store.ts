@@ -4,21 +4,29 @@
 // counter (no Date.now()/Math.random(), which are unavailable here) — same
 // pattern as src/app/org-context.tsx.
 import { DEFAULT_LAYOUT, WIDGET_ID_LIST, type Layout, type WidgetId } from './dashboard-data'
-import type { Role } from './generate-layout'
+import { DEFAULT_PM_LAYOUT, PM_WIDGET_ID_LIST, type Role, type PmWidgetId } from './generate-layout'
 
-export type DashboardView = {
-  id: string
-  name: string
-  role: Role | null
-  layout: Layout
+export type GridView = {
+  id: string; name: string; kind: 'grid'
+  role: Role | null; layout: Layout
   builtIn?: boolean // the Default view: renamable but NOT deletable
 }
+export type PmView = {
+  id: string; name: string; kind: 'pm'
+  role: 'pm'; pmLayout: PmWidgetId[]
+  builtIn?: boolean
+}
+export type DashboardView = GridView | PmView
 export type ViewsState = { views: DashboardView[]; activeId: string }
-export type NewView = { name: string; role: Role | null; layout: Layout }
+
+export type NewGridView = { name: string; kind?: 'grid'; role: Role | null; layout: Layout }
+export type NewPmView = { name: string; kind: 'pm'; role: 'pm'; pmLayout: PmWidgetId[] }
+export type NewView = NewGridView | NewPmView
 
 const STORAGE_KEY = 'home-dashboard-views-v1'
 const WIDGET_IDS = new Set<string>(WIDGET_ID_LIST)
-const ROLE_KEYS = new Set<string>(['ops', 'quality', 'knowledge', 'exec'])
+const PM_WIDGET_IDS = new Set<string>(PM_WIDGET_ID_LIST)
+const ROLE_KEYS = new Set<string>(['ops', 'quality', 'knowledge', 'exec', 'pm'])
 
 let seq = 0
 function mintId(): string {
@@ -35,7 +43,7 @@ function syncSeqTo(views: DashboardView[]): void {
 export function seedViewsState(): ViewsState {
   const id = mintId()
   return {
-    views: [{ id, name: 'Default', role: null, layout: DEFAULT_LAYOUT, builtIn: true }],
+    views: [{ id, name: 'Default', kind: 'grid', role: null, layout: DEFAULT_LAYOUT, builtIn: true }],
     activeId: id,
   }
 }
@@ -59,17 +67,32 @@ function sanitizeLayout(layout: unknown): Layout | null {
   return { left: dedupe(leftSanitized), right: dedupe(rightSanitized) }
 }
 
+function sanitizePmLayout(arr: unknown): PmWidgetId[] {
+  if (!Array.isArray(arr)) return [...DEFAULT_PM_LAYOUT]
+  const seen = new Set<PmWidgetId>()
+  const cleaned = arr.filter((x): x is PmWidgetId =>
+    typeof x === 'string' && PM_WIDGET_IDS.has(x) && !seen.has(x as PmWidgetId) && seen.add(x as PmWidgetId) !== undefined,
+  )
+  return cleaned.length > 0 ? cleaned : [...DEFAULT_PM_LAYOUT]
+}
+
 function sanitizeView(v: unknown): DashboardView | null {
   if (typeof v !== 'object' || v === null) return null
   const o = v as Record<string, unknown>
   if (typeof o.id !== 'string' || typeof o.name !== 'string') return null
+  const builtIn = o.builtIn === true ? { builtIn: true as const } : {}
+
+  if (o.kind === 'pm') {
+    return { id: o.id, name: o.name, kind: 'pm', role: 'pm', pmLayout: sanitizePmLayout(o.pmLayout), ...builtIn }
+  }
+  // Default/legacy → grid
   const layout = sanitizeLayout(o.layout)
   if (!layout) return null
   const role =
-    o.role === null || (typeof o.role === 'string' && ROLE_KEYS.has(o.role))
+    o.role === null || (typeof o.role === 'string' && ROLE_KEYS.has(o.role) && o.role !== 'pm')
       ? (o.role as Role | null)
       : null
-  return { id: o.id, name: o.name, role, layout, ...(o.builtIn === true ? { builtIn: true } : {}) }
+  return { id: o.id, name: o.name, kind: 'grid', role, layout, ...builtIn }
 }
 
 export function loadViewsState(): ViewsState {
@@ -108,10 +131,11 @@ export function getActiveView(state: ViewsState): DashboardView {
 
 export function addView(state: ViewsState, view: NewView): ViewsState {
   const id = mintId()
-  return {
-    views: [...state.views, { id, name: view.name, role: view.role, layout: view.layout }],
-    activeId: id,
-  }
+  const created: DashboardView =
+    view.kind === 'pm'
+      ? { id, name: view.name, kind: 'pm', role: 'pm', pmLayout: [...view.pmLayout] }
+      : { id, name: view.name, kind: 'grid', role: view.role, layout: view.layout }
+  return { views: [...state.views, created], activeId: id }
 }
 
 export function renameView(state: ViewsState, id: string, name: string): ViewsState {
@@ -138,6 +162,38 @@ export function setActiveView(state: ViewsState, id: string): ViewsState {
 export function updateActiveLayout(state: ViewsState, layout: Layout): ViewsState {
   return {
     ...state,
-    views: state.views.map((v) => (v.id === state.activeId ? { ...v, layout } : v)),
+    views: state.views.map((v) =>
+      v.id === state.activeId && v.kind === 'grid' ? { ...v, layout } : v,
+    ),
   }
+}
+
+// --- PM view reducers (operate on the active view only when it is a pm view) --
+function mapActivePm(state: ViewsState, fn: (pm: PmView) => PmView): ViewsState {
+  const active = getActiveView(state)
+  if (active.kind !== 'pm') return state
+  return { ...state, views: state.views.map((v) => (v.id === state.activeId && v.kind === 'pm' ? fn(v) : v)) }
+}
+
+export function movePmWidget(state: ViewsState, fromIndex: number, toIndex: number): ViewsState {
+  return mapActivePm(state, (pm) => {
+    const next = [...pm.pmLayout]
+    if (fromIndex < 0 || fromIndex >= next.length) return pm
+    const [moved] = next.splice(fromIndex, 1)
+    const clamped = Math.max(0, Math.min(toIndex, next.length))
+    next.splice(clamped, 0, moved)
+    return { ...pm, pmLayout: next }
+  })
+}
+
+export function removePmWidget(state: ViewsState, id: PmWidgetId): ViewsState {
+  return mapActivePm(state, (pm) => ({ ...pm, pmLayout: pm.pmLayout.filter((w) => w !== id) }))
+}
+
+export function addPmWidget(state: ViewsState, id: PmWidgetId): ViewsState {
+  return mapActivePm(state, (pm) => (pm.pmLayout.includes(id) ? pm : { ...pm, pmLayout: [...pm.pmLayout, id] }))
+}
+
+export function resetPmLayout(state: ViewsState): ViewsState {
+  return mapActivePm(state, (pm) => ({ ...pm, pmLayout: [...DEFAULT_PM_LAYOUT] }))
 }
