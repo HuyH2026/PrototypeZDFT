@@ -62,4 +62,24 @@ describe('pm-data', () => {
     expect(saml!.impact).toBe(88)
     expect(saml!.revenue).toBe('$610K')
   })
+
+  describe('pm-data — spotlight → opportunity links', () => {
+    const oppIds = new Set(PM_DATA.opportunities.map((o) => o.id))
+
+    it('every populated spotlight oppId points at a real opportunity', () => {
+      const all = [
+        ...PM_DATA.spotlight.trending,
+        ...PM_DATA.spotlight.atRisk,
+        ...PM_DATA.spotlight.asking,
+      ]
+      const linked = all.filter((i) => i.oppId !== undefined)
+      expect(linked.length).toBeGreaterThan(0)
+      for (const i of linked) expect(oppIds.has(i.oppId!)).toBe(true)
+    })
+
+    it('maps the SCIM at-risk row to o2', () => {
+      const scim = PM_DATA.spotlight.atRisk.find((i) => /SCIM/i.test(i.title))
+      expect(scim?.oppId).toBe('o2')
+    })
+  })
 })

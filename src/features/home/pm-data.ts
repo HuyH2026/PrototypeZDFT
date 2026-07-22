@@ -25,16 +25,19 @@ export type SpotlightTag = 'bug' | 'gap'
 export type TrendingItem = {
   id: string; rank: number; title: string; meta: string
   stage: LifecycleStageKey; trendPct: string; trendGood: boolean; up: boolean
+  oppId?: string
 }
 // At risk: retention view — a BUG/GAP tag + the revenue at risk.
 export type AtRiskItem = {
   id: string; rank: number; title: string; meta: string
   tag: SpotlightTag; amount: string
+  oppId?: string
 }
 // Asking: growth view — the deal it blocks + revenue asking.
 export type AskingItem = {
   id: string; rank: number; title: string; meta: string
   stage: LifecycleStageKey; amount: string
+  oppId?: string
 }
 export type SpotlightData = {
   trending: TrendingItem[]
@@ -90,17 +93,17 @@ export const PM_DATA: PmData = {
   spotlight: {
     trending: [
       { id: 't1', rank: 1, title: 'Android 15 app crashes on launch after update', meta: '206 conversations · churn risk $120K', stage: 'in-dev', trendPct: '140%', trendGood: false, up: true },
-      { id: 't2', rank: 2, title: 'Bulk CSV export times out past ~10k rows', meta: '91 conversations · churn risk $190K', stage: 'planned', trendPct: '38%', trendGood: false, up: true },
-      { id: 't3', rank: 3, title: 'SCIM auto-provisioning for user lifecycle', meta: '64 conversations · opportunity $610K', stage: 'planned', trendPct: '23%', trendGood: true, up: true },
+      { id: 't2', rank: 2, title: 'Bulk CSV export times out past ~10k rows', meta: '91 conversations · churn risk $190K', stage: 'planned', trendPct: '38%', trendGood: false, up: true, oppId: 'o3' },
+      { id: 't3', rank: 3, title: 'SCIM auto-provisioning for user lifecycle', meta: '64 conversations · opportunity $610K', stage: 'planned', trendPct: '23%', trendGood: true, up: true, oppId: 'o2' },
     ],
     atRisk: [
-      { id: 'r1', rank: 1, title: 'SAML SSO drops users on silent token refresh', meta: '71 Enterprise accounts · Impact 80', tag: 'bug', amount: '$840K' },
-      { id: 'r2', rank: 2, title: 'Bulk CSV export times out past ~10k rows', meta: '28 Enterprise accounts · Impact 37', tag: 'gap', amount: '$190K' },
-      { id: 'r3', rank: 3, title: 'SCIM auto-provisioning for user lifecycle', meta: '49 Mid-market accounts · Impact 30', tag: 'bug', amount: '$150K' },
+      { id: 'r1', rank: 1, title: 'SAML SSO drops users on silent token refresh', meta: '71 Enterprise accounts · Impact 80', tag: 'bug', amount: '$840K', oppId: 'o1' },
+      { id: 'r2', rank: 2, title: 'Bulk CSV export times out past ~10k rows', meta: '28 Enterprise accounts · Impact 37', tag: 'gap', amount: '$190K', oppId: 'o3' },
+      { id: 'r3', rank: 3, title: 'SCIM auto-provisioning for user lifecycle', meta: '49 Mid-market accounts · Impact 30', tag: 'bug', amount: '$150K', oppId: 'o2' },
     ],
     asking: [
       { id: 'a1', rank: 1, title: 'Salesforce two-way contact sync', meta: 'Deal · Helix Pharma ($96K) · Impact 68', stage: 'planned', amount: '$610K' },
-      { id: 'a2', rank: 2, title: 'SCIM auto-provisioning for user lifecycle', meta: 'Deal · Orbit Labs ($184K) · Impact 67', stage: 'planned', amount: '$280K' },
+      { id: 'a2', rank: 2, title: 'SCIM auto-provisioning for user lifecycle', meta: 'Deal · Orbit Labs ($184K) · Impact 67', stage: 'planned', amount: '$280K', oppId: 'o2' },
       { id: 'a3', rank: 3, title: 'Dark mode', meta: 'Deal · Free users (free) · Impact 27', stage: 'detected', amount: '$75K' },
     ],
   },

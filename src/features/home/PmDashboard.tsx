@@ -1,8 +1,9 @@
 import { useMemo, useRef, useState, type ReactNode } from 'react'
 import {
-  ArrowDownRight, ArrowUpRight, Bug, Check, ChevronDown, GripVertical, LayoutGrid,
+  ArrowDownRight, ArrowUpRight, Check, ChevronDown, GripVertical, LayoutGrid,
   List, Plug, Search, Sparkles, TrendingDown, TrendingUp, Users, X,
 } from 'lucide-react'
+import { Link } from 'react-router'
 import { useDrag, useDrop } from 'react-dnd'
 import {
   PM_DATA, PM_NOW, SPOTLIGHT_TABS, SPOTLIGHT_TAB_COLOR, LIFECYCLE_LABEL,
@@ -14,19 +15,12 @@ import {
   PM_TOOLS, PM_TOOL_LABEL, loadPmIntegration, persistPmIntegration,
   type PmIntegration, type PmTool,
 } from './pm-integration'
+import {
+  INK, INK_SOFT, MUTED, BORDER, BLUE, GREEN, RED, PURPLE,
+  ImpactDonut, STAGE_COLOR, StageBadge, TypeTag,
+} from './pm-ui'
 import type { PmWidgetId } from './generate-layout'
 import { PM_WIDGET_ID_LIST } from './generate-layout'
-
-// Palette — mirror HomeScreen's inline dashboard hues (same hex values).
-const INK = '#2f3130'
-const INK_SOFT = '#2f3941'
-const MUTED = '#8b8e89'
-const BORDER = '#e2e0dd'
-const BLUE = '#1f73b7'
-const GREEN = '#0f8a5f'
-const AMBER = '#c8792b'
-const RED = '#c8402f'
-const PURPLE = '#724be8'
 
 const DAY = 86400000
 
@@ -45,38 +39,6 @@ function SectionLabel({ title, action }: { title: string; action?: ReactNode }) 
       <p className="text-[15px] font-semibold tracking-[-0.154px]" style={{ color: INK }}>{title}</p>
       {action}
     </div>
-  )
-}
-
-// --- Impact donut (deterministic, no chart lib) -----------------------------
-function ImpactDonut({ value }: { value: number }) {
-  const r = 30, c = 2 * Math.PI * r
-  const dash = (value / 100) * c
-  const color = value >= 80 ? GREEN : value >= 60 ? BLUE : AMBER
-  return (
-    <svg width="72" height="72" viewBox="0 0 72 72" aria-label={`Impact ${value}`}>
-      <circle cx="36" cy="36" r={r} fill="none" stroke="#efeeec" strokeWidth="8" />
-      <circle cx="36" cy="36" r={r} fill="none" stroke={color} strokeWidth="8"
-        strokeDasharray={`${dash} ${c - dash}`} strokeLinecap="round" transform="rotate(-90 36 36)" />
-      <text x="36" y="41" textAnchor="middle" fontSize="18" fontWeight="600" fill={INK}>{value}</text>
-    </svg>
-  )
-}
-
-// --- Stage badge ------------------------------------------------------------
-const STAGE_COLOR: Record<LifecycleStageKey, string> = {
-  detected: MUTED,
-  planned: PURPLE,
-  'in-dev': GREEN,
-  shipped: INK,
-}
-
-function StageBadge({ stage }: { stage: LifecycleStageKey }) {
-  const color = STAGE_COLOR[stage]
-  return (
-    <span className="flex h-[20px] items-center rounded-full px-2" style={{ backgroundColor: `${color}18` }}>
-      <span className="text-[11px] font-semibold" style={{ color }}>{LIFECYCLE_LABEL[stage]}</span>
-    </span>
   )
 }
 
@@ -112,11 +74,11 @@ function PmKpis() {
 // The row shell is shared; each tab supplies its own right-hand column. The
 // meta line and title sit under a rank chip, matching the Figma across tabs.
 function SpotlightRowShell({
-  rank, title, meta, right, first,
+  rank, title, meta, right, first, oppId,
 }: {
-  rank: number; title: string; meta: string; right: ReactNode; first: boolean
+  rank: number; title: string; meta: string; right: ReactNode; first: boolean; oppId?: string
 }) {
-  return (
+  const inner = (
     <div className="flex items-center gap-3 py-3" style={{ borderTop: first ? 'none' : `1px solid ${BORDER}` }}>
       <span className="w-6 shrink-0 text-[15px] font-semibold" style={{ color: MUTED }}>{rank}</span>
       <div className="min-w-0 flex-1">
@@ -126,6 +88,10 @@ function SpotlightRowShell({
       <div className="flex shrink-0 items-center gap-3">{right}</div>
     </div>
   )
+  if (oppId) {
+    return <Link to={`/opportunity/${oppId}`} className="block outline-none hover:bg-[#faf9f8]">{inner}</Link>
+  }
+  return inner
 }
 
 // BUG/GAP tag for the At-risk tab (GAP is new in this design).
@@ -150,7 +116,7 @@ function TrendingRows({ items }: { items: TrendingItem[] }) {
         const trendColor = item.trendGood ? GREEN : RED
         return (
           <SpotlightRowShell
-            key={item.id} rank={item.rank} title={item.title} meta={item.meta} first={i === 0}
+            key={item.id} rank={item.rank} title={item.title} meta={item.meta} first={i === 0} oppId={item.oppId}
             right={
               <>
                 <StageBadge stage={item.stage} />
@@ -172,7 +138,7 @@ function AtRiskRows({ items }: { items: AtRiskItem[] }) {
     <>
       {items.map((item, i) => (
         <SpotlightRowShell
-          key={item.id} rank={item.rank} title={item.title} meta={item.meta} first={i === 0}
+          key={item.id} rank={item.rank} title={item.title} meta={item.meta} first={i === 0} oppId={item.oppId}
           right={
             <>
               <SpotlightTagPill tag={item.tag} />
@@ -190,7 +156,7 @@ function AskingRows({ items }: { items: AskingItem[] }) {
     <>
       {items.map((item, i) => (
         <SpotlightRowShell
-          key={item.id} rank={item.rank} title={item.title} meta={item.meta} first={i === 0}
+          key={item.id} rank={item.rank} title={item.title} meta={item.meta} first={i === 0} oppId={item.oppId}
           right={
             <>
               <StageBadge stage={item.stage} />
@@ -266,17 +232,6 @@ function PmLifecycle() {
 }
 
 // --- Opportunity card -------------------------------------------------------
-function TypeTag({ type }: { type: OppType }) {
-  const isBug = type === 'bug'
-  const color = isBug ? RED : BLUE
-  return (
-    <span className="flex h-[20px] items-center gap-1 rounded-full px-2" style={{ backgroundColor: `${color}18` }}>
-      {isBug ? <Bug size={11} color={color} /> : <Sparkles size={11} color={color} />}
-      <span className="text-[10px] font-semibold uppercase tracking-[0.4px]" style={{ color }}>{isBug ? 'Bug' : 'Request'}</span>
-    </span>
-  )
-}
-
 function OpportunityCard({
   opp, integration, added, onAdd, onConnect, viewMode,
 }: {
@@ -292,73 +247,79 @@ function OpportunityCard({
   const toolLabel = integration.tool ? PM_TOOL_LABEL[integration.tool] : null
 
   return (
-    <div className={`rounded-2xl border border-solid p-4 ${viewMode === 'grid' ? '' : 'flex gap-4'}`} style={{ borderColor: BORDER, backgroundColor: '#fff' }}>
-      <div className={viewMode === 'grid' ? 'mb-3 flex items-center gap-3' : 'shrink-0'}>
-        <ImpactDonut value={opp.impact} />
-      </div>
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <TypeTag type={opp.type} />
-          <StageBadge stage={opp.stage} />
+    <div className={`rounded-2xl border border-solid p-4 ${viewMode === 'grid' ? '' : 'flex flex-wrap gap-4'}`} style={{ borderColor: BORDER, backgroundColor: '#fff' }}>
+      <Link
+        to={`/opportunity/${opp.id}`}
+        className={`group block outline-none ${viewMode === 'grid' ? '' : 'flex flex-1 gap-4'}`}
+      >
+        <div className={viewMode === 'grid' ? 'mb-3 flex items-center gap-3' : 'shrink-0'}>
+          <ImpactDonut value={opp.impact} />
         </div>
-        <p className="mt-2 text-[14px] font-semibold leading-[19px]" style={{ color: INK }}>{opp.title}</p>
-        <p className="mt-1 text-[12px] font-normal leading-[17px]" style={{ color: INK_SOFT }}>{opp.description}</p>
-        <div className="mt-2.5 rounded-lg border-l-2 py-1.5 pl-2.5" style={{ borderColor: BORDER, backgroundColor: '#faf9f8' }}>
-          <p className="text-[12px] font-normal italic leading-[17px]" style={{ color: MUTED }}>“{opp.quote}”</p>
-        </div>
-        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-          <span className="flex items-center gap-1.5">
-            <span className="text-[14px] font-semibold" style={{ color: INK }}>{opp.revenue}</span>
-            <span className="flex h-[18px] items-center rounded-full px-1.5" style={{ backgroundColor: `${revColor}18` }}>
-              <span className="text-[10px] font-semibold" style={{ color: revColor }}>{opp.revenueState === 'at-risk' ? 'At risk' : 'Asking'}</span>
-            </span>
-          </span>
-          <span className="flex items-center gap-0.5" style={{ color: volColor }}>
-            {opp.volumeUp ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
-            <span className="text-[12px] font-semibold">{opp.volumePct}</span>
-          </span>
-          <span className="flex items-center gap-1" style={{ color: MUTED }}>
-            <Users size={13} />
-            <span className="text-[12px] font-normal">{opp.customers} customers</span>
-          </span>
-          {opp.plans.map((p) => (
-            <span key={p} className="flex h-[18px] items-center rounded-md px-1.5" style={{ backgroundColor: '#f2f1ef' }}>
-              <span className="text-[11px] font-normal" style={{ color: INK }}>{p}</span>
-            </span>
-          ))}
-          <span className="text-[11px] font-normal" style={{ color: MUTED }}>{opp.firstSeenLabel}</span>
-        </div>
-        <div className="mt-3 flex items-center gap-2">
-          {integration.connected && toolLabel ? (
-            <button
-              onClick={() => onAdd(opp.id)}
-              disabled={added}
-              className="flex h-8 items-center gap-1.5 rounded-full px-3.5 outline-none disabled:opacity-70"
-              style={{ backgroundColor: added ? `${GREEN}18` : INK }}
-            >
-              {added ? <Check size={13} color={GREEN} /> : <Plug size={13} color="#fff" />}
-              <span className="text-[12px] font-semibold" style={{ color: added ? GREEN : '#fff' }}>
-                {added ? 'Added ✓' : `Add to ${toolLabel}`}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <TypeTag type={opp.type} />
+            <StageBadge stage={opp.stage} />
+          </div>
+          <p className="mt-2 text-[14px] font-semibold leading-[19px] group-hover:underline" style={{ color: INK }}>{opp.title}</p>
+          <p className="mt-1 text-[12px] font-normal leading-[17px]" style={{ color: INK_SOFT }}>{opp.description}</p>
+          <div className="mt-2.5 rounded-lg border-l-2 py-1.5 pl-2.5" style={{ borderColor: BORDER, backgroundColor: '#faf9f8' }}>
+            <p className="text-[12px] font-normal italic leading-[17px]" style={{ color: MUTED }}>"{opp.quote}"</p>
+          </div>
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span className="flex items-center gap-1.5">
+              <span className="text-[14px] font-semibold" style={{ color: INK }}>{opp.revenue}</span>
+              <span className="flex h-[18px] items-center rounded-full px-1.5" style={{ backgroundColor: `${revColor}18` }}>
+                <span className="text-[10px] font-semibold" style={{ color: revColor }}>{opp.revenueState === 'at-risk' ? 'At risk' : 'Asking'}</span>
               </span>
-            </button>
-          ) : (
-            <button
-              onClick={onConnect}
-              className="flex h-8 items-center gap-1.5 rounded-full border border-solid bg-white px-3.5 outline-none"
-              style={{ borderColor: BORDER }}
-            >
-              <Plug size={13} color={INK} />
-              <span className="text-[12px] font-semibold" style={{ color: INK }}>Connect a tool to add</span>
-            </button>
-          )}
-          <button className="flex h-8 items-center rounded-full border border-solid bg-white px-3.5 outline-none" style={{ borderColor: BORDER }}>
-            <span className="text-[12px] font-semibold" style={{ color: INK }}>View in {toolLabel ?? 'Jira'}</span>
-          </button>
-          <button className="flex h-8 items-center gap-1.5 rounded-full border border-solid bg-white px-3.5 outline-none" style={{ borderColor: BORDER }}>
-            <Sparkles size={13} color={PURPLE} />
-            <span className="text-[12px] font-semibold" style={{ color: INK }}>Generate fix</span>
-          </button>
+            </span>
+            <span className="flex items-center gap-0.5" style={{ color: volColor }}>
+              {opp.volumeUp ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
+              <span className="text-[12px] font-semibold">{opp.volumePct}</span>
+            </span>
+            <span className="flex items-center gap-1" style={{ color: MUTED }}>
+              <Users size={13} />
+              <span className="text-[12px] font-normal">{opp.customers} customers</span>
+            </span>
+            {opp.plans.map((p) => (
+              <span key={p} className="flex h-[18px] items-center rounded-md px-1.5" style={{ backgroundColor: '#f2f1ef' }}>
+                <span className="text-[11px] font-normal" style={{ color: INK }}>{p}</span>
+              </span>
+            ))}
+            <span className="text-[11px] font-normal" style={{ color: MUTED }}>{opp.firstSeenLabel}</span>
+          </div>
         </div>
+      </Link>
+      {/* Action row — sibling of the link so its buttons don't trigger navigation */}
+      <div className={`flex items-center gap-2 ${viewMode === 'grid' ? 'mt-3' : 'mt-3 basis-full'}`}>
+        {integration.connected && toolLabel ? (
+          <button
+            onClick={() => onAdd(opp.id)}
+            disabled={added}
+            className="flex h-8 items-center gap-1.5 rounded-full px-3.5 outline-none disabled:opacity-70"
+            style={{ backgroundColor: added ? `${GREEN}18` : INK }}
+          >
+            {added ? <Check size={13} color={GREEN} /> : <Plug size={13} color="#fff" />}
+            <span className="text-[12px] font-semibold" style={{ color: added ? GREEN : '#fff' }}>
+              {added ? 'Added ✓' : `Add to ${toolLabel}`}
+            </span>
+          </button>
+        ) : (
+          <button
+            onClick={onConnect}
+            className="flex h-8 items-center gap-1.5 rounded-full border border-solid bg-white px-3.5 outline-none"
+            style={{ borderColor: BORDER }}
+          >
+            <Plug size={13} color={INK} />
+            <span className="text-[12px] font-semibold" style={{ color: INK }}>Connect a tool to add</span>
+          </button>
+        )}
+        <button className="flex h-8 items-center rounded-full border border-solid bg-white px-3.5 outline-none" style={{ borderColor: BORDER }}>
+          <span className="text-[12px] font-semibold" style={{ color: INK }}>View in {toolLabel ?? 'Jira'}</span>
+        </button>
+        <button className="flex h-8 items-center gap-1.5 rounded-full border border-solid bg-white px-3.5 outline-none" style={{ borderColor: BORDER }}>
+          <Sparkles size={13} color={PURPLE} />
+          <span className="text-[12px] font-semibold" style={{ color: INK }}>Generate fix</span>
+        </button>
       </div>
     </div>
   )
