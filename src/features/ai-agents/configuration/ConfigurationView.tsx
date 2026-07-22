@@ -5,10 +5,11 @@
 // and mocked (no backend).
 import { useState } from 'react'
 import { GardenIcon, type GardenIconName } from '@/components/garden-icon'
-import { CHANNEL_TABS, SEED_BRANDS, BRAND_LIST_LABELS, summarizeTags, type Brand, type ChannelTab } from './config-data'
+import { CHANNEL_TABS, SEED_BRANDS, BRAND_LIST_LABELS, summarizeTags, type Brand, type ChannelTab, type Personality } from './config-data'
 import { BrandList } from './BrandList'
 import { WidgetPreview } from './WidgetPreview'
 import { BrandedWidgetPanel } from './BrandedWidgetPanel'
+import { AiPersonalityPanel } from './AiPersonalityPanel'
 
 const TAB_ICON: Record<ChannelTab['id'], GardenIconName> = {
   widget: 'speech-bubble-stroke',
@@ -26,6 +27,8 @@ export function ConfigurationView() {
   const selected = brands.find((b) => b.id === selectedId)!
   const updateSelected = (patch: Partial<Brand>) =>
     setBrands((bs) => bs.map((b) => (b.id === selectedId ? { ...b, ...patch } : b)))
+  const updatePersonality = (patch: Partial<Personality>) =>
+    setBrands((bs) => bs.map((b) => (b.id === selectedId ? { ...b, personality: { ...b.personality, ...patch } } : b)))
 
   return (
     <div data-testid="view-configuration" className="flex h-full flex-col bg-[#f9f8f7]">
@@ -67,14 +70,23 @@ export function ConfigurationView() {
             />
           </div>
           <div className="flex shrink-0 py-2 pr-2">
-            <BrandedWidgetPanel
-              brand={selected}
-              activeSection={activeSection}
-              onSectionChange={setActiveSection}
-              onNameChange={(name) => updateSelected({ name })}
-              onToggleEnabled={() => updateSelected({ enabled: !selected.enabled })}
-              onToggleDefault={() => updateSelected({ isDefault: !selected.isDefault })}
-            />
+            {activeSection === 'sentiment' ? (
+              <AiPersonalityPanel
+                brand={selected}
+                activeSection={activeSection}
+                onSectionChange={setActiveSection}
+                onPersonalityChange={updatePersonality}
+              />
+            ) : (
+              <BrandedWidgetPanel
+                brand={selected}
+                activeSection={activeSection}
+                onSectionChange={setActiveSection}
+                onNameChange={(name) => updateSelected({ name })}
+                onToggleEnabled={() => updateSelected({ enabled: !selected.enabled })}
+                onToggleDefault={() => updateSelected({ isDefault: !selected.isDefault })}
+              />
+            )}
           </div>
         </div>
       ) : (
