@@ -30,12 +30,14 @@ export function AgentEditorScreen() {
   const [rail, setRail] = useState<RailKey>('steps')
   // Whether the AI Studio "Review plan" full-screen takeover is open.
   const [reviewing, setReviewing] = useState(false)
-  // Once the plan is approved (and the "Working…" delay elapses), the policy
-  // area is replaced by the inline accept/reject diff preview.
-  const [showPreview, setShowPreview] = useState(false)
   const workingTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   if (!agent) return <Navigate to="/ai-agents" replace />
+
+  // Once the plan is approved (and the "Working…" delay elapses), the policy
+  // area is replaced by the inline accept/reject diff preview. Persisted on the
+  // agent so it survives reload / navigation until the changes are resolved.
+  const showPreview = agent.previewPending ?? false
 
   // User typed "Approve" in the full view: keep the takeover up (showing the
   // "Working…" indicator) for a beat, then close it and reveal the diff preview.
@@ -43,7 +45,7 @@ export function AgentEditorScreen() {
     clearTimeout(workingTimer.current)
     workingTimer.current = setTimeout(() => {
       setReviewing(false)
-      setShowPreview(true)
+      store.updateAgent(agent.id, { previewPending: true })
     }, AI_STUDIO_WORKING_MS)
   }
 
