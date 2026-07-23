@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { createMemoryRouter, RouterProvider } from 'react-router'
@@ -89,5 +89,27 @@ describe('AgentEditorScreen', () => {
     // Close returns to the editor without the takeover.
     await user.click(screen.getByRole('button', { name: 'Close review plan' }))
     expect(screen.queryByTestId('ai-studio-full-view')).not.toBeInTheDocument()
+  })
+
+  it('typing "Approve" closes the full view and shows the inline diff preview', async () => {
+    const user = userEvent.setup()
+    renderAt('/ai-agents/w3')
+    await user.click(screen.getByRole('button', { name: 'AI' }))
+    await user.type(
+      screen.getByPlaceholderText('What can I help you with today?'),
+      'Help me rewrite this policy to improve deflection{Enter}',
+    )
+    await user.click(screen.getByRole('button', { name: 'Review plan' }))
+
+    // Type Approve into the full-view composer → Working indicator, still in the takeover.
+    const fullView = screen.getByTestId('ai-studio-full-view')
+    await user.type(within(fullView).getByPlaceholderText('What can I help you with today?'), 'Approve{Enter}')
+    expect(screen.getByText('Working...')).toBeInTheDocument()
+    expect(screen.getByTestId('ai-studio-full-view')).toBeInTheDocument()
+
+    // After the working delay, the takeover closes and the diff preview shows.
+    expect(await screen.findByTestId('inline-policy-preview', {}, { timeout: 4000 })).toBeInTheDocument()
+    expect(screen.queryByTestId('ai-studio-full-view')).not.toBeInTheDocument()
+    expect(screen.getByText('Inline policy preview')).toBeInTheDocument()
   })
 })
