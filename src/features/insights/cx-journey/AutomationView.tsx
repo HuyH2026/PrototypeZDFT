@@ -11,6 +11,7 @@ import {
   AUTOMATION_SUBTABS,
   type AutomationSubTab,
 } from './automation-data'
+import { GeneratedAgentPanel } from './GeneratedAgentPanel'
 
 const COLS = [
   'Topic for generated policy',
@@ -97,7 +98,7 @@ function Toolbar() {
   )
 }
 
-function PolicyTable() {
+function PolicyTable({ onRowClick }: { onRowClick: (topic: string) => void }) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
@@ -112,7 +113,19 @@ function PolicyTable() {
         </thead>
         <tbody>
           {AUTOMATION_ROWS.map((row) => (
-            <tr key={row.topic} className="border-b border-surface-border align-top">
+            <tr
+              key={row.topic}
+              role="button"
+              tabIndex={0}
+              onClick={() => onRowClick(row.topic)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  onRowClick(row.topic)
+                }
+              }}
+              className="cursor-pointer border-b border-surface-border align-top hover:bg-app-backdrop"
+            >
               <td className="px-4 py-6">
                 <span className="inline-flex items-center gap-1.5 rounded-md bg-app-backdrop px-2 py-1 text-[13px] text-ink">
                   <Sparkles className="h-3.5 w-3.5 text-ink-muted" />
@@ -135,6 +148,7 @@ function PolicyTable() {
 
 export function AutomationView() {
   const [subTab, setSubTab] = useState<AutomationSubTab>('Agent gaps')
+  const [openTopic, setOpenTopic] = useState<string | null>(null)
   return (
     <section data-testid="view-automation" className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -145,12 +159,15 @@ export function AutomationView() {
         <>
           <StatsBanner />
           <Toolbar />
-          <PolicyTable />
+          <PolicyTable onRowClick={setOpenTopic} />
         </>
       ) : (
         <div className="flex h-64 items-center justify-center text-[14px] text-ink-muted">
           Coming soon
         </div>
+      )}
+      {openTopic && (
+        <GeneratedAgentPanel topic={openTopic} onClose={() => setOpenTopic(null)} />
       )}
     </section>
   )
