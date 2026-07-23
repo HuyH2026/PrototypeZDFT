@@ -1,24 +1,27 @@
-# Tool Detail Screen — Progress Ledger
+# Tool Builder History Tab — Progress Ledger
 
-Branch: worktree-tool-builder-update
-Plan: docs/superpowers/plans/2026-07-22-tool-detail-screen.md
-Base (before Task 1): eaf2e9f5d9ee13cd9892ba8222b36e6ecc6be2a5
-Baseline: 357/357 tests pass
+Branch: worktree-tool-history-tab
+Plan: docs/superpowers/plans/2026-07-22-tool-history-tab.md
+Base (before Task 1): 9767e901b2101ce99e7e1d2d526641280aeea68c
+Baseline: 415/415 tests pass
 
 Tasks:
-- Task 1: complete (commit f629b176, review clean — spec ✅, quality ✅; 7/7 ToolsTable tests, 18/18 tools feature; note: tsc transiently breaks until Task 2 wires onOpen into ToolsScreen, expected per plan sequencing)
-- Task 2: complete (commit 203ea6eb, review clean — spec ✅, quality ✅; 3/3 ToolsScreen tests, tsc clean)
-- Task 3: complete (commit 4d90e69c, review clean — spec ✅, quality ✅; 3/3 ToolRequestCard tests, tsc clean)
-- Task 4: complete (commit ab5a2b5a, review clean — spec ✅, quality ✅; 1/1 test, tsc clean; minor: text-black vs text-ink from brief's own code, non-blocking)
-- Task 5: complete (commit 9f78402e, review clean — spec ✅, quality ✅; ToolDetailScreen+routes 9/9, full suite 371/371, tsc clean)
+- Task 1: complete (commit 4dbf7122, review clean — spec ✅, quality ✅; 10/10 tools-data tests)
+- Task 2: complete (commit f37acf25, review clean — spec ✅, quality ✅; 5/5 ToolsHistoryTable tests; minors: dead-code defensive guard, text-black inherited from ToolsTable pattern, both non-blocking)
+- Task 3: complete (commit afbafd81, review clean — spec ✅, quality ✅; ToolsScreen 4/4, full suite 415/415, tsc clean)
 
-Feature commits (in order): f629b176, 203ea6eb, 4d90e69c, ab5a2b5a, 9f78402e.
-ALL 5 TASKS COMPLETE. Full suite 371/371, tsc clean.
+Feature commits (in order): a5e483bd (spec, cherry-picked — see note), 4dbf7122, f37acf25, afbafd81.
+ALL 3 TASKS COMPLETE. Full suite 415/415, tsc clean.
 
-Final whole-feature review (Opus, base eaf2e9f5..9f78402e, 5 commits): READY TO MERGE — yes. No Critical/Important. Minors (non-blocking):
-1. ToolsTable.tsx options button stops mouse propagation but not keyboard (onKeyDown) — keyboard Enter/Space on the inert options button would bubble into row-click navigation.
-2. No single true end-to-end test rendering full routes at /tools, clicking a real row, and asserting the detail screen appears (coverage exists in pieces across ToolsTable/ToolsScreen/tools.routes tests).
-3. Tab-strip underline color inconsistency: ToolsScreen active tab uses border-[#01567a] (blue) vs new Untitled/request-tab strips using border-ink (dark grey) — plan's stated ToolsScreen reference was itself inaccurate.
-4. ToolResponseCard's text-blue-700 (#406cc4) doesn't visually match the Figma #01567a the spec claimed it matched — token usage is still the correct call per CLAUDE.md, spec's "matches" claim was wrong.
-5. Tab-strip markup triplicated across ToolsScreen/ToolRequestCard/Untitled strip — not worth extracting yet per reviewer.
-6. Reproduced Figma copy typo "enter endpoint then sent" — faithful to design, not a code defect.
+Note: the design spec (originally committed to local main as e9f125ad before
+this worktree was created) was not on origin/main, so EnterWorktree's branch
+point never inherited it — the final review correctly flagged the spec file
+as missing from the branch. Fixed by cherry-picking e9f125ad onto this
+branch as a5e483bd.
+
+Final whole-branch review (Opus, base da400fd3..afbafd81, pre-spec-fix): READY TO MERGE — yes. No Critical/Important. Minors (non-blocking):
+1. Avatar/HeaderCell duplicated locally in ToolsHistoryTable.tsx since ToolsTable.tsx doesn't export them — reasonable for a small mock, drift risk if either changes later.
+2. text-black instead of text-ink token in ToolsHistoryTable.tsx — inherited verbatim from ToolsTable.tsx's own pre-existing pattern, not a new inconsistency.
+3. No dedicated test pins the Authentication tab's placeholder specifically (only Recommended got one) — trivial residual coverage gap.
+4. `if (!action) return null` guard in ToolsHistoryTable.tsx is unreachable with current mock data — harmless, also satisfies TS narrowing.
+5. RUN_COUNT=113 flagged as possibly copy-pasted from NAME_COUNT — verified against the Figma frame fetch from this session (node 755:167810 literally shows "Run (113)"), so this is correct per design, not a defect. Resolved, no action needed.
