@@ -49,6 +49,10 @@ export type StoredAgent = Agent & {
   tags: string[]
   triggeredWhen: string
   trainingPhrases: string[]
+  // When an AI Studio plan has been approved, the editor shows the inline
+  // accept/reject diff preview instead of the policy editor. Persisted so the
+  // preview survives reload / navigation until the changes are resolved.
+  previewPending?: boolean
 }
 
 let seq = 0
