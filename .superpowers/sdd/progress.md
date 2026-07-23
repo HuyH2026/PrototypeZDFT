@@ -1,24 +1,33 @@
-# Tool Detail Screen — Progress Ledger
+# Log Screen — Progress Ledger
 
-Branch: worktree-tool-builder-update
-Plan: docs/superpowers/plans/2026-07-22-tool-detail-screen.md
-Base (before Task 1): eaf2e9f5d9ee13cd9892ba8222b36e6ecc6be2a5
-Baseline: 357/357 tests pass
+Branch: worktree-log-page
+Plan: docs/superpowers/plans/2026-07-22-log-screen.md
+Base (before Task 1): f904e1e1e200a8984ff38646fd5a84c9ce5ddb79
+Baseline: 415/415 tests pass
 
 Tasks:
-- Task 1: complete (commit f629b176, review clean — spec ✅, quality ✅; 7/7 ToolsTable tests, 18/18 tools feature; note: tsc transiently breaks until Task 2 wires onOpen into ToolsScreen, expected per plan sequencing)
-- Task 2: complete (commit 203ea6eb, review clean — spec ✅, quality ✅; 3/3 ToolsScreen tests, tsc clean)
-- Task 3: complete (commit 4d90e69c, review clean — spec ✅, quality ✅; 3/3 ToolRequestCard tests, tsc clean)
-- Task 4: complete (commit ab5a2b5a, review clean — spec ✅, quality ✅; 1/1 test, tsc clean; minor: text-black vs text-ink from brief's own code, non-blocking)
-- Task 5: complete (commit 9f78402e, review clean — spec ✅, quality ✅; ToolDetailScreen+routes 9/9, full suite 371/371, tsc clean)
+- Task 1: complete (commit 21915356, review clean — spec ✅, quality ✅; 3/3 log-data tests)
+- Task 2: complete (commit 09d29b8f, review clean — spec ✅, quality ✅; tsc clean)
+- Task 3: complete (commit 8530bfff, review clean — spec ✅, quality ✅; tsc clean)
+- Task 4: complete (commit 6263a1da, review clean — spec ✅, quality ✅; tsc clean)
+- Task 5: complete (commit 384e6f88, review clean — spec ✅, quality ✅; tsc clean)
+- Task 6: complete (commit d927d1aa, review clean — spec ✅, quality ✅; tsc clean)
+- Task 7: complete (commit 336de5eb, review clean — spec ✅, quality ✅ w/ non-blocking minor; tsc clean)
+- Task 8: complete (commit 7d80fc90, review clean — spec ✅, quality ✅; tsc clean)
+- Task 9: complete (commits a37a5a29 + fix b591e025, review clean after fix — spec ✅, quality ✅; tsc clean. Fix: added font-semibold to "Errors overview" heading — spec said semibold, plan code omitted it.)
+- Task 10: complete (commit 495d045d, review clean — spec ✅, quality ✅; 2/2 LogScreen tests, tsc clean)
+- Task 11: complete (commit a2d4e83b, review clean — spec ✅, quality ✅; 3/3 log.routes tests, tsc clean)
+- Task 12: complete (verification — tsc clean, full suite 423/423 pass (+8 new), vite build succeeds; chunk-size warning pre-existing/unrelated).
 
-Feature commits (in order): f629b176, 203ea6eb, 4d90e69c, ab5a2b5a, 9f78402e.
-ALL 5 TASKS COMPLETE. Full suite 371/371, tsc clean.
+Feature commits (in order): 21915356, 09d29b8f, 8530bfff, 6263a1da, 384e6f88, d927d1aa, 336de5eb, 7d80fc90, a37a5a29, b591e025, 495d045d, a2d4e83b.
+ALL 12 TASKS COMPLETE. Full suite 423/423, tsc clean, build OK.
 
-Final whole-feature review (Opus, base eaf2e9f5..9f78402e, 5 commits): READY TO MERGE — yes. No Critical/Important. Minors (non-blocking):
-1. ToolsTable.tsx options button stops mouse propagation but not keyboard (onKeyDown) — keyboard Enter/Space on the inert options button would bubble into row-click navigation.
-2. No single true end-to-end test rendering full routes at /tools, clicking a real row, and asserting the detail screen appears (coverage exists in pieces across ToolsTable/ToolsScreen/tools.routes tests).
-3. Tab-strip underline color inconsistency: ToolsScreen active tab uses border-[#01567a] (blue) vs new Untitled/request-tab strips using border-ink (dark grey) — plan's stated ToolsScreen reference was itself inaccurate.
-4. ToolResponseCard's text-blue-700 (#406cc4) doesn't visually match the Figma #01567a the spec claimed it matched — token usage is still the correct call per CLAUDE.md, spec's "matches" claim was wrong.
-5. Tab-strip markup triplicated across ToolsScreen/ToolRequestCard/Untitled strip — not worth extracting yet per reviewer.
-6. Reproduced Figma copy typo "enter endpoint then sent" — faithful to design, not a code defect.
+Final whole-branch review (Opus, base f904e1e1..a2d4e83b, 12 commits): READY TO MERGE — yes. No Critical/Important. Minors (non-blocking):
+1. Tabs ARIA incomplete (no tabpanel/aria-controls/roving arrows) — inherited verbatim from ToolsScreen; systemic, fix project-wide or not at all.
+2. HeaderCell + row-cell markup duplicated across AuditTable/ErrorTable — matches ToolsTable house style; low-value extraction.
+3. SeverityBadge white-on-color contrast borderline for AA (Low #3492ef ~3.2:1, High #d64535 ~4.4:1) — transcribed from prototype, consistent one-off.
+4. ADDRESSED: table coverage was thin (no row-count / testid / badge assertions). Added rows to LogScreen.test.tsx.
+5. text-black vs text-ink (adjudicated, see above) — confirmed non-blocking, matches sibling ToolsTable/ToolsToolbar.
+
+Minor findings (for final review triage):
+- Task 4 + Task 7: `text-black` vs canonical `text-ink` on cells/buttons (matches brief verbatim + sibling ToolsToolbar/ToolsTable pattern; text-black is a Tailwind utility not raw hex; non-blocking). Task 7 also has intra-component inconsistency (Alert-management uses text-ink) — both verbatim from brief. Consider unifying to text-ink across the log feature during final polish if desired.
