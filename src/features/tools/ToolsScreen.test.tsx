@@ -18,14 +18,24 @@ describe('ToolsScreen', () => {
     expect(within(el).getByRole('tab', { name: 'Available' })).toHaveAttribute('aria-selected', 'true')
   })
 
-  it('switches to an empty placeholder tab when clicked', async () => {
+  it('switches to the History tab and renders the real history table', async () => {
     const user = userEvent.setup()
     renderToolsScreen()
     const el = screen.getByTestId('screen-tools')
     await user.click(within(el).getByRole('tab', { name: 'History' }))
     expect(within(el).getByRole('tab', { name: 'History' })).toHaveAttribute('aria-selected', 'true')
     expect(within(el).queryByText('Name (113)')).toBeNull()
-    expect(within(el).getByTestId('tools-tab-History')).toBeInTheDocument()
+    expect(within(el).getByTestId('tools-history-table')).toBeInTheDocument()
+  })
+
+  it('switches to an empty placeholder tab for Recommended', async () => {
+    const user = userEvent.setup()
+    renderToolsScreen()
+    const el = screen.getByTestId('screen-tools')
+    await user.click(within(el).getByRole('tab', { name: 'Recommended' }))
+    expect(within(el).getByRole('tab', { name: 'Recommended' })).toHaveAttribute('aria-selected', 'true')
+    expect(within(el).queryByText('Name (113)')).toBeNull()
+    expect(within(el).getByTestId('tools-tab-Recommended')).toBeInTheDocument()
   })
 
   it('opens a row into the tool detail route', async () => {

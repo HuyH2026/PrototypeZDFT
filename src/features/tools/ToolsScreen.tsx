@@ -9,6 +9,7 @@ import { Settings } from 'lucide-react'
 import { TOOL_TABS, type ToolTab } from './tools-data'
 import { ToolsToolbar } from './ToolsToolbar'
 import { ToolsTable } from './ToolsTable'
+import { ToolsHistoryTable } from './ToolsHistoryTable'
 
 export function ToolsScreen() {
   const [tab, setTab] = useState<ToolTab>('Available')
@@ -58,6 +59,8 @@ export function ToolsScreen() {
             <ToolsToolbar />
             <ToolsTable onOpen={(id) => navigate(`/tools/${id}`)} />
           </div>
+        ) : tab === 'History' ? (
+          <ToolsHistoryTable />
         ) : (
           <div
             data-testid={`tools-tab-${tab}`}
