@@ -32,14 +32,14 @@ export function WinnerCard() {
           >
             <div className="flex items-center gap-2">
               <span
-                className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-semibold text-white"
+                className="inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-2 py-0.5 text-[9px] font-semibold text-white"
                 style={{ backgroundColor: v.badgeColor }}
               >
                 {v.badge}
               </span>
-              <span className="text-[12px] font-bold text-ink">{v.title}</span>
+              <span className="truncate text-[12px] font-bold text-ink">{v.title}</span>
               {v.isWinner && (
-                <span className="ml-auto inline-flex items-center gap-1 rounded-[4px] bg-[#ffd483] px-1.5 py-0.5 text-[9px] font-semibold text-[#312819]">
+                <span className="ml-auto inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-[4px] bg-[#ffd483] px-1.5 py-0.5 text-[9px] font-semibold text-[#312819]">
                   Winner
                 </span>
               )}
