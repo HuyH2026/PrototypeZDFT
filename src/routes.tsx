@@ -16,6 +16,7 @@ import { CreateOrgFlow } from '@/features/organization/CreateOrgFlow'
 import { OrchestratorScreen } from '@/features/orchestrator/OrchestratorScreen'
 import { AutomationDetailScreen } from '@/features/orchestrator/AutomationDetailScreen'
 import { ToolsScreen } from '@/features/tools/ToolsScreen'
+import { ToolDetailScreen } from '@/features/tools/ToolDetailScreen'
 import { PlaceholderScreen } from '@/features/_placeholder/PlaceholderScreen'
 import { NAV_ITEMS } from '@/app/nav-config'
 
@@ -58,6 +59,7 @@ export const routes: RouteObject[] = [
           { path: 'orchestrator', element: <OrchestratorScreen /> },
           { path: 'orchestrator/:id', element: <AutomationDetailScreen /> },
           { path: 'tools', element: <ToolsScreen /> },
+          { path: 'tools/:id', element: <ToolDetailScreen /> },
           { path: 'opportunity/:id', element: <OpportunityDetailScreen /> },
           ...placeholderRoutes,
         ],
