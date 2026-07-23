@@ -38,6 +38,10 @@ export function ExperimentSetupScreen() {
   const detail = getExperimentDetail(searchParams.get('id'))
   const hasId = Boolean(searchParams.get('id') && detail.id === searchParams.get('id'))
 
+  // These initializers seed from `detail` on mount only. The single entry point
+  // is a table-row click (a fresh mount per experiment), so `?id` never changes
+  // in place; if in-view experiment switching is ever added, key this component
+  // on the id to re-seed tab/name/description.
   const [tab, setTab] = useState<(typeof TABS)[number]>(hasId ? 'Results' : 'Setup')
   const [name, setName] = useState(detail.name)
   const [description, setDescription] = useState(detail.description)

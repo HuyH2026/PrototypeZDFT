@@ -61,4 +61,11 @@ describe('ExperimentSetupScreen', () => {
     expect(within(el).getByRole('tab', { name: 'Setup' })).toHaveAttribute('aria-selected', 'true')
     expect(within(el).getByText('A/B Test detail')).toBeInTheDocument()
   })
+
+  it('falls back to the Setup tab for an unknown id', () => {
+    renderScreenAt('/experiments/new?id=does-not-exist')
+    const el = screen.getByTestId('screen-experiment-setup')
+    expect(within(el).getByRole('tab', { name: 'Setup' })).toHaveAttribute('aria-selected', 'true')
+    expect(within(el).getByText('A/B Test detail')).toBeInTheDocument()
+  })
 })
