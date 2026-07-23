@@ -58,7 +58,7 @@ describe('HomeScreen', () => {
     const surface = screen.getByTestId('screen-home')
     expect(surface).toBeInTheDocument()
     expect(surface.className).toMatch(/rounded-\[26px\]/)
-    expect(screen.getByText(/good morning, alex/i)).toBeInTheDocument()
+    expect(screen.getByText(/good morning, sunny/i)).toBeInTheDocument()
   })
 
   it('renders default widgets', () => {

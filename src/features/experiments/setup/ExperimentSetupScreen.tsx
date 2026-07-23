@@ -2,7 +2,7 @@
 // controlled local inputs, every action navigates back to /experiments.
 // Mirrors AutomationDetailScreen's shell (rounded card + top bar + body).
 import { useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 import {
   ArrowLeft,
   MoreHorizontal,
@@ -19,8 +19,8 @@ import {
   WINNER_METRICS,
   TIME_ZONE,
   DEFAULT_TEST_NAME,
-  DEFAULT_TEST_DESCRIPTION,
 } from '../experiments-data'
+import { getExperimentDetail } from './results/results-data'
 import { SetupSection } from './SetupSection'
 import { VariantRow } from './VariantRow'
 import { SummaryPanel } from './SummaryPanel'
@@ -34,9 +34,17 @@ export function ExperimentSetupScreen() {
   const navigate = useNavigate()
   const back = () => navigate('/experiments')
 
-  const [tab, setTab] = useState<(typeof TABS)[number]>('Setup')
-  const [name, setName] = useState(DEFAULT_TEST_NAME)
-  const [description, setDescription] = useState(DEFAULT_TEST_DESCRIPTION)
+  const [searchParams] = useSearchParams()
+  const detail = getExperimentDetail(searchParams.get('id'))
+  const hasId = Boolean(searchParams.get('id') && detail.id === searchParams.get('id'))
+
+  // These initializers seed from `detail` on mount only. The single entry point
+  // is a table-row click (a fresh mount per experiment), so `?id` never changes
+  // in place; if in-view experiment switching is ever added, key this component
+  // on the id to re-seed tab/name/description.
+  const [tab, setTab] = useState<(typeof TABS)[number]>(hasId ? 'Results' : 'Setup')
+  const [name, setName] = useState(detail.name)
+  const [description, setDescription] = useState(detail.description)
   const [endCondition, setEndCondition] = useState<'fixed' | 'count'>('fixed')
 
   return (
@@ -84,7 +92,7 @@ export function ExperimentSetupScreen() {
       {/* Body */}
       <div className="min-h-0 flex-1 overflow-y-auto">
         {tab === 'Results' ? (
-          <ResultsView />
+          <ResultsView detail={detail} />
         ) : (
         <div className="flex justify-center gap-6 px-8 py-6">
           {/* Form column */}

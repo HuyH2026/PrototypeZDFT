@@ -4,9 +4,13 @@ import { createMemoryRouter, RouterProvider } from 'react-router'
 import { ExperimentSetupScreen } from './ExperimentSetupScreen'
 
 function renderScreen() {
+  return renderScreenAt('/experiments/new')
+}
+
+function renderScreenAt(entry: string) {
   const router = createMemoryRouter(
     [{ path: '/experiments/new', element: <ExperimentSetupScreen /> }],
-    { initialEntries: ['/experiments/new'] },
+    { initialEntries: [entry] },
   )
   return render(<RouterProvider router={router} />)
 }
@@ -40,5 +44,28 @@ describe('ExperimentSetupScreen', () => {
     fireEvent.click(within(el).getByRole('button', { name: 'Run A/B Test' }))
     expect(within(el).getByRole('tab', { name: 'Results' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.getByTestId('view-ab-test-results')).toBeInTheDocument()
+  })
+
+  it('opens on the Results tab and shows the experiment name for a known id', () => {
+    renderScreenAt('/experiments/new?id=e2')
+    const el = screen.getByTestId('screen-experiment-setup')
+    expect(within(el).getByRole('tab', { name: 'Results' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByTestId('view-ab-test-results')).toBeInTheDocument()
+    // e2 winner label appears in the winner card
+    expect(within(el).getByText('Abandoned Cart Recovery')).toBeInTheDocument()
+  })
+
+  it('defaults to the Setup tab with no id', () => {
+    renderScreenAt('/experiments/new')
+    const el = screen.getByTestId('screen-experiment-setup')
+    expect(within(el).getByRole('tab', { name: 'Setup' })).toHaveAttribute('aria-selected', 'true')
+    expect(within(el).getByText('A/B Test detail')).toBeInTheDocument()
+  })
+
+  it('falls back to the Setup tab for an unknown id', () => {
+    renderScreenAt('/experiments/new?id=does-not-exist')
+    const el = screen.getByTestId('screen-experiment-setup')
+    expect(within(el).getByRole('tab', { name: 'Setup' })).toHaveAttribute('aria-selected', 'true')
+    expect(within(el).getByText('A/B Test detail')).toBeInTheDocument()
   })
 })
