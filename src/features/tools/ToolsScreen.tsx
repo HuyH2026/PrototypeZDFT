@@ -18,42 +18,41 @@ export function ToolsScreen() {
   return (
     <div
       data-testid="screen-tools"
-      className="h-full overflow-y-auto rounded-[26px] bg-white px-10 py-4"
+      className="h-full overflow-y-auto rounded-[26px] bg-white"
     >
-      {/* Title row + tabs */}
-      <div className="flex items-center justify-between">
+      {/* Sticky header: stays pinned to the top of the scroll area with a
+          frosted backdrop so content scrolls softly beneath it (matches
+          CX Journey). */}
+      <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-[26px] bg-white/80 px-8 pb-4 pt-6 backdrop-blur-md">
         <div className="flex items-center gap-6">
-          <h1 className="text-[22px] text-ink">Tool Builder</h1>
-          <div className="h-7 w-px bg-surface-border" aria-hidden />
-          <div className="flex items-center gap-2" role="tablist">
-            {TOOL_TABS.map((t) => {
-              const active = t === tab
-              return (
-                <button
-                  key={t}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => setTab(t)}
-                  className={
-                    active
-                      ? '-mb-px border-b border-[#01567a] px-4 pb-2.5 pt-3 text-[22px] text-ink'
-                      : 'px-4 pb-2.5 pt-3 text-[22px] text-grey-500'
-                  }
-                >
-                  {t}
-                </button>
-              )
-            })}
-          </div>
+          <h1 className="pb-3 text-[20px] font-semibold text-ink">Tool Builder</h1>
+          {TOOL_TABS.map((t) => {
+            const active = t === tab
+            return (
+              <button
+                key={t}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => setTab(t)}
+                className={
+                  active
+                    ? '-mb-px border-b-2 border-ink pb-3 text-[14px] font-medium text-ink'
+                    : 'pb-3 text-[14px] text-ink-muted'
+                }
+              >
+                {t}
+              </button>
+            )
+          })}
         </div>
-        <button type="button" aria-label="Tool settings" className="text-ink-muted">
+        <button type="button" aria-label="Tool settings" className="pb-3 text-ink-muted">
           <Settings size={20} aria-hidden />
         </button>
       </div>
 
       {/* Body */}
-      <div className="mt-6">
+      <div className="px-8 pb-8">
         {tab === 'Available' ? (
           <div className="flex flex-col gap-4">
             <ToolsToolbar />
