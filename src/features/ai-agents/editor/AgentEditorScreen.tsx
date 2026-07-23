@@ -1,7 +1,7 @@
 // The Autoflow policy editor screen (/ai-agents/:agentId). One DndProvider over
 // the header, the policy editor + block canvas (center), and the Steps palette
 // (right). Unknown ids redirect to the list. Edits persist via the agent store.
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -14,6 +14,8 @@ import { StepsPalette } from './StepsPalette'
 import { EditorRail, type RailKey } from './EditorRail'
 import { AiStudioEditorPanel } from './AiStudioEditorPanel'
 import { AiStudioFullView } from './AiStudioFullView'
+import { InlinePolicyPreview } from './InlinePolicyPreview'
+import { AI_STUDIO_WORKING_MS } from './ai-studio-data'
 
 export function AgentEditorScreen() {
   const { agentId = '' } = useParams()
@@ -28,8 +30,22 @@ export function AgentEditorScreen() {
   const [rail, setRail] = useState<RailKey>('steps')
   // Whether the AI Studio "Review plan" full-screen takeover is open.
   const [reviewing, setReviewing] = useState(false)
+  // Once the plan is approved (and the "Working…" delay elapses), the policy
+  // area is replaced by the inline accept/reject diff preview.
+  const [showPreview, setShowPreview] = useState(false)
+  const workingTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   if (!agent) return <Navigate to="/ai-agents" replace />
+
+  // User typed "Approve" in the full view: keep the takeover up (showing the
+  // "Working…" indicator) for a beat, then close it and reveal the diff preview.
+  const handleApprove = () => {
+    clearTimeout(workingTimer.current)
+    workingTimer.current = setTimeout(() => {
+      setReviewing(false)
+      setShowPreview(true)
+    }, AI_STUDIO_WORKING_MS)
+  }
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -45,8 +61,14 @@ export function AgentEditorScreen() {
         <div className="flex flex-1 overflow-hidden">
           <div className="flex flex-1 gap-6 overflow-hidden p-8">
             <div className="flex-1 overflow-y-auto">
-              <PolicyEditor doc={agent.policy} onChange={(policy) => store.updateAgent(agent.id, { policy })} />
-              <BlockCanvas blocks={agent.blocks} onChange={(blocks) => store.updateAgent(agent.id, { blocks })} />
+              {showPreview ? (
+                <InlinePolicyPreview />
+              ) : (
+                <>
+                  <PolicyEditor doc={agent.policy} onChange={(policy) => store.updateAgent(agent.id, { policy })} />
+                  <BlockCanvas blocks={agent.blocks} onChange={(blocks) => store.updateAgent(agent.id, { blocks })} />
+                </>
+              )}
             </div>
             {rail === 'steps' && <StepsPalette onClose={() => setRail('outline')} />}
             {rail === 'ai' && (
@@ -59,7 +81,7 @@ export function AgentEditorScreen() {
           <EditorRail selected={rail} onSelect={setRail} />
         </div>
       </div>
-      {reviewing && <AiStudioFullView onClose={() => setReviewing(false)} />}
+      {reviewing && <AiStudioFullView onClose={() => setReviewing(false)} onApprove={handleApprove} />}
     </DndProvider>
   )
 }
