@@ -21,4 +21,13 @@ describe('AutomationView', () => {
     expect(view.queryByText('Reactivate account')).not.toBeInTheDocument()
     expect(view.getByText(/Coming soon/i)).toBeInTheDocument()
   })
+
+  it('opens the Generated Agent panel when a row is clicked', async () => {
+    const user = userEvent.setup()
+    render(<AutomationView />)
+    const view = within(screen.getByTestId('view-automation'))
+    await user.click(view.getByText('Reactivate account'))
+    const dialog = within(screen.getByRole('dialog'))
+    expect(dialog.getByText('Generated Agent')).toBeInTheDocument()
+  })
 })
