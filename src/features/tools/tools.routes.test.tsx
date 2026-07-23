@@ -23,4 +23,14 @@ describe('Tools routing', () => {
   it('resolves /tools to the Tools nav item', () => {
     expect(findNavItemByPath('/tools')?.label).toBe('Tools')
   })
+
+  it('renders the Tool Detail screen at /tools/t1', () => {
+    renderAt('/tools/t1')
+    expect(screen.getByTestId('screen-tool-detail')).toBeInTheDocument()
+  })
+
+  it('redirects /tools/does-not-exist back to /tools', () => {
+    renderAt('/tools/does-not-exist')
+    expect(screen.getByTestId('screen-tools')).toBeInTheDocument()
+  })
 })
