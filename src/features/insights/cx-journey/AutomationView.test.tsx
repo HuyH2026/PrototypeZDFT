@@ -13,11 +13,22 @@ describe('AutomationView', () => {
     expect(view.getByText('Account Linking and Updating')).toBeInTheDocument()
   })
 
-  it('shows an empty state when a non-built sub-tab is selected', async () => {
+  it('shows the knowledge-gaps banner and table when that sub-tab is selected', async () => {
     const user = userEvent.setup()
     render(<AutomationView />)
     const view = within(screen.getByTestId('view-automation'))
     await user.click(view.getByRole('tab', { name: /Knowledge gaps/ }))
+    expect(view.queryByText('Reactivate account')).not.toBeInTheDocument()
+    expect(view.getByText('29,090')).toBeInTheDocument()
+    expect(view.getByText('$160,500')).toBeInTheDocument()
+    expect(view.getByText('How to Handle a Fraudulent Charge Dispute')).toBeInTheDocument()
+  })
+
+  it('shows an empty state when Realized impact is selected', async () => {
+    const user = userEvent.setup()
+    render(<AutomationView />)
+    const view = within(screen.getByTestId('view-automation'))
+    await user.click(view.getByRole('tab', { name: /Realized impact/ }))
     expect(view.queryByText('Reactivate account')).not.toBeInTheDocument()
     expect(view.getByText(/Coming soon/i)).toBeInTheDocument()
   })

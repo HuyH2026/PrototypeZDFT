@@ -55,6 +55,53 @@ export const AUTOMATION_ROWS: AutomationRow[] = [
   },
 ]
 
+// Knowledge gaps sub-tab: AI-generated knowledge contents that fill gaps in the
+// knowledge base. Banner stats + a table of proposed articles.
+export const KNOWLEDGE_INTRO =
+  'We generated these knowledge contents by identifying gaps in your knowledge base.'
+
+export const KNOWLEDGE_STATS: AutomationStat[] = [
+  { value: '185', label: 'Knowledge contents generated' },
+  { value: '29,090', label: 'Potential ticket coverage' },
+  { value: '$160,500', label: 'Potential savings' },
+]
+
+export type KnowledgeGapRow = {
+  title: string
+  body: string
+  relatedTopic: string
+  relatedArticle: string
+  labels: string
+  coverage: string
+}
+
+export const KNOWLEDGE_GAP_ROWS: KnowledgeGapRow[] = [
+  {
+    title: 'How to Handle a Fraudulent Charge Dispute',
+    body: "If you've noticed unauthorized transactions on your account, it's important to act quickly to dispute these charges. This gui...",
+    relatedTopic: 'Fraudulent Charge dispu...',
+    relatedArticle: 'What do I do if I see unauth...',
+    labels: 'n/a',
+    coverage: '403',
+  },
+  {
+    title: 'How to Recover Your Account When You No Longer Have Access to Your Email or phone number',
+    body: "If you've lost access to the email or phone number associated with your account, recovering your account can seem challengin...",
+    relatedTopic: 'Account recovery',
+    relatedArticle: 'GUIDE: Customer verificat...',
+    labels: 'n/a',
+    coverage: '394',
+  },
+  {
+    title: 'Understanding and Managing Your Investment Settings',
+    body: 'This guide will help you navigate common issues related to investment settings, including managing recurring investments, understand...',
+    relatedTopic: 'Investing guidance',
+    relatedArticle: 'GUDE: One-time and recu...',
+    labels: 'n/a',
+    coverage: '383',
+  },
+]
+
 export type TrainingPhraseRow = { topic: string; coverage: string; savings: string }
 
 export type GeneratedTool = {
