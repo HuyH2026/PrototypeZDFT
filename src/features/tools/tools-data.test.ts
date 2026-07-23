@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { TOOL_TABS, TOOL_ACTIONS, NAME_COUNT } from './tools-data'
+import { TOOL_TABS, TOOL_ACTIONS, NAME_COUNT, TOOL_RUNS, RUN_COUNT } from './tools-data'
 
 describe('tools-data', () => {
   it('defines the four tabs in Figma order', () => {
@@ -31,5 +31,35 @@ describe('tools-data', () => {
 
   it('uses a static Name header count of 113', () => {
     expect(NAME_COUNT).toBe(113)
+  })
+})
+
+describe('tools-data (history)', () => {
+  it('defines five history runs, one per existing tool action', () => {
+    expect(TOOL_RUNS).toHaveLength(5)
+    expect(TOOL_RUNS.map((r) => r.toolId)).toEqual(['t1', 't2', 't3', 't4', 't5'])
+  })
+
+  it('every run references a real TOOL_ACTIONS id', () => {
+    const actionIds = new Set(TOOL_ACTIONS.map((a) => a.id))
+    for (const run of TOOL_RUNS) {
+      expect(actionIds.has(run.toolId)).toBe(true)
+    }
+  })
+
+  it('covers all three run statuses', () => {
+    const statuses = TOOL_RUNS.map((r) => r.status)
+    expect(statuses).toContain('In progress')
+    expect(statuses).toContain('Completed')
+    expect(statuses).toContain('Failed')
+  })
+
+  it('has a mix of null and real conversation ids', () => {
+    expect(TOOL_RUNS.some((r) => r.conversationId === null)).toBe(true)
+    expect(TOOL_RUNS.some((r) => typeof r.conversationId === 'string')).toBe(true)
+  })
+
+  it('uses a static Run header count of 113', () => {
+    expect(RUN_COUNT).toBe(113)
   })
 })
