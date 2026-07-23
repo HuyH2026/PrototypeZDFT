@@ -6,12 +6,12 @@ import { TRAFFIC_SPLIT, TRAFFIC_SPLIT_TOTAL } from './results-data'
 
 export function TrafficSplitCard() {
   return (
-    <div className="rounded-2xl border border-surface-border bg-white p-4">
+    <div className="rounded-2xl border border-surface-border bg-white p-5">
       <div className="flex items-center gap-1.5">
         <p className="text-[13px] font-semibold text-ink">Traffic split</p>
-        <Info size={14} className="text-ink-muted" aria-hidden />
+        <Info size={16} className="text-ink-muted" aria-hidden />
       </div>
-      <div className="mt-4 flex items-center gap-5">
+      <div className="mt-5 flex items-center gap-5">
         <div className="flex flex-col gap-3">
           {TRAFFIC_SPLIT.map((s) => (
             <div key={s.name} className="flex flex-col gap-0.5">
@@ -33,7 +33,7 @@ export function TrafficSplitCard() {
               nameKey="name"
               cx={70}
               cy={70}
-              innerRadius={49}
+              innerRadius={56}
               outerRadius={69}
               startAngle={90}
               endAngle={450}
