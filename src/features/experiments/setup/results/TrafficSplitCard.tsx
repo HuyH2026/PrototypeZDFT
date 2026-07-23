@@ -34,7 +34,7 @@ export function TrafficSplitCard() {
               cx={70}
               cy={70}
               innerRadius={49}
-              outerRadius={70}
+              outerRadius={69}
               startAngle={90}
               endAngle={450}
               isAnimationActive={false}
