@@ -44,6 +44,41 @@ export type ConvCard = StackedBarCard | DonutCardData | RankedBarCard
 export type ConvColumnId = 'timestamp' | 'automated' | 'source' | 'client' | 'agents' | 'transcript'
 export type ConvColumn = { id: ConvColumnId; label: string }
 export type SourceKind = 'human' | 'a2a' | 'mcp'
+
+// --- Conversation Details panel ---------------------------------------------
+export type EventItem = { label: string; client: string; duration: string; sublink?: string }
+export type TranscriptStep = { kind: 'step'; text: string }
+export type TranscriptBubble = {
+  kind: 'bubble'
+  speaker: string
+  role: string
+  text: string
+  side: 'client' | 'solve'
+}
+export type TranscriptEntry = TranscriptBubble | TranscriptStep
+
+export type ConvDetail = {
+  conversationId: string
+  automated: string
+  source: SourceKind
+  clientLabel?: string
+  clientValue?: string
+  deflected: string
+  resolved: string
+  timeCreated: string
+  timeSpent: string
+  channel: string
+  interactions: string
+  contextVariables: string
+  clientQuery: string
+  events: EventItem[]
+  resolutionBadge: string
+  resolutionText: string
+  signals: string[]
+  transcriptIntro: string
+  transcript: TranscriptEntry[]
+}
+
 export type ConvRow = {
   id: string
   timestamp: string
@@ -53,6 +88,7 @@ export type ConvRow = {
   agents: string
   transcript: string[]
   hasGap: boolean
+  detail: ConvDetail
 }
 
 export type ChannelData = {
@@ -236,7 +272,96 @@ function columnsFor(convHeader: string, a2a: boolean): ConvColumn[] {
   return cols
 }
 
-const HEADLESS_ROWS: ConvRow[] = [
+// Wording that varies by conversation source (matches the two Figma frames).
+function sourceWording(source: SourceKind, _client: string) {
+  if (source === 'a2a')
+    return { clientLabel: 'Calling client', intro: 'Conversation started between agents', side: 'client' as const }
+  if (source === 'mcp')
+    return { clientLabel: 'MCP client', intro: 'Conversation started between MCP and agent', side: 'client' as const }
+  return { clientLabel: undefined, intro: 'Conversation started', side: 'client' as const }
+}
+
+// Turn a row's flat transcript lines into alternating bubble entries. Even
+// lines are the caller (client tint), odd lines are Solve (grey).
+function bubblesFromLines(lines: string[], source: SourceKind, client: string): TranscriptEntry[] {
+  const caller = source === 'human' ? 'User' : client
+  return lines.map((text, i) => ({
+    kind: 'bubble' as const,
+    speaker: i % 2 === 0 ? caller : 'Solve',
+    role: i % 2 === 0 ? (source === 'human' ? 'Customer' : 'Calling client') : 'Solve',
+    text,
+    side: i % 2 === 0 ? ('client' as const) : ('solve' as const),
+  }))
+}
+
+// The exact A2A booking transcript from Figma frame 145-77530.
+const A2A_TRANSCRIPT: TranscriptEntry[] = [
+  { kind: 'bubble', speaker: 'OpenClaw', role: 'Calling client', side: 'client', text: 'Delegation token verified · acting for Jane R. · scope: book_travel · max $500 · exp 2h' },
+  { kind: 'step', text: 'Detected intent: book flight' },
+  { kind: 'bubble', speaker: 'Booking', role: 'Solve', side: 'solve', text: 'flight: DL428 · SFO→JFK · Fri 9:15a\nfare: $462 · aisle 14C\ncapability: book_flight' },
+  { kind: 'step', text: 'Triggered action: search flights' },
+  { kind: 'bubble', speaker: 'OpenClaw', role: 'Calling client', side: 'client', text: 'intent: book_flight\noffer_id: ofr_9c2a · amount: $462' },
+  { kind: 'step', text: 'Triggered action: book flight' },
+  { kind: 'bubble', speaker: 'Booking', role: 'Solve', side: 'solve', text: 'pnr: DL-7XQ2P · seat: 14C · charged: $462' },
+]
+
+// The exact MCP SAML transcript from Figma frame 145-77713.
+const MCP_TRANSCRIPT: TranscriptEntry[] = [
+  { kind: 'bubble', speaker: 'Claude Desktop', role: 'Calling client', side: 'client', text: 'tool call → solve.search(query: "SAML SSO setup steps")' },
+  { kind: 'step', text: 'Triggered knowledge article' },
+  { kind: 'bubble', speaker: 'Knowledge', role: 'Solve', side: 'solve', text: 'article: Setting up SAML SSO · confidence: 0.94' },
+]
+
+export function detailFor(row: Omit<ConvRow, 'detail'>): ConvDetail {
+  const w = sourceWording(row.source, row.client)
+  const base: ConvDetail = {
+    conversationId: `3e732807-c2d0-4ce3-8b5e-c87c28abb7e8`,
+    automated: row.automated ? 'Yes' : 'No',
+    source: row.source,
+    clientLabel: w.clientLabel,
+    clientValue: row.client === 'n/a' ? undefined : row.client,
+    deflected: 'Yes',
+    resolved: 'Verified',
+    timeCreated: 'May 17, 2026 6:47:50 pm',
+    timeSpent: '2 min 30 sec',
+    channel: 'Headless',
+    interactions: '4',
+    contextVariables: '$userId (NO USER), $logged (true)',
+    clientQuery: 'Booking flight',
+    events: [
+      { label: 'Flight reservation', client: row.client === 'n/a' ? 'Solve' : row.client, duration: '34 sec' },
+      { label: 'Booking reservations', client: 'Solve', duration: '1 min 15 sec', sublink: 'Booking reservation' },
+    ],
+    resolutionBadge: 'Verified',
+    resolutionText:
+      'Flight change request received and processed. Available options, fare rules, and next steps were confirmed based on current availability. No further input was provided, counted as implicit confirmation. Signals: Meaningful Query (High positive), Implicit Confirmation (Low positive), Knowledge Reply (High positive), Self-Service (Medium positive). No negative signals detected.',
+    signals: ['Request detected', 'Issue solved', 'Left without confirming'],
+    transcriptIntro: w.intro,
+    transcript: bubblesFromLines(row.transcript, row.source, row.client),
+  }
+
+  // The two Figma reference rows get their exact designed content.
+  if (row.source === 'a2a' && row.client === 'OpenClaw') {
+    return { ...base, clientQuery: 'Booking flight', interactions: '4', transcript: A2A_TRANSCRIPT }
+  }
+  if (row.source === 'mcp' && row.client === 'Claude Desktop') {
+    return {
+      ...base,
+      clientQuery: 'SAML SSO setup',
+      interactions: '2',
+      events: [
+        { label: 'SAML SSO', client: 'Claude Desktop', duration: '34 sec' },
+        { label: 'Knowledge Agent', client: 'Solve', duration: '1 min 15 sec', sublink: 'Knowledge agent' },
+      ],
+      resolutionText:
+        'SAML SSO configuration request received and processed via MCP connection. Identity provider metadata was retrieved, assertion parameters validated, and SSO settings applied to the target environment. No further input was provided, counted as implicit confirmation. Signals: Meaningful Query (High positive), Implicit Confirmation (Low positive), Configuration Applied (High positive), Self-Service (Medium positive). No negative signals detected.',
+      transcript: MCP_TRANSCRIPT,
+    }
+  }
+  return base
+}
+
+const HEADLESS_ROWS_BASE: Omit<ConvRow, 'detail'>[] = [
   {
     id: 'c-1',
     timestamp: 'Jun 1, 2026, 11:59 PM',
@@ -309,13 +434,13 @@ const HEADLESS_ROWS: ConvRow[] = [
   },
 ]
 
+const HEADLESS_ROWS: ConvRow[] = HEADLESS_ROWS_BASE.map((r) => ({ ...r, detail: detailFor(r) }))
+
 // Non-headless rows reuse the same transcripts minus the A2A-only fields.
-const SIMPLE_ROWS: ConvRow[] = HEADLESS_ROWS.map((r, i) => ({
-  ...r,
-  id: `s-${i + 1}`,
-  source: 'human',
-  client: 'n/a',
-}))
+const SIMPLE_ROWS: ConvRow[] = HEADLESS_ROWS_BASE.map((r, i) => {
+  const base: Omit<ConvRow, 'detail'> = { ...r, id: `s-${i + 1}`, source: 'human', client: 'n/a' }
+  return { ...base, detail: detailFor(base) }
+})
 
 export const CHANNELS: Record<ChannelKey, ChannelData> = {
   headless: {

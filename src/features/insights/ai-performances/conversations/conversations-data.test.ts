@@ -56,4 +56,36 @@ describe('conversations-data', () => {
       expect(transcriptCol?.label).toBe(CHANNELS[k].convHeader)
     }
   })
+
+  it('every row carries a populated detail', () => {
+    for (const k of KEYS) {
+      for (const row of CHANNELS[k].rows) {
+        expect(row.detail.conversationId.length).toBeGreaterThan(0)
+        expect(row.detail.transcript.length).toBeGreaterThan(0)
+        expect(row.detail.signals.length).toBeGreaterThan(0)
+      }
+    }
+  })
+
+  it('the A2A OpenClaw row detail matches the Figma calling-client wording', () => {
+    const row = CHANNELS.headless.rows.find((r) => r.client === 'OpenClaw')!
+    expect(row.detail.clientLabel).toBe('Calling client')
+    expect(row.detail.clientValue).toBe('OpenClaw')
+    expect(row.detail.transcriptIntro).toContain('agents')
+  })
+
+  it('the MCP Claude Desktop row detail matches the Figma MCP wording', () => {
+    const row = CHANNELS.headless.rows.find((r) => r.client === 'Claude Desktop')!
+    expect(row.detail.clientLabel).toBe('MCP client')
+    expect(row.detail.clientValue).toBe('Claude Desktop')
+    expect(row.detail.interactions).toBe('2')
+    expect(row.detail.transcriptIntro).toContain('MCP')
+  })
+
+  it('a human row detail omits the client label and uses the plain intro', () => {
+    const row = CHANNELS.widget.rows[0]
+    expect(row.detail.source).toBe('human')
+    expect(row.detail.clientLabel).toBeUndefined()
+    expect(row.detail.transcriptIntro).toBe('Conversation started')
+  })
 })
