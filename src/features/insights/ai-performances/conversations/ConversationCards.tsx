@@ -29,7 +29,7 @@ function CardShell({ title, children }: { title: string; children: React.ReactNo
     <div className="rounded-2xl border border-surface-border bg-white p-5">
       <h3 className="mb-4 flex items-center gap-1.5 text-[15px] font-medium text-ink">
         {title}
-        <span className="text-[12px] text-ink-muted">ⓘ</span>
+        <span aria-hidden="true" className="text-[12px] text-ink-muted">ⓘ</span>
       </h3>
       {children}
     </div>

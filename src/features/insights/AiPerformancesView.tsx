@@ -5,6 +5,7 @@
 import { useState } from 'react'
 import { Check, SlidersHorizontal } from 'lucide-react'
 import { ConversationComparison } from './ai-performances/ConversationComparison'
+import { ConversationsView } from './ai-performances/conversations/ConversationsView'
 import { CustomInsights } from './ai-performances/CustomInsights'
 import { FlowSankey } from './ai-performances/FlowSankey'
 import { PerformanceInsights } from './ai-performances/PerformanceInsights'
@@ -143,6 +144,8 @@ export function AiPerformancesView() {
               {!isCollapsed('comparison') && <ConversationComparison />}
             </section>
           </>
+        ) : tab === 'Conversations' ? (
+          <ConversationsView />
         ) : (
           <div className="flex h-64 items-center justify-center text-[14px] text-ink-muted">Coming soon</div>
         )}
