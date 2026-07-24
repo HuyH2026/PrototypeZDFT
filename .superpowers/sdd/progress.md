@@ -1,33 +1,17 @@
-# Log Screen — Progress Ledger
+# Conversation Details Panel — Progress Ledger
 
-Branch: worktree-log-page
-Plan: docs/superpowers/plans/2026-07-22-log-screen.md
-Base (before Task 1): f904e1e1e200a8984ff38646fd5a84c9ce5ddb79
-Baseline: 415/415 tests pass
+Branch: conversation-detail-panel
+Plan: docs/superpowers/plans/2026-07-24-conversation-detail-panel.md
+Base (before Task 1): 9521fdfb
+Baseline: 492/492 tests pass
 
 Tasks:
-- Task 1: complete (commit 21915356, review clean — spec ✅, quality ✅; 3/3 log-data tests)
-- Task 2: complete (commit 09d29b8f, review clean — spec ✅, quality ✅; tsc clean)
-- Task 3: complete (commit 8530bfff, review clean — spec ✅, quality ✅; tsc clean)
-- Task 4: complete (commit 6263a1da, review clean — spec ✅, quality ✅; tsc clean)
-- Task 5: complete (commit 384e6f88, review clean — spec ✅, quality ✅; tsc clean)
-- Task 6: complete (commit d927d1aa, review clean — spec ✅, quality ✅; tsc clean)
-- Task 7: complete (commit 336de5eb, review clean — spec ✅, quality ✅ w/ non-blocking minor; tsc clean)
-- Task 8: complete (commit 7d80fc90, review clean — spec ✅, quality ✅; tsc clean)
-- Task 9: complete (commits a37a5a29 + fix b591e025, review clean after fix — spec ✅, quality ✅; tsc clean. Fix: added font-semibold to "Errors overview" heading — spec said semibold, plan code omitted it.)
-- Task 10: complete (commit 495d045d, review clean — spec ✅, quality ✅; 2/2 LogScreen tests, tsc clean)
-- Task 11: complete (commit a2d4e83b, review clean — spec ✅, quality ✅; 3/3 log.routes tests, tsc clean)
-- Task 12: complete (verification — tsc clean, full suite 423/423 pass (+8 new), vite build succeeds; chunk-size warning pre-existing/unrelated).
+- Task 1: complete (commits 0f63baa2..c95ebc01, review clean — spec ✅, quality Approved; 11/11 data tests, tsc clean. Important fixed: dropped dead sourceWording param + vestigial `side` field. Minor fixed: `detail.channel` was hardcoded 'Headless' for all rows → now threaded per-channel via detailFor(row, channelLabel) + simpleRowsFor(label). Fix verified by diff.)
+- Task 2: complete (commit bf4c9fab, review clean — spec ✅, quality Approved; 3/3 panel tests, src/features/insights 83/83, tsc clean. Two documented deviations both judged SOUND: (a) MetaRow label wrapped in own <span> so exact getByText matches — visually inert; (b) Bubble role separator merged into role span as '·' to resolve a real 'multiple elements' collision (two A2A bubbles share role 'Calling client') — only fix compatible with the locked verbatim test.)
+- Task 3: complete (commit cb7c3398, review clean — spec ✅, quality Approved, no issues; conversations 19/19, full suite 500/500, tsc clean. Reviewer confirmed <tr role=button> matches 4 existing repo tables.)
+- Task 4: complete (verification only, no commit — tsc clean, full suite 500/500, vite build succeeds; pre-existing chunk-size warning unrelated).
 
-Feature commits (in order): 21915356, 09d29b8f, 8530bfff, 6263a1da, 384e6f88, d927d1aa, 336de5eb, 7d80fc90, a37a5a29, b591e025, 495d045d, a2d4e83b.
-ALL 12 TASKS COMPLETE. Full suite 423/423, tsc clean, build OK.
+ALL 4 TASKS COMPLETE.
 
-Final whole-branch review (Opus, base f904e1e1..a2d4e83b, 12 commits): READY TO MERGE — yes. No Critical/Important. Minors (non-blocking):
-1. Tabs ARIA incomplete (no tabpanel/aria-controls/roving arrows) — inherited verbatim from ToolsScreen; systemic, fix project-wide or not at all.
-2. HeaderCell + row-cell markup duplicated across AuditTable/ErrorTable — matches ToolsTable house style; low-value extraction.
-3. SeverityBadge white-on-color contrast borderline for AA (Low #3492ef ~3.2:1, High #d64535 ~4.4:1) — transcribed from prototype, consistent one-off.
-4. ADDRESSED: table coverage was thin (no row-count / testid / badge assertions). Added rows to LogScreen.test.tsx.
-5. text-black vs text-ink (adjudicated, see above) — confirmed non-blocking, matches sibling ToolsTable/ToolsToolbar.
-
-Minor findings (for final review triage):
-- Task 4 + Task 7: `text-black` vs canonical `text-ink` on cells/buttons (matches brief verbatim + sibling ToolsToolbar/ToolsTable pattern; text-black is a Tailwind utility not raw hex; non-blocking). Task 7 also has intra-component inconsistency (Alert-management uses text-ink) — both verbatim from brief. Consider unifying to text-ink across the log feature during final polish if desired.
+Minors log:
+- [Minor][Task 2] Bubble speaker/role separator is a typographic '·' glyph instead of Figma's filled-circle dot (h-1 w-1 rounded-full). Disclosed; same color #727583; no clean alternative without editing the locked test. Cosmetic only.
