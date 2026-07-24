@@ -44,4 +44,16 @@ describe('ConversationsView', () => {
     // A gap row remains.
     expect(view.getByText(/Abnormal bank statement/)).toBeInTheDocument()
   })
+
+  it('opens the detail panel when a table row is clicked and closes on Escape', async () => {
+    const user = userEvent.setup()
+    render(<ConversationsView />)
+    const view = within(screen.getByTestId('view-conversations'))
+    // The A2A OpenClaw row is identifiable by its transcript preview text.
+    await user.click(view.getByText(/Delegation token verified/))
+    const dialog = screen.getByRole('dialog', { name: 'Conversation Details' })
+    expect(within(dialog).getByText('Calling client')).toBeInTheDocument()
+    await user.keyboard('{Escape}')
+    expect(screen.queryByRole('dialog', { name: 'Conversation Details' })).not.toBeInTheDocument()
+  })
 })

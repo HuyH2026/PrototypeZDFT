@@ -56,11 +56,13 @@ export function ConversationTable({
   rows,
   gapsOnly,
   onGapsOnlyChange,
+  onRowClick,
 }: {
   columns: ConvColumn[]
   rows: ConvRow[]
   gapsOnly: boolean
   onGapsOnlyChange: (v: boolean) => void
+  onRowClick: (row: ConvRow) => void
 }) {
   const visible = gapsOnly ? rows.filter((r) => r.hasGap) : rows
   return (
@@ -107,7 +109,19 @@ export function ConversationTable({
         </thead>
         <tbody>
           {visible.map((row) => (
-            <tr key={row.id} className="border-b border-surface-border last:border-0 align-top">
+            <tr
+              key={row.id}
+              role="button"
+              tabIndex={0}
+              onClick={() => onRowClick(row)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  onRowClick(row)
+                }
+              }}
+              className="cursor-pointer border-b border-surface-border align-top last:border-0 hover:bg-[#f9fafb]"
+            >
               {columns.map((c) => (
                 <td key={c.id} className="px-4 py-4">
                   <Cell col={c} row={row} />

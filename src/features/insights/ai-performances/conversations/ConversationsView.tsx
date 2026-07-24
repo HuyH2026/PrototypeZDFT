@@ -4,14 +4,16 @@
 // table. All data is mocked (see ./conversations-data).
 import { useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import { CHANNELS, CONV_CHANNEL_TABS, type ChannelKey } from './conversations-data'
+import { CHANNELS, CONV_CHANNEL_TABS, type ChannelKey, type ConvRow } from './conversations-data'
 import { ConversationCard } from './ConversationCards'
 import { ConversationTable } from './ConversationTable'
+import { ConversationDetailPanel } from './ConversationDetailPanel'
 
 export function ConversationsView() {
   const [channel, setChannel] = useState<ChannelKey>('headless')
   const [cardsCollapsed, setCardsCollapsed] = useState(false)
   const [gapsOnly, setGapsOnly] = useState(false)
+  const [selected, setSelected] = useState<ConvRow | null>(null)
   const data = CHANNELS[channel]
 
   return (
@@ -69,7 +71,12 @@ export function ConversationsView() {
         rows={data.rows}
         gapsOnly={gapsOnly}
         onGapsOnlyChange={setGapsOnly}
+        onRowClick={setSelected}
       />
+
+      {selected && (
+        <ConversationDetailPanel detail={selected.detail} onClose={() => setSelected(null)} />
+      )}
     </div>
   )
 }
