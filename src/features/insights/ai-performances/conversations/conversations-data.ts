@@ -29,7 +29,14 @@ export type DonutCardData = {
 }
 
 export type RankRow = { label: string; value: number; count: string }
-export type RankedBarCard = { kind: 'ranked'; title: string; total: string; color: string; rows: RankRow[] }
+export type RankedBarCard = {
+  kind: 'ranked'
+  title: string
+  total: string
+  totalLabel: string
+  color: string
+  rows: RankRow[]
+}
 
 export type ConvCard = StackedBarCard | DonutCardData | RankedBarCard
 
@@ -151,6 +158,7 @@ const HEADLESS_A2A_CARDS: ConvCard[] = [
     kind: 'ranked',
     title: 'Top A2A solve agents',
     total: '5,064',
+    totalLabel: 'Total responses',
     color: C6,
     rows: [
       { label: 'Access & Identity', value: 3654, count: '3,654' },
@@ -164,6 +172,7 @@ const HEADLESS_A2A_CARDS: ConvCard[] = [
     kind: 'ranked',
     title: 'Top A2A calling clients',
     total: '5,064',
+    totalLabel: 'Total responses',
     color: C5,
     rows: [
       { label: 'Revenue Copilot', value: 3654, count: '3,654' },
@@ -193,6 +202,7 @@ function substituteCards(topIntentLabel: string): ConvCard[] {
       kind: 'ranked',
       title: 'Top intents',
       total: '5,064',
+      totalLabel: 'Total intents',
       color: C3,
       rows: [
         { label: topIntentLabel, value: 3654, count: '3,654' },
@@ -309,28 +319,28 @@ const SIMPLE_ROWS: ConvRow[] = HEADLESS_ROWS.map((r, i) => ({
 
 export const CHANNELS: Record<ChannelKey, ChannelData> = {
   headless: {
-    cards: [...sharedCards(1).slice(0, 2), ...HEADLESS_A2A_CARDS, ...sharedCards(1).slice(2)],
+    cards: [...sharedCards(1).slice(0, 3), ...HEADLESS_A2A_CARDS, ...sharedCards(1).slice(3)],
     columns: columnsFor('Conversations (10,000)', true),
     rows: HEADLESS_ROWS,
     dateRange: 'Nov 7, 2023 – Dec 6, 2023',
     convHeader: 'Conversations (10,000)',
   },
   widget: {
-    cards: [...sharedCards(1.4).slice(0, 2), ...substituteCards('View bank statement'), ...sharedCards(1.4).slice(2)],
+    cards: [...sharedCards(1.4).slice(0, 3), ...substituteCards('View bank statement'), ...sharedCards(1.4).slice(3)],
     columns: columnsFor('Conversations (32,000)', false),
     rows: SIMPLE_ROWS,
     dateRange: 'Nov 7, 2023 – Dec 6, 2023',
     convHeader: 'Conversations (32,000)',
   },
   voice: {
-    cards: [...sharedCards(0.6).slice(0, 2), ...substituteCards('Billing question'), ...sharedCards(0.6).slice(2)],
+    cards: [...sharedCards(0.6).slice(0, 3), ...substituteCards('Billing question'), ...sharedCards(0.6).slice(3)],
     columns: columnsFor('Conversations (12,000)', false),
     rows: SIMPLE_ROWS,
     dateRange: 'Nov 7, 2023 – Dec 6, 2023',
     convHeader: 'Conversations (12,000)',
   },
   webcall: {
-    cards: [...sharedCards(0.3).slice(0, 2), ...substituteCards('Technical support'), ...sharedCards(0.3).slice(2)],
+    cards: [...sharedCards(0.3).slice(0, 3), ...substituteCards('Technical support'), ...sharedCards(0.3).slice(3)],
     columns: columnsFor('Conversations (6,000)', false),
     rows: SIMPLE_ROWS,
     dateRange: 'Nov 7, 2023 – Dec 6, 2023',

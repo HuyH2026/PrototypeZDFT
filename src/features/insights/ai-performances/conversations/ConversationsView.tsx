@@ -49,7 +49,7 @@ export function ConversationsView() {
           aria-expanded={!cardsCollapsed}
           className="ml-auto flex items-center gap-1 text-[13px] text-ink-muted"
         >
-          Collapse cards
+          {cardsCollapsed ? 'Expand cards' : 'Collapse cards'}
           {cardsCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
         </button>
       </div>

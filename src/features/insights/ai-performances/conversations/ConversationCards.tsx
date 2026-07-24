@@ -114,7 +114,7 @@ function RankedBars({ card }: { card: RankedBarCard }) {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-2 text-[13px]">
-        <span className="text-ink-muted">Total responses</span>
+        <span className="text-ink-muted">{card.totalLabel}</span>
         <span className="font-semibold text-ink">{card.total}</span>
       </div>
       {card.rows.map((r) => (
