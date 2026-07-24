@@ -67,9 +67,7 @@ export function HeadlessConfigPanel({
               >
                 {revealed ? <EyeOff size={20} aria-hidden /> : <Eye size={20} aria-hidden />}
               </button>
-              <CopyField value={apiKey} variant="dark" aria-label="Copy API key" className="w-auto bg-transparent px-0 py-0 text-ink-muted">
-                {null}
-              </CopyField>
+              <CopyField value={apiKey} variant="bare" aria-label="Copy API key" />
             </div>
           </div>
           <button
@@ -80,7 +78,7 @@ export function HeadlessConfigPanel({
             Refresh API key
           </button>
           <p className="mt-4 text-[12px] leading-[18px] tracking-[-0.1px] text-grey-800">
-            Clicking on 'Refresh' wil make the system generate a new API token for setting up connection. Once
+            Clicking on 'Refresh' will make the system generate a new API token for setting up connection. Once
             regenerated, the previous token will be inaccessible.
           </p>
         </div>

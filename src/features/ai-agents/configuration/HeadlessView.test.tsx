@@ -55,4 +55,12 @@ describe('Headless tab', () => {
       expect.stringContaining('agent-card.json'),
     )
   })
+
+  it('copies the API key to the clipboard', async () => {
+    render(<ConfigurationView />)
+    const v = view()
+    await userEvent.click(v.getByText('Headless'))
+    await userEvent.click(v.getByRole('button', { name: 'Copy API key' }))
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(expect.stringMatching(/^ft_a2a_live_/))
+  })
 })
