@@ -68,7 +68,7 @@ export function HeadlessConfigPanel({
                 {revealed ? <EyeOff size={20} aria-hidden /> : <Eye size={20} aria-hidden />}
               </button>
               <CopyField value={apiKey} variant="dark" aria-label="Copy API key" className="w-auto bg-transparent px-0 py-0 text-ink-muted">
-                <span className="sr-only">API key</span>
+                {null}
               </CopyField>
             </div>
           </div>
