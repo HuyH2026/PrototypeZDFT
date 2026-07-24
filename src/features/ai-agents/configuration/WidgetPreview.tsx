@@ -11,7 +11,7 @@ type WidgetPreviewProps = {
 
 export function WidgetPreview({ brandName, brandLabel, tagSummary }: WidgetPreviewProps) {
   return (
-    <div className="flex flex-1 flex-col items-center gap-6">
+    <div className="flex flex-1 flex-col items-center justify-end gap-6">
       {/* Filter summary row */}
       {tagSummary ? (
         <div className="flex items-center gap-1.5 text-[14px]">
