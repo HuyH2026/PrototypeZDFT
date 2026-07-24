@@ -10,6 +10,7 @@ import { BrandList } from './BrandList'
 import { WidgetPreview } from './WidgetPreview'
 import { BrandedWidgetPanel } from './BrandedWidgetPanel'
 import { AiPersonalityPanel } from './AiPersonalityPanel'
+import { HeadlessView } from './HeadlessView'
 
 const TAB_ICON: Record<ChannelTab['id'], GardenIconName> = {
   widget: 'speech-bubble-stroke',
@@ -89,6 +90,8 @@ export function ConfigurationView() {
             )}
           </div>
         </div>
+      ) : activeTab === 'headless' ? (
+        <HeadlessView />
       ) : (
         <div className="flex flex-1 flex-col items-center justify-center text-ink-muted">
           <div className="text-xl font-medium text-ink">{CHANNEL_TABS.find((t) => t.id === activeTab)?.label}</div>
