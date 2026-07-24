@@ -214,21 +214,17 @@ function substituteCards(topIntentLabel: string): ConvCard[] {
   ]
 }
 
-const HEADLESS_COLUMNS: ConvColumn[] = [
-  { id: 'timestamp', label: 'Timestamp' },
-  { id: 'automated', label: 'Automated' },
-  { id: 'source', label: 'Source' },
-  { id: 'client', label: 'Calling client' },
-  { id: 'agents', label: 'Detected agents' },
-  { id: 'transcript', label: 'Conversations (10,000)' },
-]
-
-const SIMPLE_COLUMNS: ConvColumn[] = [
-  { id: 'timestamp', label: 'Timestamp' },
-  { id: 'automated', label: 'Automated' },
-  { id: 'agents', label: 'Detected agents' },
-  { id: 'transcript', label: 'Conversations (10,000)' },
-]
+// Column labels are derived from each channel's `convHeader` (the source of
+// truth for the transcript-column count) so the two never drift apart.
+function columnsFor(convHeader: string, a2a: boolean): ConvColumn[] {
+  const cols: ConvColumn[] = [
+    { id: 'timestamp', label: 'Timestamp' },
+    { id: 'automated', label: 'Automated' },
+  ]
+  if (a2a) cols.push({ id: 'source', label: 'Source' }, { id: 'client', label: 'Calling client' })
+  cols.push({ id: 'agents', label: 'Detected agents' }, { id: 'transcript', label: convHeader })
+  return cols
+}
 
 const HEADLESS_ROWS: ConvRow[] = [
   {
@@ -314,28 +310,28 @@ const SIMPLE_ROWS: ConvRow[] = HEADLESS_ROWS.map((r, i) => ({
 export const CHANNELS: Record<ChannelKey, ChannelData> = {
   headless: {
     cards: [...sharedCards(1).slice(0, 2), ...HEADLESS_A2A_CARDS, ...sharedCards(1).slice(2)],
-    columns: HEADLESS_COLUMNS,
+    columns: columnsFor('Conversations (10,000)', true),
     rows: HEADLESS_ROWS,
     dateRange: 'Nov 7, 2023 – Dec 6, 2023',
     convHeader: 'Conversations (10,000)',
   },
   widget: {
     cards: [...sharedCards(1.4).slice(0, 2), ...substituteCards('View bank statement'), ...sharedCards(1.4).slice(2)],
-    columns: SIMPLE_COLUMNS,
+    columns: columnsFor('Conversations (32,000)', false),
     rows: SIMPLE_ROWS,
     dateRange: 'Nov 7, 2023 – Dec 6, 2023',
     convHeader: 'Conversations (32,000)',
   },
   voice: {
     cards: [...sharedCards(0.6).slice(0, 2), ...substituteCards('Billing question'), ...sharedCards(0.6).slice(2)],
-    columns: SIMPLE_COLUMNS,
+    columns: columnsFor('Conversations (12,000)', false),
     rows: SIMPLE_ROWS,
     dateRange: 'Nov 7, 2023 – Dec 6, 2023',
     convHeader: 'Conversations (12,000)',
   },
   webcall: {
     cards: [...sharedCards(0.3).slice(0, 2), ...substituteCards('Technical support'), ...sharedCards(0.3).slice(2)],
-    columns: SIMPLE_COLUMNS,
+    columns: columnsFor('Conversations (6,000)', false),
     rows: SIMPLE_ROWS,
     dateRange: 'Nov 7, 2023 – Dec 6, 2023',
     convHeader: 'Conversations (6,000)',

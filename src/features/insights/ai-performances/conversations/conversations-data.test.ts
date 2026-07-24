@@ -49,4 +49,11 @@ describe('conversations-data', () => {
     expect(rows.some((r) => r.hasGap)).toBe(true)
     expect(rows.some((r) => !r.hasGap)).toBe(true)
   })
+
+  it("the transcript column's label matches the channel's convHeader", () => {
+    for (const k of KEYS) {
+      const transcriptCol = CHANNELS[k].columns.find((c) => c.id === 'transcript')
+      expect(transcriptCol?.label).toBe(CHANNELS[k].convHeader)
+    }
+  })
 })
