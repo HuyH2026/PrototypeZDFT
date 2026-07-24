@@ -273,12 +273,10 @@ function columnsFor(convHeader: string, a2a: boolean): ConvColumn[] {
 }
 
 // Wording that varies by conversation source (matches the two Figma frames).
-function sourceWording(source: SourceKind, _client: string) {
-  if (source === 'a2a')
-    return { clientLabel: 'Calling client', intro: 'Conversation started between agents', side: 'client' as const }
-  if (source === 'mcp')
-    return { clientLabel: 'MCP client', intro: 'Conversation started between MCP and agent', side: 'client' as const }
-  return { clientLabel: undefined, intro: 'Conversation started', side: 'client' as const }
+function sourceWording(source: SourceKind) {
+  if (source === 'a2a') return { clientLabel: 'Calling client', intro: 'Conversation started between agents' }
+  if (source === 'mcp') return { clientLabel: 'MCP client', intro: 'Conversation started between MCP and agent' }
+  return { clientLabel: undefined, intro: 'Conversation started' }
 }
 
 // Turn a row's flat transcript lines into alternating bubble entries. Even
@@ -312,8 +310,8 @@ const MCP_TRANSCRIPT: TranscriptEntry[] = [
   { kind: 'bubble', speaker: 'Knowledge', role: 'Solve', side: 'solve', text: 'article: Setting up SAML SSO · confidence: 0.94' },
 ]
 
-export function detailFor(row: Omit<ConvRow, 'detail'>): ConvDetail {
-  const w = sourceWording(row.source, row.client)
+export function detailFor(row: Omit<ConvRow, 'detail'>, channelLabel: string): ConvDetail {
+  const w = sourceWording(row.source)
   const base: ConvDetail = {
     conversationId: `3e732807-c2d0-4ce3-8b5e-c87c28abb7e8`,
     automated: row.automated ? 'Yes' : 'No',
@@ -324,7 +322,7 @@ export function detailFor(row: Omit<ConvRow, 'detail'>): ConvDetail {
     resolved: 'Verified',
     timeCreated: 'May 17, 2026 6:47:50 pm',
     timeSpent: '2 min 30 sec',
-    channel: 'Headless',
+    channel: channelLabel,
     interactions: '4',
     contextVariables: '$userId (NO USER), $logged (true)',
     clientQuery: 'Booking flight',
@@ -434,13 +432,17 @@ const HEADLESS_ROWS_BASE: Omit<ConvRow, 'detail'>[] = [
   },
 ]
 
-const HEADLESS_ROWS: ConvRow[] = HEADLESS_ROWS_BASE.map((r) => ({ ...r, detail: detailFor(r) }))
+const HEADLESS_ROWS: ConvRow[] = HEADLESS_ROWS_BASE.map((r) => ({ ...r, detail: detailFor(r, 'Headless') }))
 
 // Non-headless rows reuse the same transcripts minus the A2A-only fields.
-const SIMPLE_ROWS: ConvRow[] = HEADLESS_ROWS_BASE.map((r, i) => {
-  const base: Omit<ConvRow, 'detail'> = { ...r, id: `s-${i + 1}`, source: 'human', client: 'n/a' }
-  return { ...base, detail: detailFor(base) }
-})
+// Built per-channel so the detail panel's `channel` field reflects the tab
+// the row is actually shown under (Widget / Voice / Web Call).
+function simpleRowsFor(channelLabel: string): ConvRow[] {
+  return HEADLESS_ROWS_BASE.map((r, i) => {
+    const base: Omit<ConvRow, 'detail'> = { ...r, id: `s-${i + 1}`, source: 'human', client: 'n/a' }
+    return { ...base, detail: detailFor(base, channelLabel) }
+  })
+}
 
 export const CHANNELS: Record<ChannelKey, ChannelData> = {
   headless: {
@@ -453,21 +455,21 @@ export const CHANNELS: Record<ChannelKey, ChannelData> = {
   widget: {
     cards: [...sharedCards(1.4).slice(0, 3), ...substituteCards('View bank statement'), ...sharedCards(1.4).slice(3)],
     columns: columnsFor('Conversations (32,000)', false),
-    rows: SIMPLE_ROWS,
+    rows: simpleRowsFor('Widget'),
     dateRange: 'Nov 7, 2023 – Dec 6, 2023',
     convHeader: 'Conversations (32,000)',
   },
   voice: {
     cards: [...sharedCards(0.6).slice(0, 3), ...substituteCards('Billing question'), ...sharedCards(0.6).slice(3)],
     columns: columnsFor('Conversations (12,000)', false),
-    rows: SIMPLE_ROWS,
+    rows: simpleRowsFor('Voice'),
     dateRange: 'Nov 7, 2023 – Dec 6, 2023',
     convHeader: 'Conversations (12,000)',
   },
   webcall: {
     cards: [...sharedCards(0.3).slice(0, 3), ...substituteCards('Technical support'), ...sharedCards(0.3).slice(3)],
     columns: columnsFor('Conversations (6,000)', false),
-    rows: SIMPLE_ROWS,
+    rows: simpleRowsFor('Web Call'),
     dateRange: 'Nov 7, 2023 – Dec 6, 2023',
     convHeader: 'Conversations (6,000)',
   },
