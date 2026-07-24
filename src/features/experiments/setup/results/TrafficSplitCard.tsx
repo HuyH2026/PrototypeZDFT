@@ -31,14 +31,13 @@ export function TrafficSplitCard({ splits, total }: { splits: TrafficSplitSlice[
               data={splits}
               dataKey="value"
               nameKey="name"
-              cx={75}
-              cy={75}
-              innerRadius={60}
-              outerRadius={72}
+              cx="50%"
+              cy="50%"
+              innerRadius={69 * 0.68}
+              outerRadius={69}
               startAngle={90}
-              endAngle={450}
-              paddingAngle={4}
-              cornerRadius={4}
+              endAngle={-270}
+              paddingAngle={1}
               isAnimationActive={false}
               stroke="none"
             >
