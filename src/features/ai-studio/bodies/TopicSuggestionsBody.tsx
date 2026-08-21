@@ -1,0 +1,34 @@
+import { useState } from 'react'
+import { SuggestionCard } from '../SuggestionCard'
+import { TOPIC_SUGGESTIONS } from '../suggestions-data'
+
+// Default/global assistant body: greeting + the "quick wins" suggestion carousel.
+// Extracted from the former TopicSuggestionsPanel so it can be rendered inside
+// the shared AiAssistantHost shell.
+export function TopicSuggestionsBody() {
+  const total = TOPIC_SUGGESTIONS.length
+  const [index, setIndex] = useState(0)
+  const prev = () => setIndex((i) => (i - 1 + total) % total)
+  const next = () => setIndex((i) => (i + 1) % total)
+  return (
+    <div className="flex h-full flex-col">
+      <p className="mt-6 text-[22px] leading-[30px] tracking-[0.352px] text-black">
+        Hello, Sunny 👋
+        <br />
+        Here&apos;s 3 quick wins you can knock out today.
+      </p>
+      <p className="mt-4 text-[14px] leading-5 tracking-[-0.154px] text-ink">
+        Each is a quick action with real dollars behind it.
+      </p>
+      <div className="mt-auto mb-4 pt-4">
+        <SuggestionCard
+          suggestion={TOPIC_SUGGESTIONS[index]}
+          index={index}
+          total={total}
+          onPrev={prev}
+          onNext={next}
+        />
+      </div>
+    </div>
+  )
+}

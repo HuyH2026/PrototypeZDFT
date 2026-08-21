@@ -1,0 +1,2087 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>List item explanation patterns</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+</head>
+<body>
+<iframe sandbox="allow-scripts" referrerpolicy="no-referrer" title="List item explanation patterns" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;List item explanation patterns&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 14px);
+  --blue: light-dark(rgb(51 156 255), rgb(51 156 255));
+  --orange: light-dark(rgb(226 85 7), rgb(251 106 34));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --red: light-dark(rgb(224 46 42), rgb(255 103 100));
+  --purple: light-dark(rgb(146 79 247), rgb(173 123 249));
+  --yellow: light-dark(rgb(255 195 0), rgb(255 210 64));
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: var(--border-radius-lg, 12.5px);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive &gt; .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align=&quot;right&quot;]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align=&quot;center&quot;]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget &gt; :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed=&quot;true&quot;],
+    [aria-selected=&quot;true&quot;],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+/* Model-authored chart rules can otherwise stretch icons after these styles load. */
+svg.lucide {
+  display: block;
+  width: 16px !important;
+  height: 16px !important;
+  flex: none;
+  margin: 0 !important;
+  stroke-width: 1.6;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;risk-safety-list-patterns&quot;&gt;
+  &lt;div class=&quot;pattern-toolbar&quot; aria-label=&quot;Choose an explanation pattern&quot;&gt;
+    &lt;span class=&quot;pattern-title&quot;&gt;Explanation pattern&lt;/span&gt;
+    &lt;div class=&quot;pattern-switch&quot;&gt;
+      &lt;button type=&quot;button&quot; data-pattern=&quot;popover&quot; aria-pressed=&quot;true&quot;&gt;Popover&lt;/button&gt;
+      &lt;button type=&quot;button&quot; data-pattern=&quot;inline&quot; aria-pressed=&quot;false&quot;&gt;Inline details&lt;/button&gt;
+      &lt;button type=&quot;button&quot; data-pattern=&quot;panel&quot; aria-pressed=&quot;false&quot;&gt;Details pane&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;p class=&quot;pattern-summary&quot; aria-live=&quot;polite&quot;&gt;Fast to scan; works with hover, keyboard focus, click, and tap.&lt;/p&gt;
+
+  &lt;div class=&quot;prototype-stage&quot;&gt;
+    &lt;div class=&quot;context-screen&quot; aria-hidden=&quot;true&quot;&gt;
+      &lt;div class=&quot;context-topbar&quot;&gt;
+        &lt;strong&gt;Context Variables&lt;/strong&gt;
+        &lt;button type=&quot;button&quot;&gt;Save&lt;/button&gt;
+        &lt;span&gt;×&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;context-table&quot;&gt;
+        &lt;div class=&quot;context-head&quot;&gt;Variable&lt;/div&gt;&lt;div class=&quot;context-head&quot;&gt;Default value&lt;/div&gt;&lt;div class=&quot;context-head&quot;&gt;Agents in use&lt;/div&gt;
+        &lt;div&gt;Reason category&lt;/div&gt;&lt;div&gt;n/a&lt;/div&gt;&lt;div&gt;Report a Safety Concern&lt;/div&gt;
+        &lt;div&gt;Safety concern type&lt;/div&gt;&lt;div&gt;n/a&lt;/div&gt;&lt;div&gt;Support Handoff&lt;/div&gt;
+        &lt;div&gt;Escalation route&lt;/div&gt;&lt;div&gt;n/a&lt;/div&gt;&lt;div&gt;Automated workflow&lt;/div&gt;
+        &lt;div&gt;Policy group&lt;/div&gt;&lt;div&gt;n/a&lt;/div&gt;&lt;div&gt;Report a Safety Concern&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;stage-scrim&quot; aria-hidden=&quot;true&quot;&gt;&lt;/div&gt;
+
+    &lt;section class=&quot;list-modal&quot; role=&quot;dialog&quot; aria-modal=&quot;true&quot; aria-labelledby=&quot;list-modal-title&quot;&gt;
+      &lt;header class=&quot;modal-header&quot;&gt;
+        &lt;h2 id=&quot;list-modal-title&quot;&gt;List items&lt;/h2&gt;
+        &lt;button class=&quot;modal-close&quot; type=&quot;button&quot; aria-label=&quot;Close&quot;&gt;×&lt;/button&gt;
+      &lt;/header&gt;
+
+      &lt;div class=&quot;modal-body&quot;&gt;
+        &lt;label class=&quot;api-option&quot;&gt;
+          &lt;input type=&quot;checkbox&quot; /&gt;
+          &lt;span&gt;Enable populating list options from API action responses&lt;/span&gt;
+        &lt;/label&gt;
+        &lt;div id=&quot;list-pattern-content&quot;&gt;&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;footer class=&quot;modal-footer&quot;&gt;
+        &lt;button type=&quot;button&quot; class=&quot;done-button&quot;&gt;Done&lt;/button&gt;
+      &lt;/footer&gt;
+    &lt;/section&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+  #risk-safety-list-patterns {
+    width: 100%;
+    color: #1f272d;
+    font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;
+    font-size: 13px;
+  }
+
+  #risk-safety-list-patterns * {
+    box-sizing: border-box;
+  }
+
+  #risk-safety-list-patterns button,
+  #risk-safety-list-patterns input {
+    font: inherit;
+  }
+
+  #risk-safety-list-patterns .pattern-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+
+  #risk-safety-list-patterns .pattern-title {
+    flex: 0 0 auto;
+    color: light-dark(#37434c, #d9e0e4);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  #risk-safety-list-patterns .pattern-switch {
+    display: flex;
+    gap: 4px;
+    min-width: 0;
+    padding: 3px;
+    border: 1px solid light-dark(#d8dddf, #4b545b);
+    border-radius: 8px;
+    background: light-dark(#f2f4f5, #252a2e);
+  }
+
+  #risk-safety-list-patterns .pattern-switch button {
+    min-height: 32px;
+    padding: 6px 11px;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    color: light-dark(#56636b, #bdc6cb);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  #risk-safety-list-patterns .pattern-switch button[aria-pressed=&quot;true&quot;] {
+    background: light-dark(#ffffff, #3b4247);
+    color: light-dark(#15232d, #ffffff);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.13);
+    font-weight: 650;
+  }
+
+  #risk-safety-list-patterns .pattern-summary {
+    min-height: 18px;
+    margin: 0 0 10px;
+    color: light-dark(#66737b, #aeb8bd);
+    font-size: 12px;
+  }
+
+  #risk-safety-list-patterns .prototype-stage {
+    position: relative;
+    min-height: 630px;
+    overflow: hidden;
+    border: 1px solid light-dark(#cbd1d4, #424a50);
+    border-radius: 9px;
+    background: #f7f8f8;
+  }
+
+  #risk-safety-list-patterns .context-screen {
+    position: absolute;
+    inset: 0;
+    padding: 28px 34px;
+    background: #f8f8f7;
+    color: #3f4b52;
+  }
+
+  #risk-safety-list-patterns .context-topbar {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 22px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #d6dadd;
+    font-size: 16px;
+  }
+
+  #risk-safety-list-patterns .context-topbar button {
+    padding: 6px 18px;
+    border: 0;
+    border-radius: 4px;
+    background: #e7eaec;
+    color: #9aa2a7;
+  }
+
+  #risk-safety-list-patterns .context-table {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1.15fr;
+    margin-top: 24px;
+    border-top: 1px solid #d7dcde;
+    border-left: 1px solid #d7dcde;
+    background: #fff;
+  }
+
+  #risk-safety-list-patterns .context-table &gt; div {
+    min-height: 52px;
+    padding: 16px;
+    border-right: 1px solid #d7dcde;
+    border-bottom: 1px solid #d7dcde;
+  }
+
+  #risk-safety-list-patterns .context-head {
+    min-height: 40px !important;
+    padding-block: 12px !important;
+    color: #68757c;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  #risk-safety-list-patterns .stage-scrim {
+    position: absolute;
+    inset: 0;
+    background: rgb(30 39 45 / 0.48);
+  }
+
+  #risk-safety-list-patterns .list-modal {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    width: min(880px, calc(100% - 32px));
+    max-height: 570px;
+    transform: translate(-50%, -50%);
+    flex-direction: column;
+    overflow: visible;
+    border-radius: 4px;
+    background: #ffffff;
+    box-shadow: 0 14px 38px rgb(19 27 33 / 0.25), 0 2px 8px rgb(19 27 33 / 0.16);
+    transition: width 160ms ease;
+  }
+
+  #risk-safety-list-patterns .list-modal.panel-mode {
+    width: min(980px, calc(100% - 24px));
+  }
+
+  #risk-safety-list-patterns .modal-header {
+    display: flex;
+    min-height: 58px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    border-bottom: 1px solid #edf0f1;
+  }
+
+  #risk-safety-list-patterns .modal-header h2 {
+    margin: 0;
+    color: #1d272d;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  #risk-safety-list-patterns .modal-close {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    border: 0;
+    background: transparent;
+    color: #65727a;
+    font-size: 21px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  #risk-safety-list-patterns .modal-body {
+    min-height: 0;
+    padding: 17px 18px 12px;
+    overflow: auto;
+    scrollbar-color: #b5bdc2 transparent;
+    scrollbar-width: thin;
+  }
+
+  #risk-safety-list-patterns .api-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    color: #3d484f;
+    font-size: 12px;
+  }
+
+  #risk-safety-list-patterns .api-option input {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    accent-color: #245b84;
+  }
+
+  #risk-safety-list-patterns .list-grid-header,
+  #risk-safety-list-patterns .list-grid-row {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 0.75fr) minmax(0, 1.4fr) 32px 32px;
+    gap: 5px;
+    align-items: center;
+  }
+
+  #risk-safety-list-patterns .list-grid-header {
+    min-height: 26px;
+    color: #28343b;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  #risk-safety-list-patterns .column-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  #risk-safety-list-patterns .header-help {
+    position: relative;
+    display: inline-grid;
+    width: 18px;
+    height: 18px;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #59666e;
+    cursor: help;
+  }
+
+  #risk-safety-list-patterns .header-help svg,
+  #risk-safety-list-patterns .term-help svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  #risk-safety-list-patterns .header-help::after {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 5px);
+    left: -8px;
+    width: 205px;
+    padding: 8px 9px;
+    transform: translateY(-2px);
+    border-radius: 4px;
+    background: #20313b;
+    color: #ffffff;
+    box-shadow: 0 5px 15px rgb(0 0 0 / 0.2);
+    content: attr(data-tip);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.35;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 100ms ease, transform 100ms ease;
+  }
+
+  #risk-safety-list-patterns .header-help:hover::after,
+  #risk-safety-list-patterns .header-help:focus-visible::after {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  #risk-safety-list-patterns .list-row-wrap {
+    position: relative;
+    margin-bottom: 5px;
+  }
+
+  #risk-safety-list-patterns .list-grid-row {
+    position: relative;
+  }
+
+  #risk-safety-list-patterns .field-wrap {
+    min-width: 0;
+  }
+
+  #risk-safety-list-patterns .mobile-field-label {
+    display: none;
+  }
+
+  #risk-safety-list-patterns .text-field {
+    width: 100%;
+    height: 34px;
+    padding: 0 10px;
+    overflow: hidden;
+    border: 1px solid #dfe3e5;
+    border-radius: 2px;
+    outline: 0;
+    background: #f5f6f7;
+    color: #5b676e;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    transition: border-color 100ms ease, box-shadow 100ms ease;
+  }
+
+  #risk-safety-list-patterns .text-field:focus {
+    border-color: #3f7ca8;
+    box-shadow: 0 0 0 2px rgb(63 124 168 / 0.18);
+  }
+
+  #risk-safety-list-patterns .term-help,
+  #risk-safety-list-patterns .remove-row {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 3px;
+    background: transparent;
+    color: #748089;
+    cursor: pointer;
+  }
+
+  #risk-safety-list-patterns .term-help:hover,
+  #risk-safety-list-patterns .term-help:focus-visible {
+    background: #e8f1f7;
+    color: #245b84;
+    outline: 0;
+  }
+
+  #risk-safety-list-patterns .term-help[aria-expanded=&quot;true&quot;],
+  #risk-safety-list-patterns .term-help[aria-pressed=&quot;true&quot;] {
+    background: #dcecf7;
+    color: #174f78;
+  }
+
+  #risk-safety-list-patterns .remove-row {
+    color: #a2aab0;
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  #risk-safety-list-patterns .remove-row:hover {
+    background: #f6e9e8;
+    color: #a84e46;
+  }
+
+  #risk-safety-list-patterns .definition-popover {
+    position: absolute;
+    z-index: 12;
+    top: calc(100% + 7px);
+    right: 34px;
+    width: min(390px, calc(100% - 20px));
+    padding: 12px 13px;
+    border: 1px solid #c7d3da;
+    border-radius: 5px;
+    background: #ffffff;
+    box-shadow: 0 9px 25px rgb(22 34 41 / 0.22);
+    color: #334149;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  #risk-safety-list-patterns .definition-popover::before {
+    position: absolute;
+    top: -6px;
+    right: 46px;
+    width: 10px;
+    height: 10px;
+    transform: rotate(45deg);
+    border-top: 1px solid #c7d3da;
+    border-left: 1px solid #c7d3da;
+    background: #ffffff;
+    content: &quot;&quot;;
+  }
+
+  #risk-safety-list-patterns .definition-popover strong,
+  #risk-safety-list-patterns .inline-explanation strong,
+  #risk-safety-list-patterns .details-panel h3 {
+    display: block;
+    margin: 0 0 4px;
+    color: #1f2d35;
+    font-size: 12px;
+  }
+
+  #risk-safety-list-patterns .definition-popover p,
+  #risk-safety-list-patterns .inline-explanation p,
+  #risk-safety-list-patterns .details-panel p {
+    margin: 0;
+  }
+
+  #risk-safety-list-patterns .definition-popover .hint {
+    margin-top: 8px;
+    color: #7b868d;
+    font-size: 10px;
+  }
+
+  #risk-safety-list-patterns .inline-explanation {
+    margin: 5px 69px 8px 0;
+    padding: 10px 12px;
+    border-left: 3px solid #4d83a8;
+    background: #f0f5f8;
+    color: #415058;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  #risk-safety-list-patterns .split-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(230px, 0.8fr);
+    gap: 14px;
+  }
+
+  #risk-safety-list-patterns .panel-list .list-grid-row[data-selected=&quot;true&quot;] .text-field {
+    border-color: #70a0c1;
+    background: #edf5fa;
+  }
+
+  #risk-safety-list-patterns .details-panel {
+    min-height: 245px;
+    padding: 14px;
+    border: 1px solid #d9dfe2;
+    border-radius: 4px;
+    background: #f8fafb;
+    color: #405059;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  #risk-safety-list-patterns .details-panel .eyebrow {
+    margin-bottom: 10px;
+    color: #6b7880;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  #risk-safety-list-patterns .details-panel h3 {
+    font-size: 14px;
+  }
+
+  #risk-safety-list-patterns .details-panel .guidance {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #dce2e5;
+  }
+
+  #risk-safety-list-patterns .details-panel .guidance b {
+    display: block;
+    margin-bottom: 3px;
+    color: #26353e;
+    font-size: 11px;
+  }
+
+  #risk-safety-list-patterns .modal-footer {
+    display: flex;
+    min-height: 55px;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 18px;
+    border-top: 1px solid #edf0f1;
+  }
+
+  #risk-safety-list-patterns .done-button {
+    min-width: 54px;
+    height: 31px;
+    padding: 0 14px;
+    border: 1px solid #234f72;
+    border-radius: 3px;
+    background: #315f83;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 650;
+  }
+
+  #risk-safety-list-patterns .done-button:hover {
+    background: #244f70;
+  }
+
+  #risk-safety-list-patterns .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 620px) {
+    #risk-safety-list-patterns .pattern-toolbar {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    #risk-safety-list-patterns .pattern-switch {
+      width: 100%;
+    }
+
+    #risk-safety-list-patterns .pattern-switch button {
+      min-width: 0;
+      flex: 1 1 auto;
+      padding-inline: 7px;
+      font-size: 11px;
+    }
+
+    #risk-safety-list-patterns .prototype-stage {
+      min-height: 610px;
+    }
+
+    #risk-safety-list-patterns .list-modal,
+    #risk-safety-list-patterns .list-modal.panel-mode {
+      width: calc(100% - 16px);
+      max-height: 570px;
+    }
+
+    #risk-safety-list-patterns .modal-body {
+      padding-inline: 12px;
+    }
+
+    #risk-safety-list-patterns .list-grid-header {
+      display: none;
+    }
+
+    #risk-safety-list-patterns .list-grid-row {
+      grid-template-columns: minmax(0, 1fr) 30px 28px;
+      gap: 5px;
+      align-items: start;
+      padding: 8px;
+      border: 1px solid #e0e5e7;
+      border-radius: 3px;
+      background: #fafbfb;
+    }
+
+    #risk-safety-list-patterns .field-wrap:nth-child(1) {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    #risk-safety-list-patterns .field-wrap:nth-child(2) {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    #risk-safety-list-patterns .field-wrap:nth-child(3) {
+      grid-column: 1;
+      grid-row: 3;
+    }
+
+    #risk-safety-list-patterns .term-help {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    #risk-safety-list-patterns .remove-row {
+      grid-column: 3;
+      grid-row: 1;
+    }
+
+    #risk-safety-list-patterns .mobile-field-label {
+      display: block;
+      margin-bottom: 3px;
+      color: #4f5c64;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    #risk-safety-list-patterns .text-field {
+      padding-inline: 7px;
+      background: #ffffff;
+      font-size: 10px;
+    }
+
+    #risk-safety-list-patterns .split-layout {
+      grid-template-columns: 1fr;
+    }
+
+    #risk-safety-list-patterns .details-panel {
+      min-height: auto;
+    }
+
+  }
+
+  @media (max-width: 800px) {
+    #risk-safety-list-patterns .split-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+&lt;/style&gt;
+
+&lt;script&gt;
+  (() =&gt; {
+    const root = document.getElementById(&quot;risk-safety-list-patterns&quot;);
+    if (!root) return;
+
+    const infoIcon = `
+      &lt;svg viewBox=&quot;0 0 16 16&quot; aria-hidden=&quot;true&quot;&gt;
+        &lt;circle cx=&quot;8&quot; cy=&quot;8&quot; r=&quot;6.2&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.4&quot;&gt;&lt;/circle&gt;
+        &lt;path d=&quot;M8 7.1v4&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.4&quot; stroke-linecap=&quot;round&quot;&gt;&lt;/path&gt;
+        &lt;circle cx=&quot;8&quot; cy=&quot;4.7&quot; r=&quot;.8&quot; fill=&quot;currentColor&quot;&gt;&lt;/circle&gt;
+      &lt;/svg&gt;`;
+
+    const items = [
+      {
+        id: &quot;impersonation&quot;,
+        label: &quot;Impersonation&quot;,
+        value: &quot;impersonation&quot;,
+        explanation: &quot;Pretending to be another person or organization in a way that could mislead or harm someone.&quot;
+      },
+      {
+        id: &quot;financial-exploitation&quot;,
+        label: &quot;Financial exploitation&quot;,
+        value: &quot;financial_exploitation&quot;,
+        explanation: &quot;Taking or controlling someone&#x27;s money or property through pressure, deception, or abuse of trust.&quot;
+      },
+      {
+        id: &quot;hate-abuse&quot;,
+        label: &quot;Hateful or abusive content&quot;,
+        value: &quot;hateful_or_abusive&quot;,
+        explanation: &quot;Content that attacks, threatens, or degrades a person or group, especially based on a protected characteristic.&quot;
+      },
+      {
+        id: &quot;sexual-harassment&quot;,
+        label: &quot;Sexual harassment&quot;,
+        value: &quot;sexual_harassment&quot;,
+        explanation: &quot;Unwanted sexual conduct, comments, or advances that make a person feel intimidated, degraded, or unsafe.&quot;
+      },
+      {
+        id: &quot;physical-assault&quot;,
+        label: &quot;Physical force or assault&quot;,
+        value: &quot;physical_force_or_assault&quot;,
+        explanation: &quot;The use or threat of physical force against another person without their consent.&quot;
+      },
+      {
+        id: &quot;stalking&quot;,
+        label: &quot;Stalking or harassment&quot;,
+        value: &quot;stalking_or_harassment&quot;,
+        explanation: &quot;Repeated unwanted contact, monitoring, or pursuit that causes fear or serious distress.&quot;
+      }
+    ];
+
+    const content = root.querySelector(&quot;#list-pattern-content&quot;);
+    const summary = root.querySelector(&quot;.pattern-summary&quot;);
+    const modal = root.querySelector(&quot;.list-modal&quot;);
+    const patternButtons = Array.from(root.querySelectorAll(&quot;[data-pattern]&quot;));
+    let activePattern = &quot;popover&quot;;
+    let openId = &quot;financial-exploitation&quot;;
+    let pinnedId = &quot;financial-exploitation&quot;;
+    let selectedId = &quot;hate-abuse&quot;;
+
+    const escapeHtml = (value) =&gt; String(value)
+      .replaceAll(&quot;&amp;&quot;, &quot;&amp;amp;&quot;)
+      .replaceAll(&quot;&lt;&quot;, &quot;&amp;lt;&quot;)
+      .replaceAll(&quot;&gt;&quot;, &quot;&amp;gt;&quot;)
+      .replaceAll(&#x27;&quot;&#x27;, &quot;&amp;quot;&quot;)
+      .replaceAll(&quot;&#x27;&quot;, &quot;&amp;#039;&quot;);
+
+    const headerMarkup = () =&gt; `
+      &lt;div class=&quot;list-grid-header&quot;&gt;
+        &lt;span class=&quot;column-label&quot;&gt;Label
+          &lt;button type=&quot;button&quot; class=&quot;header-help&quot; aria-label=&quot;About the Label field&quot; data-tip=&quot;The text people see when choosing this option.&quot;&gt;${infoIcon}&lt;/button&gt;
+        &lt;/span&gt;
+        &lt;span class=&quot;column-label&quot;&gt;Value
+          &lt;button type=&quot;button&quot; class=&quot;header-help&quot; aria-label=&quot;About the Value field&quot; data-tip=&quot;The stable data stored or submitted when this option is chosen.&quot;&gt;${infoIcon}&lt;/button&gt;
+        &lt;/span&gt;
+        &lt;span class=&quot;column-label&quot;&gt;Explanation
+          &lt;button type=&quot;button&quot; class=&quot;header-help&quot; aria-label=&quot;About the Explanation field&quot; data-tip=&quot;Plain-language help shown when someone asks what this option means.&quot;&gt;${infoIcon}&lt;/button&gt;
+        &lt;/span&gt;
+        &lt;span class=&quot;sr-only&quot;&gt;Preview explanation&lt;/span&gt;
+        &lt;span class=&quot;sr-only&quot;&gt;Remove&lt;/span&gt;
+      &lt;/div&gt;`;
+
+    const fieldsMarkup = (item) =&gt; `
+      &lt;label class=&quot;field-wrap&quot;&gt;
+        &lt;span class=&quot;mobile-field-label&quot;&gt;Label&lt;/span&gt;
+        &lt;input class=&quot;text-field&quot; data-item-id=&quot;${item.id}&quot; data-field=&quot;label&quot; aria-label=&quot;Label for ${escapeHtml(item.label)}&quot; value=&quot;${escapeHtml(item.label)}&quot; /&gt;
+      &lt;/label&gt;
+      &lt;label class=&quot;field-wrap&quot;&gt;
+        &lt;span class=&quot;mobile-field-label&quot;&gt;Value&lt;/span&gt;
+        &lt;input class=&quot;text-field&quot; data-item-id=&quot;${item.id}&quot; data-field=&quot;value&quot; aria-label=&quot;Value for ${escapeHtml(item.label)}&quot; value=&quot;${escapeHtml(item.value)}&quot; /&gt;
+      &lt;/label&gt;
+      &lt;label class=&quot;field-wrap&quot;&gt;
+        &lt;span class=&quot;mobile-field-label&quot;&gt;Explanation&lt;/span&gt;
+        &lt;input class=&quot;text-field&quot; data-item-id=&quot;${item.id}&quot; data-field=&quot;explanation&quot; aria-label=&quot;Explanation for ${escapeHtml(item.label)}&quot; value=&quot;${escapeHtml(item.explanation)}&quot; /&gt;
+      &lt;/label&gt;`;
+
+    const definitionMarkup = (item, className, id, role = &quot;region&quot;) =&gt; `
+      &lt;div class=&quot;${className}&quot; id=&quot;${id}&quot; role=&quot;${role}&quot;&gt;
+        &lt;strong data-preview-label=&quot;${item.id}&quot;&gt;${escapeHtml(item.label)}&lt;/strong&gt;
+        &lt;p class=&quot;definition-copy&quot; data-preview-explanation=&quot;${item.id}&quot;&gt;${escapeHtml(item.explanation || &quot;No explanation added.&quot;)}&lt;/p&gt;
+        ${className === &quot;definition-popover&quot; ? &#x27;&lt;p class=&quot;hint&quot;&gt;Click to keep open · Esc to close&lt;/p&gt;&#x27; : &#x27;&#x27;}
+      &lt;/div&gt;`;
+
+    const renderPopover = () =&gt; {
+      content.innerHTML = `
+        ${headerMarkup()}
+        &lt;div class=&quot;rows&quot;&gt;
+          ${items.map((item) =&gt; {
+            const isOpen = item.id === openId;
+            return `
+              &lt;div class=&quot;list-row-wrap&quot; data-row-id=&quot;${item.id}&quot;&gt;
+                &lt;div class=&quot;list-grid-row&quot;&gt;
+                  ${fieldsMarkup(item)}
+                  &lt;button type=&quot;button&quot; class=&quot;term-help&quot; data-help-id=&quot;${item.id}&quot; aria-label=&quot;About ${escapeHtml(item.label)}&quot; aria-expanded=&quot;${isOpen}&quot; aria-describedby=&quot;definition-${item.id}&quot;&gt;${infoIcon}&lt;/button&gt;
+                  &lt;button type=&quot;button&quot; class=&quot;remove-row&quot; aria-label=&quot;Remove ${escapeHtml(item.label)}&quot;&gt;×&lt;/button&gt;
+                &lt;/div&gt;
+                ${isOpen ? definitionMarkup(item, &quot;definition-popover&quot;, `definition-${item.id}`, &quot;tooltip&quot;) : &#x27;&#x27;}
+              &lt;/div&gt;`;
+          }).join(&quot;&quot;)}
+        &lt;/div&gt;`;
+      attachPopoverInteractions();
+      attachFieldInteractions();
+    };
+
+    const renderInline = () =&gt; {
+      content.innerHTML = `
+        ${headerMarkup()}
+        &lt;div class=&quot;rows&quot;&gt;
+          ${items.map((item) =&gt; {
+            const isOpen = item.id === openId;
+            return `
+              &lt;div class=&quot;list-row-wrap&quot; data-row-id=&quot;${item.id}&quot;&gt;
+                &lt;div class=&quot;list-grid-row&quot;&gt;
+                  ${fieldsMarkup(item)}
+                  &lt;button type=&quot;button&quot; class=&quot;term-help&quot; data-help-id=&quot;${item.id}&quot; aria-label=&quot;${isOpen ? &#x27;Hide&#x27; : &#x27;Show&#x27;} explanation for ${escapeHtml(item.label)}&quot; aria-expanded=&quot;${isOpen}&quot; aria-controls=&quot;inline-${item.id}&quot;&gt;${infoIcon}&lt;/button&gt;
+                  &lt;button type=&quot;button&quot; class=&quot;remove-row&quot; aria-label=&quot;Remove ${escapeHtml(item.label)}&quot;&gt;×&lt;/button&gt;
+                &lt;/div&gt;
+                ${isOpen ? definitionMarkup(item, &quot;inline-explanation&quot;, `inline-${item.id}`) : &#x27;&#x27;}
+              &lt;/div&gt;`;
+          }).join(&quot;&quot;)}
+        &lt;/div&gt;`;
+      content.querySelectorAll(&quot;[data-help-id]&quot;).forEach((button) =&gt; {
+        button.addEventListener(&quot;click&quot;, () =&gt; {
+          openId = openId === button.dataset.helpId ? &quot;&quot; : button.dataset.helpId;
+          renderInline();
+          const next = content.querySelector(`[data-help-id=&quot;${openId}&quot;]`);
+          if (next) next.focus();
+        });
+      });
+      attachFieldInteractions();
+    };
+
+    const renderPanel = () =&gt; {
+      const selectedItem = items.find((item) =&gt; item.id === selectedId) || items[0];
+      content.innerHTML = `
+        &lt;div class=&quot;split-layout&quot;&gt;
+          &lt;div class=&quot;panel-list&quot;&gt;
+            ${headerMarkup()}
+            &lt;div class=&quot;rows&quot;&gt;
+              ${items.map((item) =&gt; `
+                &lt;div class=&quot;list-row-wrap&quot;&gt;
+                  &lt;div class=&quot;list-grid-row&quot; data-selected=&quot;${item.id === selectedItem.id}&quot;&gt;
+                    ${fieldsMarkup(item)}
+                    &lt;button type=&quot;button&quot; class=&quot;term-help&quot; data-select-id=&quot;${item.id}&quot; aria-label=&quot;Preview explanation for ${escapeHtml(item.label)}&quot; aria-pressed=&quot;${item.id === selectedItem.id}&quot;&gt;${infoIcon}&lt;/button&gt;
+                    &lt;button type=&quot;button&quot; class=&quot;remove-row&quot; aria-label=&quot;Remove ${escapeHtml(item.label)}&quot;&gt;×&lt;/button&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;`).join(&quot;&quot;)}
+            &lt;/div&gt;
+          &lt;/div&gt;
+          &lt;aside class=&quot;details-panel&quot; aria-live=&quot;polite&quot;&gt;
+            &lt;div class=&quot;eyebrow&quot;&gt;Plain-language explanation&lt;/div&gt;
+            &lt;h3 data-preview-label=&quot;${selectedItem.id}&quot;&gt;${escapeHtml(selectedItem.label)}&lt;/h3&gt;
+            &lt;p class=&quot;definition-copy&quot; data-preview-explanation=&quot;${selectedItem.id}&quot;&gt;${escapeHtml(selectedItem.explanation || &quot;No explanation added.&quot;)}&lt;/p&gt;
+            &lt;div class=&quot;guidance&quot;&gt;
+              &lt;b&gt;When to use this option&lt;/b&gt;
+              &lt;p&gt;Choose it when the reported behavior closely matches this definition. If unsure, follow your escalation policy.&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/aside&gt;
+        &lt;/div&gt;`;
+      content.querySelectorAll(&quot;[data-select-id]&quot;).forEach((button) =&gt; {
+        button.addEventListener(&quot;click&quot;, () =&gt; {
+          selectedId = button.dataset.selectId;
+          renderPanel();
+          const next = content.querySelector(`[data-select-id=&quot;${selectedId}&quot;]`);
+          if (next) next.focus();
+        });
+      });
+      attachFieldInteractions();
+    };
+
+    const attachFieldInteractions = () =&gt; {
+      content.querySelectorAll(&quot;[data-item-id][data-field]&quot;).forEach((input) =&gt; {
+        input.addEventListener(&quot;input&quot;, () =&gt; {
+          const item = items.find((candidate) =&gt; candidate.id === input.dataset.itemId);
+          const field = input.dataset.field;
+          if (!item || !field || ![&quot;label&quot;, &quot;value&quot;, &quot;explanation&quot;].includes(field)) return;
+          item[field] = input.value;
+
+          if (field === &quot;label&quot;) {
+            content.querySelectorAll(`[data-preview-label=&quot;${item.id}&quot;]`).forEach((preview) =&gt; {
+              preview.textContent = input.value || &quot;Untitled option&quot;;
+            });
+          }
+
+          if (field === &quot;explanation&quot;) {
+            content.querySelectorAll(`[data-preview-explanation=&quot;${item.id}&quot;]`).forEach((preview) =&gt; {
+              preview.textContent = input.value || &quot;No explanation added.&quot;;
+            });
+          }
+        });
+      });
+    };
+
+    const attachPopoverInteractions = () =&gt; {
+      content.querySelectorAll(&quot;[data-help-id]&quot;).forEach((button) =&gt; {
+        const id = button.dataset.helpId;
+        const row = button.closest(&quot;[data-row-id]&quot;);
+        if (!row) return;
+
+        button.addEventListener(&quot;mouseenter&quot;, () =&gt; {
+          if (!pinnedId &amp;&amp; openId !== id) {
+            openId = id;
+            renderPopover();
+          }
+        });
+
+        button.addEventListener(&quot;focus&quot;, () =&gt; {
+          if (!pinnedId &amp;&amp; openId !== id) {
+            openId = id;
+            renderPopover();
+          }
+        });
+
+        row.addEventListener(&quot;mouseleave&quot;, () =&gt; {
+          if (!pinnedId &amp;&amp; openId === id) {
+            openId = &quot;&quot;;
+            renderPopover();
+          }
+        });
+
+        button.addEventListener(&quot;click&quot;, () =&gt; {
+          if (pinnedId === id) {
+            pinnedId = &quot;&quot;;
+            openId = &quot;&quot;;
+          } else {
+            pinnedId = id;
+            openId = id;
+          }
+          renderPopover();
+          const next = content.querySelector(`[data-help-id=&quot;${id}&quot;]`);
+          if (next) next.focus();
+        });
+      });
+    };
+
+    const render = () =&gt; {
+      modal.classList.toggle(&quot;panel-mode&quot;, activePattern === &quot;panel&quot;);
+      patternButtons.forEach((button) =&gt; {
+        button.setAttribute(&quot;aria-pressed&quot;, String(button.dataset.pattern === activePattern));
+      });
+
+      if (activePattern === &quot;popover&quot;) {
+        summary.textContent = &quot;Fast to scan; works with hover, keyboard focus, click, and tap.&quot;;
+        openId = openId || &quot;financial-exploitation&quot;;
+        pinnedId = pinnedId || &quot;financial-exploitation&quot;;
+        renderPopover();
+      } else if (activePattern === &quot;inline&quot;) {
+        summary.textContent = &quot;Best when guidance needs a few lines and must remain visible while reading.&quot;;
+        openId = openId || &quot;financial-exploitation&quot;;
+        renderInline();
+      } else {
+        summary.textContent = &quot;Best for longer guidance, examples, citations, or jurisdiction-specific notes.&quot;;
+        renderPanel();
+      }
+    };
+
+    patternButtons.forEach((button) =&gt; {
+      button.addEventListener(&quot;click&quot;, () =&gt; {
+        activePattern = button.dataset.pattern;
+        pinnedId = activePattern === &quot;popover&quot; ? &quot;financial-exploitation&quot; : &quot;&quot;;
+        openId = &quot;financial-exploitation&quot;;
+        render();
+      });
+    });
+
+    root.addEventListener(&quot;keydown&quot;, (event) =&gt; {
+      if (event.key === &quot;Escape&quot; &amp;&amp; activePattern === &quot;popover&quot;) {
+        pinnedId = &quot;&quot;;
+        openId = &quot;&quot;;
+        renderPopover();
+      }
+    });
+
+    root.addEventListener(&quot;click&quot;, (event) =&gt; {
+      if (activePattern !== &quot;popover&quot; || !pinnedId) return;
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target.closest(&quot;[data-help-id]&quot;) || target.closest(&quot;.definition-popover&quot;)) return;
+      pinnedId = &quot;&quot;;
+      openId = &quot;&quot;;
+      renderPopover();
+    });
+
+    render();
+  })();
+&lt;/script&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =&gt;
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest(&quot;[data-tooltip]&quot;)
+      : null;
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    document.removeEventListener(&quot;pointerover&quot;, handlePointerOpen);
+    document.removeEventListener(&quot;pointerout&quot;, handleLeave);
+    document.removeEventListener(&quot;focusin&quot;, handleFocusIn);
+    document.removeEventListener(&quot;focusout&quot;, handleLeave);
+    document.removeEventListener(&quot;keydown&quot;, handleKeyDown);
+    document.removeEventListener(&quot;contextmenu&quot;, handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener(&quot;pointerover&quot;, handlePointerOpen);
+  document.addEventListener(&quot;pointerout&quot;, handleLeave);
+  document.addEventListener(&quot;focusin&quot;, handleFocusIn);
+  document.addEventListener(&quot;focusout&quot;, handleLeave);
+  document.addEventListener(&quot;keydown&quot;, handleKeyDown);
+  document.addEventListener(&quot;contextmenu&quot;, handleContextMenu);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+</body>
+</html>

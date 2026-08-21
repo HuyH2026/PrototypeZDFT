@@ -1,0 +1,1518 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="FT Unification recommendation for separating the Agent Directory from Agent Builder use cases."
+    />
+    <title>Agent Directory and Agent Builder — naming recommendation</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --canvas: #f1f3f1;
+        --paper: #ffffff;
+        --ink: #171918;
+        --ink-soft: #373b38;
+        --muted: #686d68;
+        --line: #dce0dc;
+        --line-strong: #bfc5bf;
+        --blue: #406cc4;
+        --blue-soft: #eaf0fb;
+        --teal: #138f83;
+        --teal-soft: #e7f5f2;
+        --amber: #9a6700;
+        --amber-soft: #fff5d8;
+        --shadow: 0 22px 70px rgba(23, 25, 24, 0.1);
+        --radius-lg: 28px;
+        --radius-md: 18px;
+        --radius-sm: 11px;
+        --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+        --serif: Iowan Old Style, Palatino Linotype, Book Antiqua, Palatino, Georgia, serif;
+        --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--canvas);
+        color: var(--ink);
+        font-family: var(--sans);
+        font-size: 16px;
+        line-height: 1.55;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .shell {
+        width: min(1180px, calc(100% - 40px));
+        margin: 32px auto;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+        background: var(--paper);
+        box-shadow: var(--shadow);
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 19px 34px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .identity {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .mark {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        flex: 0 0 auto;
+        place-items: center;
+        border-radius: 9px;
+        background: var(--ink);
+        color: white;
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: -0.04em;
+      }
+
+      .identity-copy {
+        display: grid;
+        gap: 1px;
+        min-width: 0;
+      }
+
+      .identity-copy strong {
+        font-size: 14px;
+        line-height: 1.3;
+      }
+
+      .identity-copy span,
+      .meta {
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .print-button {
+        min-height: 38px;
+        padding: 0 15px;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        background: white;
+        color: var(--ink);
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .print-button:hover {
+        border-color: var(--ink);
+        background: #f7f8f7;
+      }
+
+      .print-button:focus-visible,
+      a:focus-visible {
+        outline: 3px solid rgba(64, 108, 196, 0.35);
+        outline-offset: 3px;
+      }
+
+      main {
+        padding: 0 34px 46px;
+      }
+
+      .hero {
+        position: relative;
+        padding: 76px 0 62px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 22px;
+        color: var(--blue);
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        width: 28px;
+        height: 3px;
+        border-radius: 99px;
+        background: var(--blue);
+        content: '';
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 850px;
+        margin-bottom: 24px;
+        font-family: var(--serif);
+        font-size: clamp(50px, 7.5vw, 92px);
+        font-weight: 500;
+        letter-spacing: -0.055em;
+        line-height: 0.98;
+      }
+
+      h1 em {
+        color: var(--blue);
+        font-style: italic;
+        white-space: nowrap;
+      }
+
+      .lede {
+        max-width: 770px;
+        margin-bottom: 0;
+        color: var(--ink-soft);
+        font-size: clamp(18px, 2vw, 23px);
+        letter-spacing: -0.018em;
+        line-height: 1.45;
+      }
+
+      .decision-status {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 9px 16px;
+        margin-top: 26px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .decision-status span {
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: var(--amber-soft);
+        color: var(--amber);
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .decision-status strong {
+        color: var(--ink-soft);
+      }
+
+      .thesis {
+        display: grid;
+        grid-template-columns: 1fr 1px 1fr;
+        gap: 28px;
+        margin-top: 46px;
+        padding: 26px 28px;
+        border: 1px solid #cfdaf0;
+        border-radius: var(--radius-md);
+        background: var(--blue-soft);
+      }
+
+      .thesis-rule {
+        background: #c4d1ea;
+      }
+
+      .thesis-item {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 14px;
+        align-items: start;
+      }
+
+      .term-number {
+        display: grid;
+        width: 30px;
+        height: 30px;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--blue);
+        color: white;
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .thesis-item strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 16px;
+      }
+
+      .thesis-item p {
+        margin-bottom: 0;
+        color: #4d5c76;
+        font-size: 14px;
+      }
+
+      .section {
+        padding: 66px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .section:last-child {
+        border-bottom: 0;
+      }
+
+      .section-head {
+        display: grid;
+        grid-template-columns: 235px minmax(0, 1fr);
+        gap: 38px;
+        margin-bottom: 34px;
+      }
+
+      .section-label {
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        max-width: 720px;
+        margin-bottom: 12px;
+        font-size: clamp(30px, 4vw, 48px);
+        font-weight: 680;
+        letter-spacing: -0.045em;
+        line-height: 1.08;
+      }
+
+      .section-intro {
+        max-width: 700px;
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 17px;
+      }
+
+      .hierarchy {
+        display: grid;
+        grid-template-columns: 1fr 48px 1fr 48px 1fr;
+        align-items: stretch;
+      }
+
+      .entity {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-height: 220px;
+        padding: 24px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        background: #fafbfa;
+      }
+
+      .entity.agent {
+        border-color: var(--ink);
+        background: var(--ink);
+        color: white;
+      }
+
+      .entity-type {
+        display: block;
+        margin-bottom: 42px;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .agent .entity-type {
+        color: #b9c0ba;
+      }
+
+      .entity h3 {
+        margin-bottom: 7px;
+        font-family: var(--serif);
+        font-size: 34px;
+        font-weight: 500;
+        letter-spacing: -0.035em;
+        line-height: 1.05;
+      }
+
+      .entity p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .agent p {
+        color: #d8dcd8;
+      }
+
+      .entity-example {
+        display: block;
+        margin-top: auto;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+        color: var(--ink-soft);
+        font-family: var(--mono);
+        font-size: 12px;
+      }
+
+      .agent .entity-example {
+        border-color: #4b504c;
+        color: #f4f5f4;
+      }
+
+      .connector {
+        display: grid;
+        place-items: center;
+        color: var(--line-strong);
+        font-family: var(--mono);
+        font-size: 20px;
+      }
+
+      .boundary-note {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 18px;
+        padding: 13px 16px;
+        border-left: 4px solid var(--blue);
+        background: #f7f9fd;
+        color: var(--ink-soft);
+        font-size: 14px;
+      }
+
+      .before-after {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+
+      .state-card {
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+      }
+
+      .state-card.current {
+        background: #fafafa;
+      }
+
+      .state-card.proposed {
+        border-color: #bddfd9;
+        background: var(--teal-soft);
+      }
+
+      .state-label {
+        display: inline-flex;
+        margin-bottom: 24px;
+        padding: 5px 9px;
+        border-radius: 999px;
+        background: #eceeec;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+      }
+
+      .proposed .state-label {
+        background: #cdebe5;
+        color: #08695f;
+      }
+
+      .nav-path {
+        display: grid;
+        gap: 10px;
+      }
+
+      .nav-row {
+        display: grid;
+        grid-template-columns: minmax(110px, 0.42fr) 22px 1fr;
+        gap: 10px;
+        align-items: baseline;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(104, 109, 104, 0.17);
+      }
+
+      .nav-row:last-child {
+        border-bottom: 0;
+      }
+
+      .nav-row strong {
+        font-size: 15px;
+      }
+
+      .nav-row span {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .nav-arrow {
+        color: var(--line-strong) !important;
+        font-family: var(--mono);
+      }
+
+      .warning {
+        margin-top: 18px;
+        padding: 15px 17px;
+        border: 1px solid #ead79e;
+        border-radius: var(--radius-sm);
+        background: var(--amber-soft);
+        color: #6c4b04;
+        font-size: 14px;
+      }
+
+      .vocabulary-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+      }
+
+      table {
+        width: 100%;
+        min-width: 760px;
+        border-collapse: collapse;
+        background: white;
+        text-align: left;
+      }
+
+      th,
+      td {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+
+      th {
+        background: #f5f6f5;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+      }
+
+      td {
+        font-size: 14px;
+      }
+
+      td:first-child {
+        width: 27%;
+        color: var(--muted);
+      }
+
+      td:nth-child(2) {
+        width: 27%;
+        font-weight: 750;
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+
+      code {
+        padding: 2px 5px;
+        border-radius: 5px;
+        background: #eff1ef;
+        font-family: var(--mono);
+        font-size: 0.88em;
+      }
+
+      .interaction {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 24px;
+      }
+
+      .flow {
+        display: grid;
+        gap: 0;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        background: #fafbfa;
+      }
+
+      .flow-step {
+        display: grid;
+        grid-template-columns: 38px 1fr;
+        gap: 14px;
+        padding: 20px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .flow-step:last-child {
+        border-bottom: 0;
+      }
+
+      .flow-index {
+        display: grid;
+        width: 30px;
+        height: 30px;
+        place-items: center;
+        border: 1px solid var(--line-strong);
+        border-radius: 50%;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .flow-step strong {
+        display: block;
+        margin-bottom: 3px;
+      }
+
+      .flow-step p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .row-example {
+        align-self: stretch;
+        padding: 25px;
+        border: 1px solid #cfdaf0;
+        border-radius: var(--radius-md);
+        background: var(--blue-soft);
+      }
+
+      .row-example-label {
+        margin-bottom: 18px;
+        color: #5d6e8b;
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+      }
+
+      .mock-row {
+        padding: 18px;
+        border: 1px solid #bdcbe6;
+        border-radius: 13px;
+        background: white;
+        box-shadow: 0 8px 24px rgba(64, 108, 196, 0.08);
+      }
+
+      .mock-row-top,
+      .mock-row-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .mock-row-top {
+        margin-bottom: 18px;
+      }
+
+      .agent-name {
+        font-size: 15px;
+        font-weight: 750;
+      }
+
+      .brand-pill,
+      .destination-pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 25px;
+        padding: 0 9px;
+        border-radius: 999px;
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 700;
+      }
+
+      .brand-pill {
+        background: #eff1ef;
+        color: var(--muted);
+      }
+
+      .destination-pill {
+        background: var(--blue-soft);
+        color: var(--blue);
+      }
+
+      .open-label {
+        color: var(--blue);
+        font-size: 13px;
+        font-weight: 750;
+      }
+
+      .row-example-note {
+        margin: 18px 0 0;
+        color: #52627d;
+        font-size: 13px;
+      }
+
+      .rankings {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+
+      .ranking {
+        min-height: 215px;
+        padding: 23px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+      }
+
+      .ranking.recommended {
+        border: 2px solid var(--blue);
+        padding: 22px;
+      }
+
+      .rank {
+        display: block;
+        margin-bottom: 30px;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .ranking h3 {
+        margin-bottom: 9px;
+        font-size: 24px;
+        letter-spacing: -0.025em;
+      }
+
+      .ranking p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .avoid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 20px;
+      }
+
+      .avoid span {
+        padding: 7px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 11px;
+      }
+
+      .avoid-note {
+        max-width: 840px;
+        margin: 14px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .child-term {
+        display: grid;
+        grid-template-columns: 0.7fr 1.3fr;
+        gap: 24px;
+        margin-top: 18px;
+        padding: 24px;
+        border: 1px solid #cfdaf0;
+        border-radius: var(--radius-md);
+        background: var(--blue-soft);
+      }
+
+      .child-term-label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--blue);
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+      }
+
+      .child-term h3 {
+        margin: 0;
+        font-family: var(--serif);
+        font-size: 34px;
+        font-weight: 500;
+        letter-spacing: -0.035em;
+      }
+
+      .child-term p {
+        margin-bottom: 10px;
+        color: #52627d;
+        font-size: 14px;
+      }
+
+      .child-term p:last-child {
+        margin-bottom: 0;
+      }
+
+      .notes-stack {
+        display: grid;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .notes-stack .boundary-note {
+        margin-top: 0;
+      }
+
+      .decision-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+
+      .decision-card {
+        padding: 25px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+      }
+
+      .decision-card h3 {
+        margin-bottom: 16px;
+        font-size: 17px;
+      }
+
+      .decision-card ul {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .decision-card li {
+        position: relative;
+        padding-left: 21px;
+        color: var(--ink-soft);
+        font-size: 14px;
+      }
+
+      .decision-card li::before {
+        position: absolute;
+        top: 0.35em;
+        left: 0;
+        width: 9px;
+        height: 9px;
+        border: 2px solid var(--teal);
+        border-radius: 50%;
+        content: '';
+      }
+
+      .closing {
+        padding-top: 70px;
+        text-align: center;
+      }
+
+      .closing p {
+        max-width: 700px;
+        margin-right: auto;
+        margin-bottom: 14px;
+        margin-left: auto;
+        color: var(--muted);
+      }
+
+      .closing strong {
+        display: block;
+        max-width: 840px;
+        margin: 0 auto 22px;
+        font-family: var(--serif);
+        font-size: clamp(34px, 5vw, 56px);
+        font-weight: 500;
+        letter-spacing: -0.045em;
+        line-height: 1.08;
+      }
+
+      footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        margin-top: 60px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      @media screen and (max-width: 820px) {
+        .shell {
+          width: min(100% - 20px, 680px);
+          margin: 10px auto;
+          border-radius: 20px;
+        }
+
+        .topbar,
+        main {
+          padding-right: 22px;
+          padding-left: 22px;
+        }
+
+        .meta {
+          display: none;
+        }
+
+        .hero {
+          padding: 58px 0 48px;
+        }
+
+        .thesis,
+        .section-head,
+        .before-after,
+        .interaction,
+        .decision-grid,
+        .child-term {
+          grid-template-columns: 1fr;
+        }
+
+        .thesis-rule {
+          width: 100%;
+          height: 1px;
+        }
+
+        .section-head {
+          gap: 13px;
+        }
+
+        .hierarchy {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+
+        .connector {
+          min-height: 26px;
+          transform: rotate(90deg);
+        }
+
+        .entity {
+          min-height: 195px;
+        }
+
+        .boundary-note {
+          display: block;
+        }
+
+        .rankings {
+          grid-template-columns: 1fr;
+        }
+
+        .ranking {
+          min-height: auto;
+        }
+
+        .rank {
+          margin-bottom: 20px;
+        }
+      }
+
+      @media screen and (max-width: 520px) {
+        .topbar {
+          align-items: flex-start;
+        }
+
+        .identity-copy span,
+        .print-button {
+          display: none;
+        }
+
+        main {
+          padding-bottom: 30px;
+        }
+
+        h1 {
+          font-size: 48px;
+        }
+
+        h1 em {
+          display: block;
+          margin-top: 7px;
+        }
+
+        .section {
+          padding: 50px 0;
+        }
+
+        .nav-row {
+          grid-template-columns: 1fr;
+          gap: 3px;
+        }
+
+        .nav-arrow {
+          display: none;
+        }
+
+        th,
+        td {
+          padding: 13px 14px;
+        }
+
+        .mock-row-top,
+        .mock-row-bottom,
+        footer {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+      }
+
+      @media print {
+        @page {
+          margin: 14mm;
+          size: A4;
+        }
+
+        body {
+          background: white;
+          font-size: 11pt;
+        }
+
+        .shell {
+          width: 100%;
+          margin: 0;
+          overflow: visible;
+          border: 0;
+          border-radius: 0;
+          box-shadow: none;
+        }
+
+        .topbar,
+        main {
+          padding-right: 0;
+          padding-left: 0;
+        }
+
+        .print-button {
+          display: none;
+        }
+
+        .hero {
+          padding-top: 28mm;
+        }
+
+        .state-card,
+        .entity,
+        .ranking,
+        .decision-card,
+        .flow,
+        .row-example,
+        tr {
+          break-inside: avoid;
+        }
+
+        .mark,
+        .term-number,
+        .entity.agent {
+          border: 1px solid var(--ink) !important;
+          background: white !important;
+          color: var(--ink) !important;
+        }
+
+        .agent .entity-type,
+        .agent p,
+        .agent .entity-example {
+          border-color: var(--line) !important;
+          color: var(--ink-soft) !important;
+        }
+
+        .thesis,
+        .state-card.proposed,
+        .row-example,
+        .child-term {
+          background: white !important;
+        }
+
+        h1 {
+          font-size: 52pt;
+        }
+
+        h2 {
+          font-size: 28pt;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <article class="shell">
+      <header class="topbar">
+        <div class="identity">
+          <div class="mark" aria-hidden="true">FT</div>
+          <div class="identity-copy">
+            <strong>FT Unification</strong>
+            <span>Information architecture brief</span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <span class="meta">Decision brief · August 2026</span>
+          <button class="print-button" type="button" onclick="window.print()">
+            Print / save PDF
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero" aria-labelledby="page-title">
+          <p class="eyebrow">Naming recommendation</p>
+          <h1 id="page-title">Call the section <em>Agent Directory.</em></h1>
+          <p class="lede">
+            The overlap between “Manage agents” and “Agent Builder” is amplified because
+            <strong>agent</strong> currently names two different levels of the product. Give the
+            word one meaning: the globally selectable AI agent.
+          </p>
+          <div class="decision-status" aria-label="Decision status">
+            <span>Status · Proposed</span>
+            <strong
+              >Decision requested · Approve “Agent Directory” and “Use cases” as the two
+              levels.</strong
+            >
+          </div>
+
+          <div class="thesis" aria-label="Recommended responsibility split">
+            <div class="thesis-item">
+              <span class="term-number" aria-hidden="true">A</span>
+              <div>
+                <strong>Agent Directory is the portfolio.</strong>
+                <p>Create, monitor, select, and open AI agents—with or without a brand.</p>
+              </div>
+            </div>
+            <div class="thesis-rule" aria-hidden="true"></div>
+            <div class="thesis-item">
+              <span class="term-number" aria-hidden="true">B</span>
+              <div>
+                <strong>Agent Builder is the workspace.</strong>
+                <p>
+                  Design the selected agent’s use cases, knowledge, actions, QA, and configuration.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="model-title">
+          <div class="section-head">
+            <p class="section-label">The mental model</p>
+            <div>
+              <h2 id="model-title">One word, one level.</h2>
+              <p class="section-intro">
+                Brand assignment is optional; when present, it organizes an agent. An agent is the
+                persistent, selectable resource. A use case describes something that agent knows how
+                to handle.
+              </p>
+            </div>
+          </div>
+
+          <div class="hierarchy" aria-label="Brand to agent to use case hierarchy">
+            <article class="entity">
+              <span class="entity-type">Optional assignment</span>
+              <h3>Brand</h3>
+              <p>A product, region, department, or business line.</p>
+              <span class="entity-example">Example · Uber Eats</span>
+            </article>
+            <div class="connector" aria-hidden="true">→</div>
+            <article class="entity agent">
+              <span class="entity-type">Globally selectable resource</span>
+              <h3>Agent</h3>
+              <p>The AI experience a team monitors, opens, and configures.</p>
+              <span class="entity-example">Example · Support Agent</span>
+            </article>
+            <div class="connector" aria-hidden="true">→</div>
+            <article class="entity">
+              <span class="entity-type">Authored behavior</span>
+              <h3>Use case</h3>
+              <p>An intent or capability handled by the selected agent.</p>
+              <span class="entity-example">Example · Service cancellation</span>
+            </article>
+          </div>
+
+          <p class="boundary-note">
+            <strong>Vocabulary boundary:</strong> reserve “agent” for something independently
+            selectable across the product. Use “use case” for the behaviors authored inside Agent
+            Builder.
+          </p>
+        </section>
+
+        <section class="section" aria-labelledby="collision-title">
+          <div class="section-head">
+            <p class="section-label">The collision</p>
+            <div>
+              <h2 id="collision-title">Renaming the page alone will not resolve it.</h2>
+              <p class="section-intro">
+                The current product uses “agent” for the portfolio rows and again for the child rows
+                inside Use cases. The recommended change makes each level teach the next one.
+              </p>
+            </div>
+          </div>
+
+          <div class="before-after">
+            <article class="state-card current">
+              <span class="state-label">Current</span>
+              <div class="nav-path">
+                <div class="nav-row">
+                  <strong>Agent Setup</strong><span class="nav-arrow">→</span
+                  ><span>Manage agents</span>
+                </div>
+                <div class="nav-row">
+                  <strong>Agent Builder</strong><span class="nav-arrow">→</span
+                  ><span>All agents</span>
+                </div>
+                <div class="nav-row">
+                  <strong>Agent Setup action</strong><span class="nav-arrow">→</span
+                  ><span>Create new</span>
+                </div>
+                <div class="nav-row">
+                  <strong>Builder action</strong><span class="nav-arrow">→</span
+                  ><span>New Agent</span>
+                </div>
+              </div>
+              <p class="warning">
+                “Agent” appears at two hierarchy levels, while “Setup” suggests a one-time task.
+              </p>
+            </article>
+
+            <article class="state-card proposed">
+              <span class="state-label">Proposed</span>
+              <div class="nav-path">
+                <div class="nav-row">
+                  <strong>Agent Directory</strong><span class="nav-arrow">→</span
+                  ><span>Agent roster</span>
+                </div>
+                <div class="nav-row">
+                  <strong>Agent Builder</strong><span class="nav-arrow">→</span
+                  ><span>All use cases</span>
+                </div>
+                <div class="nav-row">
+                  <strong>Directory action</strong><span class="nav-arrow">→</span
+                  ><span>Create agent</span>
+                </div>
+                <div class="nav-row">
+                  <strong>Builder action</strong><span class="nav-arrow">→</span
+                  ><span>Create use case</span>
+                </div>
+              </div>
+              <p class="warning">
+                Each term now has one job: portfolio resource, authoring workspace, and authored
+                behavior.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="copy-title">
+          <div class="section-head">
+            <p class="section-label">Recommended copy</p>
+            <div>
+              <h2 id="copy-title">A vocabulary the interface can reuse consistently.</h2>
+              <p class="section-intro">
+                Short labels work because the surrounding language makes the responsibility of each
+                surface explicit.
+              </p>
+            </div>
+          </div>
+
+          <div class="vocabulary-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Location</th>
+                  <th scope="col">Recommended label</th>
+                  <th scope="col">Purpose</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Navigation</td>
+                  <td>Agent Directory</td>
+                  <td>The durable home for the portfolio—not only initial setup.</td>
+                </tr>
+                <tr>
+                  <td>Page title</td>
+                  <td>Agent Directory</td>
+                  <td>Matches navigation and names the resource directly.</td>
+                </tr>
+                <tr>
+                  <td>Page subtitle</td>
+                  <td>Create, monitor, and open AI agents across brands and channels.</td>
+                  <td>Explains the section without adding another product noun.</td>
+                </tr>
+                <tr>
+                  <td>Table heading</td>
+                  <td>Agent roster</td>
+                  <td>Signals a browsable, operational list.</td>
+                </tr>
+                <tr>
+                  <td>Primary action</td>
+                  <td>Create agent</td>
+                  <td>Names the top-level object being created.</td>
+                </tr>
+                <tr>
+                  <td>Brand step</td>
+                  <td>Brand <code>(optional)</code></td>
+                  <td>Supports both branded and independent agents.</td>
+                </tr>
+                <tr>
+                  <td>Unbranded grouping</td>
+                  <td>No brand</td>
+                  <td>A neutral state, distinct from the “All brands” filter.</td>
+                </tr>
+                <tr>
+                  <td>Builder collection</td>
+                  <td>Use cases for Uber Rider Trip</td>
+                  <td>Keeps the selected agent visible while editing its behavior.</td>
+                </tr>
+                <tr>
+                  <td>Builder filters</td>
+                  <td>All use cases · Active</td>
+                  <td>Retains the current activation filter without calling the rows agents.</td>
+                </tr>
+                <tr>
+                  <td>Builder action</td>
+                  <td>Create use case</td>
+                  <td>Creates Service cancellation—not another top-level agent.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="notes-stack">
+            <p class="boundary-note">
+              <strong>Model decision:</strong> the current creation flow requires a brand.
+              Supporting agents without one means making Brand optional and introducing a distinct
+              “No brand” group; this should be agreed alongside, but separately from, the naming
+              change.
+            </p>
+            <p class="boundary-note">
+              <strong>Ownership boundary:</strong> Agent Directory owns identity and lifecycle
+              context—brand assignment, available channels, operational status, and default view.
+              Agent Builder owns behavior within those channels—use cases, knowledge, actions, QA,
+              and behavior configuration.
+            </p>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="interaction-title">
+          <div class="section-head">
+            <p class="section-label">Selection behavior</p>
+            <div>
+              <h2 id="interaction-title">Show the destination before the click.</h2>
+              <p class="section-intro">
+                Updating the global agent switcher is helpful confirmation. The confusing part would
+                be sending visually identical rows to three different destinations without warning.
+              </p>
+            </div>
+          </div>
+
+          <div class="interaction">
+            <div class="flow" aria-label="Recommended agent selection flow">
+              <div class="flow-step">
+                <span class="flow-index">1</span>
+                <div>
+                  <strong>The user chooses an agent.</strong>
+                  <p>The row displays its saved default view before selection.</p>
+                </div>
+              </div>
+              <div class="flow-step">
+                <span class="flow-index">2</span>
+                <div>
+                  <strong>The global agent changes.</strong>
+                  <p>The persistent switcher updates to the selected agent and brand context.</p>
+                </div>
+              </div>
+              <div class="flow-step">
+                <span class="flow-index">3</span>
+                <div>
+                  <strong>The app opens the named destination.</strong>
+                  <p>Dashboard, Agent Builder, or Agent Overview—without surprise.</p>
+                </div>
+              </div>
+            </div>
+
+            <aside class="row-example" aria-label="Example roster row">
+              <p class="row-example-label">Example roster disclosure</p>
+              <div class="mock-row">
+                <div class="mock-row-top">
+                  <span class="agent-name">Uber Rider Trip</span>
+                  <span class="brand-pill">Uber</span>
+                </div>
+                <div class="mock-row-bottom">
+                  <span class="destination-pill">Default view · Dashboard</span>
+                  <span class="open-label">Open in Dashboard →</span>
+                </div>
+              </div>
+              <p class="row-example-note">
+                The link’s accessible name can be “Open Uber Rider Trip in Dashboard,” making both
+                the context switch and the destination explicit.
+              </p>
+            </aside>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="alternatives-title">
+          <div class="section-head">
+            <p class="section-label">Alternatives considered</p>
+            <div>
+              <h2 id="alternatives-title">“Agent Directory” creates the clearest boundary.</h2>
+              <p class="section-intro">
+                The alternatives each emphasize only one part of a surface that spans browsing,
+                creation, health, and lifecycle management.
+              </p>
+            </div>
+          </div>
+
+          <div class="rankings">
+            <article class="ranking recommended">
+              <span class="rank">01 · Recommended</span>
+              <h3>Agent Directory</h3>
+              <p>
+                Makes browsing and opening the agent portfolio explicit. It is slightly longer, so
+                the subtitle should continue to carry its monitoring and lifecycle scope.
+              </p>
+            </article>
+            <article class="ranking">
+              <span class="rank">02 · Strong alternative</span>
+              <h3>Agents</h3>
+              <p>
+                Shorter and familiar, but it names the resource more than the place where users
+                find, compare, and open those resources.
+              </p>
+            </article>
+            <article class="ranking">
+              <span class="rank">03 · Enterprise alternative</span>
+              <h3>Agent Portfolio</h3>
+              <p>
+                Fits governance and aggregate health, but it is more abstract and less immediately
+                scannable.
+              </p>
+            </article>
+          </div>
+
+          <div class="child-term">
+            <div>
+              <span class="child-term-label">Recommended child term</span>
+              <h3>Use case</h3>
+            </div>
+            <div>
+              <p>
+                “Use case” is broad enough to cover Service cancellation, Knowledge Retrieval, and
+                Fallback while remaining business-readable.
+              </p>
+              <p>
+                “Intent” is too narrow for knowledge and fallback behaviors, “Capability” is more
+                abstract, and “Workflow” implies a fixed sequence that may not exist.
+              </p>
+            </div>
+          </div>
+
+          <div class="avoid" aria-label="Labels not recommended">
+            <span>Avoid · Agent Setup</span>
+            <span>Avoid · Agent Administration</span>
+            <span>Avoid · Agent Hub</span>
+            <span>Avoid · Agent Management</span>
+          </div>
+          <p class="avoid-note">
+            “Setup” sounds temporary, “Administration” suggests permissions, “Hub” is vague, and
+            “Management” still overlaps with the work performed in Agent Builder.
+          </p>
+        </section>
+
+        <section class="section" aria-labelledby="decision-title">
+          <div class="section-head">
+            <p class="section-label">Decision boundary</p>
+            <div>
+              <h2 id="decision-title">Change the vocabulary, preserve the navigation model.</h2>
+              <p class="section-intro">
+                The recommendation clarifies where work happens without requiring a new navigation
+                architecture or a different global-selection pattern. Optional brand membership is
+                the one related product-model decision to resolve explicitly.
+              </p>
+            </div>
+          </div>
+
+          <div class="decision-grid">
+            <article class="decision-card">
+              <h3>Keep</h3>
+              <ul>
+                <li>The global agent switcher.</li>
+                <li>Brands as a grouping and filtering concept.</li>
+                <li>Agent Builder as the selected agent’s authoring workspace.</li>
+                <li>Each agent’s configurable default destination.</li>
+              </ul>
+            </article>
+            <article class="decision-card">
+              <h3>Change</h3>
+              <ul>
+                <li>Rename Agent Setup and Manage agents to Agent Directory.</li>
+                <li>Reserve the word agent for the top-level resource.</li>
+                <li>Rename Agent Builder rows and actions around use cases.</li>
+                <li>Make Brand optional and disclose each agent’s default view.</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="closing">
+            <strong
+              >Agent Directory identifies where users find and open agents. Agent Builder identifies
+              where they shape one.</strong
+            >
+            <p>
+              That distinction is short enough for navigation and strong enough to teach the
+              product’s hierarchy as the platform grows.
+            </p>
+          </div>
+
+          <footer>
+            <span>FT Unification · Agent IA naming recommendation</span>
+            <span>Updated August 12, 2026</span>
+          </footer>
+        </section>
+      </main>
+    </article>
+  </body>
+</html>

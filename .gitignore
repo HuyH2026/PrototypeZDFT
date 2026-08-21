@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+# Local pnpm content-addressable store (created by `pnpm install --store-dir .`)
+.pnpm-store/
+
+# Build outputs
+dist/
+
+# TypeScript incremental build artifacts (from `tsc -b`)
+*.tsbuildinfo
+vite.config.d.ts
+vite.config.js
+vitest.config.d.ts
+vitest.config.js
+
+# Isolated feature worktrees used during local development
+.worktrees/
+
+# Subagent-driven-development scratch workspace (ledgers, briefs, review packages)
+.superpowers/
+
+# npm lockfile — this repo uses pnpm; a package-lock.json is an install fallback artifact
+package-lock.json
+
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Environment / secrets
+.env
+.env.local
+
+# design.md CLI scratch output (not source of truth)
+.design/
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+# Ad-hoc visual screenshots (pnpm shot)
+.shots/
+
+# also ignore a bare node_modules symlink (worktree dev convenience)
+/node_modules

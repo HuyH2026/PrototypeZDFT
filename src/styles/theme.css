@@ -1,0 +1,708 @@
+/* Keep dark: variant inert. The app is light-mode only; 15 files in ui/ still
+ * emit dark: utilities, but nothing ever sets class="dark", so they stay off. */
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  --font-sans: -apple-system, system-ui, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', sans-serif;
+  --background: #ffffff;
+  --foreground: oklch(0.145 0 0);
+  --card: #ffffff;
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: #030213;
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.95 0.0058 264.53);
+  --secondary-foreground: #030213;
+  --muted: #ececf0;
+  --muted-foreground: #717182;
+  --accent: #e9ebef;
+  --accent-foreground: #030213;
+  --destructive: #d4183d;
+  --destructive-foreground: #ffffff;
+  --border: rgba(0, 0, 0, 0.1);
+  --input: transparent;
+  --input-background: #f3f3f5;
+  --switch-background: #cbced4;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: oklch(0.708 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: #030213;
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+  /* Glass is transparent with its wash as a background-image, so it only
+     resolves over the backdrop it was sampled against (Flora surface). */
+  --color-app-backdrop: #f7f7f7;
+  --color-nav-active: #293239;
+  --color-ink: #2f3130;
+  /* The prototype's secondary text (--fg-subtle, its dominant choice at 109
+     uses). Darker than the old #8b8e89, which failed WCAG AA on white. */
+  --color-ink-muted: #5c6970;
+  /* Canonical Flora accent; replaces the legacy Garden #1f73b7. */
+  --color-accent-blue: #406cc4;
+  /* Card and table hairlines. --border-default (#d8dcde) remains for controls. */
+  --color-surface-border: #e8eaec;
+  /* Garden palette scales (canonical zendesk/ui values) — see DESIGN.md front
+   * matter. Exposed so screens ported from Figma can use the exact design-system
+   * grey/blue instead of transcribing raw hex. `blue-700` is the canonical Flora
+   * accent (distinct from the legacy `accent-blue` #1f73b7 — see Known deltas). */
+  --color-grey-100: #f7f7f7;
+  --color-grey-200: #eae9e8;
+  --color-grey-300: #dcdcda;
+  --color-grey-400: #b7b7b3;
+  --color-grey-500: #999b97;
+  --color-grey-600: #8b8e89;
+  --color-grey-700: #646864;
+  --color-grey-800: #404241;
+  --color-grey-900: #2f3130;
+  --color-grey-1200: #0c0c0d;
+  --color-blue-700: #406cc4;
+
+  /* ─── Flora token layer, ported from zendesk/ft-unify v1/index.html ───
+   * The prototype is the visual source of truth for this app. Comments below
+   * are its own: they explain why values are what they are. */
+
+  /* Foreground / background */
+  --fg-default: #293239;
+  --fg-subtle: #5c6970;
+  /* Accents run on Flora, not Garden. Flora leads with its dark neutral rather
+     than a blue, and keeps the blue for focus and selection. */
+  --fg-primary: var(--flora-fg);
+  --fg-placeholder: #848f99;
+  --fg-on-emphasis: #fff;
+  --fg-disabled: var(--flora-fg-disabled);
+  --bg-default: #fff;
+  --bg-subtle: #f8f9f9;
+  --bg-primary-emphasis: var(--flora-blue);
+
+  /* Flora colour scheme (Flora Core) — warm neutrals rather than Garden's
+     blue-greys, a softer blue primary, and the Alert / Tag surfaces. */
+  --flora-fg: #2f3130;
+  --flora-fg-body: #404241;
+  --flora-fg-subtle: #646864;
+  --flora-fg-disabled: #949492;
+  --flora-border: #dcdcda;
+  --flora-border-input: #b7b7b3;
+  --flora-divider: #eae9e8;
+  --flora-surface: #f7f7f7;
+  --flora-neutral-surface: #eae9e8;
+  --flora-blue: #406cc4;
+  --flora-blue-surface: #e4eaf6;
+  --flora-blue-fg: #1f335a;
+  --flora-green: #4b7d04;
+  --flora-green-surface: #ddf0c9;
+  --flora-green-fg: #25390f;
+  /* Distinct from --red-700: Flora's red for alert surfaces, where --red-700 is
+     the legacy Garden red used by buttons and status tags. Both are real. */
+  --flora-red: #c63f46;
+  --flora-red-surface: #f7e5e6;
+  --flora-red-fg: #5f1c20;
+  --flora-yellow-surface: #f6eba6;
+
+  /* Borders */
+  --border-default: #d8dcde;
+  --border-subtle: #e8eaec;
+  --border-input: #b0b8be;
+  --border-primary: var(--flora-blue);
+
+  /* Warm base (Flora grey), so translucent hovers read as the same family of
+     greys as the surfaces underneath — over white these land on #f5f4f4 and
+     #eae9e8. A cool-grey translucent hover turns green over the warm nav. */
+  --opacity-neutral-100: rgba(125, 118, 111, 0.08);
+  --opacity-neutral-200: rgba(125, 118, 111, 0.16);
+  --opacity-primary-200: rgba(64, 108, 196, 0.16);
+
+  /* Status / semantic scales (legacy Garden values the prototype retains) */
+  --green-100: #eef8f4;
+  --green-200: #daeee6;
+  --green-700: #037f52;
+  --green-800: #104b35;
+  --royal-100: #f4f5fc;
+  --royal-700: #4c67d3;
+  --yellow-100: #fff3e4;
+  --yellow-700: #ac5918;
+  --red-100: #fff0f1;
+  --red-700: #cc3340;
+
+  /* Text fields: a hairline border with a soft lift instead of a hard grey
+     outline. */
+  --field-border: #e8eaec;
+  --field-radius: 12px;
+  --field-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+
+  /* Data tables. The header strip inherits this one warm grey; see Table.tsx. */
+  --table-divider: #e9ebed;
+  --table-header-color: #2f3941;
+  --table-header-bg: #f7f7f7;
+  --table-group-row-bg: rgba(255, 255, 255, 0.8);
+  /* Opaque so the row reads the same over white cards and the grey page behind */
+  --table-row-hover-bg: #faf9f9;
+
+  /* Warm neutral pill behind segment / status / category tags */
+  --tag-neutral-bg: #edeceb;
+
+  /* Chrome (nav rail, expanded sidebar, header). The prototype's shell is a warm
+     vertical wash rather than one flat grey: the header holds the top of the ramp
+     and the body region carries it down. --color-app-backdrop stays a flat colour
+     because 15 screens use it as a tint, where a gradient would be wrong. */
+  --chrome-top: #f6f5f4;
+  --chrome-wash: linear-gradient(180deg, #f6f5f4 75%, #eae8e7 100%);
+  /* Nav rows use an opaque warm grey, not a translucent one: they sit on the wash,
+     where a translucent hover would darken unevenly down the panel. */
+  --nav-hover-bg: #eae9e8;
+  /* Header controls hover on the translucent warm neutral instead, matching the
+     prototype's .header-product / .header-brand-selector. They sit at the top of
+     the ramp where there is no gradient to darken unevenly, and the transparency
+     is what keeps them reading as chrome rather than as nav rows. */
+  --control-hover-bg: var(--opacity-neutral-200);
+
+  /* Frosted glass card surface. The purple wash is the whole fill, entering at
+     the top-left corner and spent a fifth of the way in. Figma stretches a
+     gradient to the layer's box, so its exported angle (104deg) and stops
+     (-4.02% / 22.84%) only describe the unit square — on the card's aspect they
+     render as a 45-degree wash. These values are sampled off the design.
+     No highlight or drop shadow: the design is stroke and wash only. */
+  --glass-card-sheen: linear-gradient(
+    135deg,
+    rgba(164, 126, 191, 0.17) 0%,
+    rgba(255, 255, 255, 0.2) 23%
+  );
+  --glass-card-blur: blur(16px) saturate(180%);
+  --glass-card-border: #eae9e8;
+
+  /* Menus */
+  --menu-shadow: 0 16px 24px rgba(12, 12, 13, 0.16);
+  --menu-item-hover: rgba(64, 108, 196, 0.08);
+  --shadow-xs: 0 0 4px 0 rgba(10, 13, 14, 0.16);
+
+  /* Motion — two decelerating curves and four speeds, so everything that moves
+     feels like it belongs to the same product. --ease-out is the sharper curve,
+     kept for things that need to feel prompt. --ease-soft is the gentler one:
+     it eases out of the gate as well as into the stop, so nothing snaps. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.33, 0.85, 0.4, 1);
+  --dur-instant: 160ms;
+  --dur-fast: 260ms;
+  --dur-base: 420ms;
+  --dur-slow: 620ms;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-app-backdrop: var(--color-app-backdrop);
+  --color-nav-active: var(--color-nav-active);
+  --color-ink: var(--color-ink);
+  --color-ink-muted: var(--color-ink-muted);
+  --color-accent-blue: var(--color-accent-blue);
+  --color-surface-border: var(--color-surface-border);
+  --color-grey-100: var(--color-grey-100);
+  --color-grey-200: var(--color-grey-200);
+  --color-grey-300: var(--color-grey-300);
+  --color-grey-400: var(--color-grey-400);
+  --color-grey-500: var(--color-grey-500);
+  --color-grey-600: var(--color-grey-600);
+  --color-grey-700: var(--color-grey-700);
+  --color-grey-800: var(--color-grey-800);
+  --color-grey-900: var(--color-grey-900);
+  --color-grey-1200: var(--color-grey-1200);
+  --color-blue-700: var(--color-blue-700);
+
+  /* Flora token layer → Tailwind utilities */
+  --color-fg-default: var(--fg-default);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-fg-placeholder: var(--fg-placeholder);
+  --color-fg-disabled: var(--fg-disabled);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-flora-fg: var(--flora-fg);
+  --color-flora-fg-body: var(--flora-fg-body);
+  --color-flora-fg-subtle: var(--flora-fg-subtle);
+  --color-flora-border: var(--flora-border);
+  --color-flora-border-input: var(--flora-border-input);
+  --color-flora-divider: var(--flora-divider);
+  --color-flora-surface: var(--flora-surface);
+  --color-flora-neutral-surface: var(--flora-neutral-surface);
+  --color-flora-blue: var(--flora-blue);
+  --color-flora-blue-surface: var(--flora-blue-surface);
+  --color-flora-blue-fg: var(--flora-blue-fg);
+  --color-flora-green-surface: var(--flora-green-surface);
+  --color-flora-green-fg: var(--flora-green-fg);
+  --color-flora-red: var(--flora-red);
+  --color-flora-red-surface: var(--flora-red-surface);
+  --color-flora-red-fg: var(--flora-red-fg);
+  --color-border-default: var(--border-default);
+  --color-border-subtle: var(--border-subtle);
+  --color-green-100: var(--green-100);
+  --color-green-700: var(--green-700);
+  --color-royal-100: var(--royal-100);
+  --color-royal-700: var(--royal-700);
+  --color-yellow-100: var(--yellow-100);
+  --color-yellow-700: var(--yellow-700);
+  --color-red-100: var(--red-100);
+  --color-red-700: var(--red-700);
+  --color-tag-neutral: var(--tag-neutral-bg);
+  --color-chrome-top: var(--chrome-top);
+  --color-nav-hover: var(--nav-hover-bg);
+  --color-control-hover: var(--control-hover-bg);
+  --color-menu-item-hover: var(--menu-item-hover);
+  --color-table-divider: var(--table-divider);
+  --color-table-header-bg: var(--table-header-bg);
+  --color-table-header-color: var(--table-header-color);
+  --color-table-row-hover: var(--table-row-hover-bg);
+  --color-field-border: var(--field-border);
+  --ease-soft: var(--ease-soft);
+  --ease-out: var(--ease-out);
+  --radius-field: var(--field-radius);
+  --shadow-field: var(--field-shadow);
+  --shadow-menu: var(--menu-shadow);
+  --shadow-xs-flora: var(--shadow-xs);
+}
+
+/* Motion durations as named utilities.
+ *
+ * `--duration-*` is NOT a Tailwind v4 theme namespace, unlike `--ease-*`,
+ * `--radius-*`, and `--shadow-*` (which all resolve from `@theme inline`
+ * above). Declaring `--duration-instant` there compiles without error but
+ * generates no `.duration-instant` rule at all — the class silently does
+ * nothing. Verified against the built CSS in this repo: `.ease-soft`,
+ * `.rounded-field`, and `.shadow-field` each emit a rule; `.duration-instant`
+ * emits none.
+ *
+ * `@utility` declares them explicitly instead, so `duration-instant` behaves
+ * like Tailwind's built-in `duration-200` and callers need no
+ * `duration-[var(--dur-fast)]` escape hatch. `--tw-duration` is set alongside
+ * `transition-duration` to match what the built-in numeric scale emits, so
+ * these compose with `transition-*` identically. */
+@utility duration-instant {
+  --tw-duration: var(--dur-instant);
+  transition-duration: var(--dur-instant);
+}
+
+@utility duration-fast {
+  --tw-duration: var(--dur-fast);
+  transition-duration: var(--dur-fast);
+}
+
+@utility duration-base {
+  --tw-duration: var(--dur-base);
+  transition-duration: var(--dur-base);
+}
+
+@utility duration-slow {
+  --tw-duration: var(--dur-slow);
+  transition-duration: var(--dur-slow);
+}
+
+/* ─── Sidebar expand ───
+ * Ported from the prototype: the panel widens and its rows arrive in order
+ * behind it, so opening reads as one movement rather than a block of text
+ * appearing at once. The panel is mounted on toggle, so the width animation
+ * runs on mount rather than needing a transition from a previous value.
+ *
+ * The row animation is applied to each absolutely-positioned element in a row
+ * (pill, label link, submenu) and never to their static wrapper: `transform`
+ * makes an element a containing block for absolute descendants, which would
+ * re-anchor the rows this layout positions against the panel. */
+@keyframes sidebarOpen {
+  from {
+    width: 0;
+  }
+}
+
+@keyframes navRowIn {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+}
+
+@utility animate-sidebar-open {
+  animation: sidebarOpen var(--dur-fast) var(--ease-soft) both;
+}
+
+@utility animate-nav-row {
+  animation: navRowIn var(--dur-base) var(--ease-soft) both;
+  animation-delay: calc(var(--row, 0) * 20ms);
+}
+
+/* ─── Content reveals ───
+ * Three shared entrances for content that is mounted rather than transitioned:
+ * a collapsible section body, a switched tab panel, a chart that has just
+ * measured itself. A `transition` cannot cover those cases — there is no
+ * previous value to animate from — so they run as a keyframe on mount.
+ *
+ * `animate-fade-in` is opacity only, for wrappers: `transform` would make the
+ * element a containing block for its absolutely-positioned descendants (the
+ * stat cards' insight popovers), and re-anchoring those mid-animation shifts
+ * them. `animate-rise-in` adds the travel and belongs on leaf cards.
+ *
+ * `animate-bar-rise` grows a bar from the axis. It animates `height` rather than
+ * `scaleY` because the bars carry their value label inside them: a transform
+ * would squash the label along with the bar, and would re-anchor it besides. */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes barRise {
+  from {
+    height: 0;
+  }
+}
+
+@utility animate-fade-in {
+  animation: fadeIn var(--dur-fast) var(--ease-soft) both;
+}
+
+@utility animate-rise-in {
+  animation: riseIn var(--dur-base) var(--ease-soft) both;
+  animation-delay: calc(var(--rise, 0) * 40ms);
+}
+
+@utility animate-bar-rise {
+  animation: barRise var(--dur-slow) var(--ease-soft) both;
+  animation-delay: calc(var(--rise, 0) * 60ms);
+}
+
+/* ─── Thinking label ───
+ * The one piece of the AI Studio's "thinking" that is decoration rather than
+ * pacing (the beats themselves are data — see thinking-pace.ts). A highlight
+ * crosses the word while an answer is on its way, which is what separates a
+ * label that means "working" from one that is simply printed. Clipped to the
+ * glyphs, so nothing around it moves.
+ *
+ * Under reduced motion the sweep is not merely stopped: a stopped gradient would
+ * leave the word transparent mid-fade, so the label falls back to the flat grey
+ * it borrows from the collapsed disclosure beside it. */
+@keyframes thinkingSweep {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@utility animate-thinking-sweep {
+  background-image: linear-gradient(
+    90deg,
+    #727583 0%,
+    #727583 38%,
+    #01567a 50%,
+    #727583 62%,
+    #727583 100%
+  );
+  background-size: 200% 100%;
+  background-clip: text;
+  color: transparent;
+  animation: thinkingSweep 1.7s var(--ease-soft) infinite;
+}
+
+/* ─── Sankey flow motion ───
+ * Sankeys describe a journey, so their entrance follows that journey instead
+ * of fading the entire SVG at once: bars establish the waypoints, ribbons
+ * travel left-to-right, then labels settle over the finished geometry. The
+ * white sheen is deliberately mostly idle; its SVG gradient crosses the chart
+ * once near the end of each 6.5 second cycle, reading as a routing pulse rather
+ * than constant decoration. */
+@keyframes sankeyRibbonIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px) scaleX(0.94);
+  }
+}
+
+@keyframes sankeyNodeIn {
+  from {
+    opacity: 0;
+    transform: scaleY(0.18);
+  }
+}
+
+@keyframes sankeyLabelIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+}
+
+.sankey-ribbon {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: sankeyRibbonIn var(--dur-slow) var(--ease-soft) both;
+  animation-delay: calc(80ms + var(--sankey-order, 0) * 45ms);
+}
+
+.sankey-node {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sankeyNodeIn var(--dur-base) var(--ease-out) both;
+  animation-delay: calc(var(--sankey-order, 0) * 70ms);
+}
+
+.sankey-label {
+  animation: sankeyLabelIn var(--dur-base) var(--ease-soft) both;
+  animation-delay: calc(180ms + var(--sankey-order, 0) * 70ms);
+}
+
+.sankey-sheen-layer {
+  pointer-events: none;
+}
+
+.sankey-sheen {
+  opacity: 0.72;
+}
+
+/* `Go to it` in the drawer's error card scrolls an exchange into view; the ring
+ * is what tells the reader which one it landed on. It fades out on its own so
+ * nothing stays permanently highlighted. */
+@keyframes errorRing {
+  from {
+    box-shadow: 0 0 0 3px rgba(201, 42, 42, 0.28);
+  }
+  to {
+    box-shadow: 0 0 0 3px rgba(201, 42, 42, 0);
+  }
+}
+
+@utility animate-error-ring {
+  animation: errorRing var(--dur-slow) var(--ease-soft) both;
+}
+
+/* ─── Outer-loop motion (agent-pipeline) ───
+ * The only infinite animations in the app, and deliberately so: they depict
+ * monitoring, which genuinely runs continuously. Nothing that would have to have
+ * *moved* animates — no counter ticks, no drifting metric (see the agent-pipeline
+ * spec, Decision 6).
+ *
+ * The wire dot animates `left` rather than a transform because a wire's pixel
+ * length is unknown at author time — the columns are laid out by flex, so a
+ * percentage of the wire is the only distance that is correct at every width. */
+@keyframes loopWireFlow {
+  from {
+    left: 0%;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  to {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes loopNodePulse {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@utility animate-loop-wire {
+  animation: loopWireFlow var(--loop-wire-duration, 1.2s) linear infinite;
+  animation-delay: var(--loop-wire-delay, 0s);
+}
+
+@utility animate-loop-pulse {
+  animation: loopNodePulse 1.2s var(--ease-soft) infinite;
+  animation-delay: var(--loop-pulse-delay, 0s);
+}
+
+/* ─── Voice orb motion ───
+ * The Configuration preview's voice agent: the gradient ring slowly swirls
+ * while a soft halo breathes around it — the idle "agent is listening" cue,
+ * in the same spirit as the outer-loop monitors. Both run on `transform` and
+ * `opacity` only, so they stay on the compositor; the swirl rotates the
+ * blurred gradient layer itself (its circular shape makes rotation free of
+ * drift), it never re-lays-out the ring it sits under. */
+@keyframes orbSwirl {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes orbHalo {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.18);
+  }
+}
+
+@utility animate-orb-swirl {
+  animation: orbSwirl 9s linear infinite;
+}
+
+@utility animate-orb-halo {
+  animation: orbHalo 2.6s var(--ease-soft) infinite;
+}
+
+/* Respect a reduced-motion preference: content still arrives, it just doesn't
+ * travel or grow. Charts are handled in JS (see useChartMotion), because
+ * recharts animates SVG attributes from script rather than from CSS. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-sidebar-open,
+  .animate-nav-row,
+  .animate-fade-in,
+  .animate-rise-in,
+  .animate-bar-rise,
+  .animate-error-ring,
+  .sankey-ribbon,
+  .sankey-node,
+  .sankey-label {
+    animation: none;
+  }
+
+  .sankey-sheen-layer {
+    display: none;
+  }
+
+  /* Not `animation: none` — see the note above the utility. The flat colour is
+     the studio's cool slate, which has no token (per that feature's convention). */
+  .animate-thinking-sweep {
+    background-image: none;
+    color: #727583;
+    animation: none;
+  }
+
+  /* The travelling dot has no meaning standing still, and parking it at the
+     start of the wire reads as a rendering bug rather than a resting state. */
+  .animate-loop-wire {
+    display: none;
+  }
+
+  .animate-loop-pulse {
+    animation: none;
+    opacity: 1;
+  }
+
+  /* A stopped ring is the resting state, not a bug — the static gradient is
+     already the design's look, so the motion simply switches off. */
+  .animate-orb-swirl,
+  .animate-orb-halo {
+    animation: none;
+  }
+
+  .animate-orb-halo {
+    opacity: 0.45;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    @apply bg-background text-foreground;
+  }
+
+  /**
+  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
+  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
+  */
+
+  html {
+    font-size: var(--font-size);
+  }
+
+  h1 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h4 {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  label {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  button {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  input {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+  }
+}
